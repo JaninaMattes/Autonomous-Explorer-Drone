@@ -1,0 +1,35 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index c22fb37e..ae8f67d0 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -503,6 +503,8 @@ class PPO_PolicyGradient_V2:
+ 
+                 # break out of loop if episode is terminated
+                 if done:
++                    # logging of stats
++                    print(f'### {info}')
+                     info_episode = info[0]['episode']
+                     info_episode_r = info_episode['r']
+                     info_episode_l = info_episode['l']
+@@ -516,6 +518,7 @@ class PPO_PolicyGradient_V2:
+                         'info/mean episodic length': info_episode_l,
+                         'info/mean episodic time': info_episode_t
+                     })
++
+                     break
+ 
+             batch_lens.append(ep_t + 1) # as we started at 0
+@@ -563,10 +566,10 @@ class PPO_PolicyGradient_V2:
+ 
+             # STEP 4-5: Calculate cummulated reward and GAE at timestep t_step
+             values, _ , _ = self.get_values(obs, actions)
+-            cum_returns = self.cummulative_return(rewards)
++            #cum_returns = self.cummulative_return(rewards)
+             # advantages = self.advantage_estimate_(cum_returns, values.detach())
+-            #advantages, cum_returns = self.generalized_advantage_estimate_0(rewards, values.detach())
+-            advantages = self.advantage_estimate(rewards, values)
++            advantages, cum_returns = self.generalized_advantage_estimate_0(rewards, values.detach())
++            #advantages = self.advantage_estimate(rewards, values)
+             # update network params 
+             for _ in range(self.noptepochs):
+                 # STEP 6-7: calculate loss and update weights

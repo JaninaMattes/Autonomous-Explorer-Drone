@@ -1,0 +1,22 @@
+INFO:root:Training model...
+INFO:root:Collecting batch trajectories...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 977, in <module>
+    train(env,
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 834, in train
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 565, in learn
+    obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens = self.collect_rollout(n_steps=self.episode_iterations)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 492, in collect_rollout
+    action, log_probability, _ = self.step(obs)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 280, in step
+    action_dist = self.get_continuous_policy(obs)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 256, in get_continuous_policy
+    action_prob = self.policy_net(obs) # query Policy Network (Actor) for mean action
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 86, in forward
+    obs = torch.tensor(obs, device=self.device, dtype=torch.float)
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1269, in __getattr__
+    raise AttributeError("'{}' object has no attribute '{}'".format(
+AttributeError: 'PolicyNet' object has no attribute 'device'

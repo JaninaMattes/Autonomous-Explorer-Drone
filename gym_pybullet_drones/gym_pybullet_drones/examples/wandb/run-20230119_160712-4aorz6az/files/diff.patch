@@ -1,0 +1,22 @@
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+index 7ee119c6..dbd6d87e 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+@@ -91,7 +91,7 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
+         # our ppo-v2
+         ppo.register_env(id=env_id, entry_point=entry_point)
+         # get PPOTrainer
+-        trainer = ppo.PPOTrainer(env, total_training_steps=10_000) # 3_000_000, everything shorter just for testing
++        trainer = ppo.PPOTrainer(env, total_training_steps=3_000_000) # 3_000_000, everything shorter just for testing
+         # train PPO
+         agent = trainer.create_ppo()
+         agent.learn()
+@@ -108,7 +108,7 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
+         config = ppo.DEFAULT_CONFIG.copy()
+         config["num_workers"] = 2
+         config["framework"] = "torch"
+-        config["env"] = "takeoff-aviary-v0"
++        config["env"] = env_id
+         agent = ppo.PPOTrainer(config)
+         for i in range(3): # Typically not enough
+             results = agent.train()

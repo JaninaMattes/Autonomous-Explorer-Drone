@@ -1,0 +1,355 @@
+diff --git a/README.md b/README.md
+index ade3ad3f..5299629c 100644
+--- a/README.md
++++ b/README.md
+@@ -3,6 +3,7 @@
+ This repository contains a UnityML drone environment and the PyBullet Drone environment as well as a custom PPO algorithm.
+ 
+ ### Top level directory layout
++```
+ .
+ ├── docs                                # Documentation files, papers
+ ├── imgs                                # Image files for README.md
+@@ -14,6 +15,7 @@ This repository contains a UnityML drone environment and the PyBullet Drone envi
+ ├── requirements.txt                    # requirements.txt for pybullet and ppo_v2
+ ├── LICENSE
+ └── README.md
++```
+ 
+ ## 1. Unity [ml-explorer-drone environment]
+ Unity Machine Learning Controlled Explorer Drone
+@@ -71,4 +73,7 @@ Run training with PPO
+ 
+ [3] Hyperparameter Tuning
+ Run training with PPO
+-- ```python ppo_continuous.py --hyperparam True```
+\ No newline at end of file
++- ```python ppo_continuous.py --hyperparam True```
++
++## 4. Logging
++All training results are logged under W&B and ```./log``` in the respective directory.
+\ No newline at end of file
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+index fd55e765..3c3b1568 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+@@ -34,6 +34,7 @@ from gym_pybullet_drones.utils.utils import sync, str2bool
+ 
+ # import own modules
+ import gym_pybullet_drones.examples.ppo as ppo
++from gym_pybullet_drones.examples.ppo import PPOTrainer
+ 
+ DEFAULT_ENV = 'takeoff' #"takeoff", "hover"
+ DEFAULT_RLLIB = True
+@@ -44,6 +45,11 @@ DEFAULT_RECORD_VIDEO = True
+ DEFAULT_OUTPUT_FOLDER = 'results'
+ DEFAULT_COLAB = False
+ DEFAULT_SEED = 42
++DEFAULT_TRAINING_STEPS = 100_000 # just for testing, too short otherwise
++
++#######################################
++#######################################
++
+ 
+ def make_env(env_id, seed=42):
+     env = gym.make(env_id)
+@@ -54,7 +60,8 @@ def make_env(env_id, seed=42):
+ 
+ def run(env_id=DEFAULT_ENV, 
+         rllib=DEFAULT_RLLIB, 
+-        algo=DEFAULT_ALGO, 
++        algo=DEFAULT_ALGO,
++        training_steps=DEFAULT_TRAINING_STEPS,
+         output_folder=DEFAULT_OUTPUT_FOLDER, 
+         gui=DEFAULT_GUI,
+         plot=True, 
+@@ -62,14 +69,17 @@ def run(env_id=DEFAULT_ENV,
+         record_video=DEFAULT_RECORD_VIDEO, 
+         seed=DEFAULT_SEED):
+     
+-    #####################
++    #############################################################
+     #### Check the environment's spaces ########################
+-    #####################
++    #############################################################
++
+     if not env_id in ['takeoff', 'hover']: 
+         print("[ERROR] 1D action space is only compatible with Takeoff and HoverAviary")
+         exit()
+ 
+     env_id = env_id + "-aviary-v0"
++    print("[INFO] You selected env:", env_id)
++    # make env
+     env = make_env(env_id, seed=seed)
+     
+     print("[INFO] Action space:", env.action_space)
+@@ -89,14 +99,15 @@ def run(env_id=DEFAULT_ENV,
+                     env,
+                     verbose=1
+                     )
+-        model.learn(total_timesteps=10_000) # Typically not enough
++        model.learn(total_timesteps=training_steps)
+     
+     elif algo == 'ppo_v2':
+         # custom ppo-v2
+-        # get PPOTrainer
+-        trainer = ppo.PPOTrainer(
++        # create PPOTrainer
++        trainer = PPOTrainer(
+                     env, 
+-                    total_training_steps=1_000_000, # 1_000_000, shorter just for testing
++                    total_training_steps=training_steps, # shorter just for testing
++                    epsilon=0.22,
+                     seed=seed) 
+         # train PPO
+         agent = trainer.create_ppo()
+@@ -119,11 +130,10 @@ def run(env_id=DEFAULT_ENV,
+         for i in range(3): # Typically not enough
+             results = agent.train()
+             print("[INFO] {:d}: episode_reward max {:f} min {:f} mean {:f}".format(i,
+-                                                                                   results["episode_reward_max"],
+-                                                                                   results["episode_reward_min"],
+-                                                                                   results["episode_reward_mean"]
+-                                                                                   )
+-            )
++                    results["episode_reward_max"],
++                    results["episode_reward_min"],
++                    results["episode_reward_mean"])
++                )
+         policy = agent.get_policy()
+         ray.shutdown()
+ 
+@@ -147,11 +157,11 @@ def run(env_id=DEFAULT_ENV,
+     obs = env.reset()
+     start = time.time()
+     for i in range(30000*env.SIM_FREQ):
+-        if not rllib:
++        if not rllib and algo == 'ppo_sb3':
+             action, _states = model.predict(obs,
+                                             deterministic=True
+                                             )
+-        else:
++        elif algo == 'ppo_v2':
+             action = policy(obs).detach().numpy()
+         
+         obs, reward, done, info = env.step(action)
+@@ -179,13 +189,14 @@ def run(env_id=DEFAULT_ENV,
+ 
+ if __name__ == "__main__":
+     #### Define and parse (optional) arguments for the script ##
+-    parser = argparse.ArgumentParser(description='Single agent reinforcement learning example script using TakeoffAviary')
++    parser = argparse.ArgumentParser(description='Single agent reinforcement learning example script using TakeoffAviary or HoverAviary')
+     parser.add_argument('--rllib',              default=DEFAULT_RLLIB,          type=str2bool,       help='Whether to use RLlib PPO in place of stable-baselines A2C (default: False)', metavar='')
+-    parser.add_argument('--gui',                default=DEFAULT_GUI,            type=str2bool,      help='Whether to use PyBullet GUI (default: True)', metavar='')
+-    parser.add_argument('--record_video',       default=DEFAULT_RECORD_VIDEO,   type=str2bool,      help='Whether to record a video (default: False)', metavar='')
+-    parser.add_argument('--output_folder',      default=DEFAULT_OUTPUT_FOLDER,  type=str,           help='Folder where to save logs (default: "results")', metavar='')
+-    parser.add_argument('--algo',               default=DEFAULT_ALGO,           type=str,           help='Select an algorithm to be used, either custom ppo or stable-baseline3 (ppo_v2, ppo_sb3)')
+-    parser.add_argument('--env_id',             default=DEFAULT_ENV,            type=str,           help='Select an environment to train on (hover, takeoff)')
++    parser.add_argument('--gui',                default=DEFAULT_GUI,            type=str2bool,       help='Whether to use PyBullet GUI (default: True)', metavar='')
++    parser.add_argument('--record_video',       default=DEFAULT_RECORD_VIDEO,   type=str2bool,       help='Whether to record a video (default: False)', metavar='')
++    parser.add_argument('--output_folder',      default=DEFAULT_OUTPUT_FOLDER,  type=str,            help='Folder where to save logs (default: "results")', metavar='')
++    parser.add_argument('--algo',               default=DEFAULT_ALGO,           type=str,            help='Select an algorithm to be used, either custom ppo or stable-baseline3 (ppo_v2, ppo_sb3)')
++    parser.add_argument('--env_id',             default=DEFAULT_ENV,            type=str,            help='Select an environment to train on (hover, takeoff)')
++    parser.add_argument('--training_steps',     default=DEFAULT_TRAINING_STEPS, type=int,            help='Select an environment to train on (hover, takeoff)')
+     parser.add_argument('--colab',              default=DEFAULT_COLAB,          type=bool,           help='Whether example is being run by a notebook (default: "False")', metavar='')
+     ARGS = parser.parse_args()
+ 
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+index c8fbc6ca..f8c2aa98 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+@@ -512,9 +512,9 @@ class PPO_PolicyGradient:
+     def finish_episode(self):
+         pass
+ 
+-    def collect_rollout(self, n_steps=1):
++    def collect_rollout(self, n_steps=2048):
+         """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)
+-           # TODO: rollout length - 2048 t0 4096
++           A typical rollout length - 2048 t0 4096
+         """
+         
+         t_step, rewards, frames = 0, [], deque(maxlen=24) # 4 fps - 6 sec
+@@ -532,7 +532,7 @@ class PPO_PolicyGradient:
+         episode_lens = []
+ 
+         # Run Monte Carlo simulation for n timesteps per batch
+-        logging.info(f"Collecting trajectories in batch...")
++        logging.info(f"Collecting trajectories...")
+         while t_step < n_steps:
+             
+             # rewards collected
+@@ -545,9 +545,9 @@ class PPO_PolicyGradient:
+ 
+             # Run episode for a fixed amount of timesteps
+             # to keep rollout size fixed and episodes independent
+-            for t_batch in range(0, self.max_trajectory_size):
++            for t in range(0, self.max_trajectory_size):
+                 # render gym envs
+-                if self.render_video and t_batch % self.render_steps == 0:
++                if self.render_video and t % self.render_steps == 0:
+                     frames.append(self.env.render(mode="rgb_array"))
+                 
+                 t_step += 1 
+@@ -584,7 +584,7 @@ class PPO_PolicyGradient:
+             time_elapsed = end_epoch - start_epoch
+             episode_time.append(time_elapsed)
+ 
+-            episode_lens.append(t_batch + 1) # as we started at 0
++            episode_lens.append(t + 1) # as we started at 0
+             episode_rewards.append(rewards)
+ 
+         # convert trajectories to torch tensors
+@@ -599,7 +599,6 @@ class PPO_PolicyGradient:
+ 
+     def train(self, values, returns, advantages, batch_log_probs, curr_log_probs, epsilon):
+         """Calculate loss and update weights of both networks."""
+-        logging.info("Updating network parameter...")
+         # loss of the policy network
+         self.policy_net_optim.zero_grad()  # reset optimizer
+         policy_loss = self.policy_net.loss(
+@@ -639,6 +638,7 @@ class PPO_PolicyGradient:
+             advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+             
+             # update network params 
++            logging.info("Updating network parameter...")
+             for _ in range(self.n_optepochs):
+                 # STEP 6-7: calculate loss and update weights
+                 values, curr_log_probs, _ = self.get_values(obs, actions)
+@@ -694,11 +694,18 @@ class PPO_PolicyGradient:
+ 
+         # Finalize and plot stats
+         if self.stats_plotter:
+-            df = self.stats_plotter.read_csv() # read all files in folder
+-            self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns', 
+-                                                y_min='min episodic returns', y_max='max episodic returns',  
+-                                                title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return', 
+-                                                color='blue', smoothing=6, wandb=wandb, xlim_up=self.total_training_steps)
++            try: 
++                df = self.stats_plotter.read_csv() # read all files in folder
++                self.stats_plotter.plot_seaborn_fill(df, 
++                                                    x='timestep', y='mean episodic returns', 
++                                                    y_min='min episodic returns', y_max='max episodic returns',  
++                                                    title=f'{env_name}', 
++                                                    x_label='Episode', 
++                                                    y_label='Mean Episodic Return',
++                                                    smoothing=2, 
++                                                    wandb=wandb)
++            except:
++                logging.warn('Plotting unsuccessful...')
+         if wandb:
+             # save files in path
+             wandb.save(os.path.join(self.exp_path, "*csv"))
+@@ -753,8 +760,8 @@ class PPO_PolicyGradient:
+         self.stats_data['mean episodic returns'].append(mean_ep_ret)
+         self.stats_data['min episodic returns'].append(min_ep_ret)
+         self.stats_data['max episodic returns'].append(max_ep_ret)
+-        self.stats_data['mean episodic runtime'].append(mean_ep_time)
+         self.stats_data['std episodic returns'].append(std_ep_rew)
++        self.stats_data['mean episodic runtime'].append(mean_ep_time)
+         self.stats_data['eval episodes'].append(len(cum_ret))
+         self.stats_data['timestep'].append(training_steps)
+ 
+@@ -790,25 +797,24 @@ def arg_parser():
+     parser = argparse.ArgumentParser()
+     # fmt: off
+     parser = argparse.ArgumentParser()
+-    parser.add_argument("--video", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=False, help="if toggled, capture video of run")
+-    parser.add_argument("--train", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="if toggled, run model in training mode")
+-    parser.add_argument("--test", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=False, help="if toggled, run model in testing mode")
+-    parser.add_argument("--hyperparam", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="if toggled, log hyperparameters")
+-    parser.add_argument("--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"), help="the name of this experiment")
+-    parser.add_argument("--project-name", type=str, default='OpenAIGym-PPO', help="the name of this project") 
+-    parser.add_argument("--gym-id", type=str, default="Pendulum-v1", help="the id of the gym environment")
+-    parser.add_argument("--learning-rate", type=float, default=3e-4, help="the learning rate of the optimizer")
+-    parser.add_argument("--seed", type=int, default=1, help="seed of the experiment")
++    parser.add_argument("--video",          type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=False, help="if toggled, capture video of run")
++    parser.add_argument("--train",          type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="if toggled, run model in training mode")
++    parser.add_argument("--test",           type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=False, help="if toggled, run model in testing mode")
++    parser.add_argument("--hyperparam",     type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="if toggled, log hyperparameters")
++    parser.add_argument("--exp-name",       type=str, default=os.path.basename(__file__).rstrip(".py"), help="the name of this experiment")
++    parser.add_argument("--project-name",   type=str, default='OpenAIGym-PPO', help="the name of this project") 
++    parser.add_argument("--gym-id",         type=str, default="Pendulum-v1", help="the id of the gym environment")
++    parser.add_argument("--learning-rate",  type=float, default=3e-4, help="the learning rate of the optimizer")
++    parser.add_argument("--seed",           type=int, default=1, help="seed of the experiment")
+     parser.add_argument("--total-timesteps", type=int, default=2000000, help="total timesteps of the experiments")
+     parser.add_argument("--torch-deterministic", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, `torch.backends.cudnn.deterministic=False`")
+-    parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
++    parser.add_argument("--cuda",           type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
+ 
+     # Parse arguments if they are given
+     args = parser.parse_args()
+     return args
+ 
+ def make_env(env_id='Pendulum-v1', gym_wrappers=False, seed=42):
+-    print(f"##### making GYM with {env_id}")
+     env = gym.make(env_id)
+     # gym wrapper
+     if gym_wrappers:
+@@ -1034,7 +1040,24 @@ class PPOTrainer:
+                 normalize_adv=self.normalize_advantage,
+                 normalize_ret=self.normalize_return)
+         return agent
+-    
++
++    def shutdown(self):
++        # cleanup 
++        self.env.close()
++        wandb.run.finish() if wandb and wandb.run else None
++
++    def get_policy(self):
++        checkpoints = os.path.join(self.model_dir, f'{self.env_name}_policyNet.pth')
++        policy_net = PolicyNet(self.obs_dim, self.act_dim)
++        policy_net = load_model(checkpoints, policy_net, self.device)
++        return policy_net
++
++
++class PPOTuner:
++    """ Class to tune PPO hyperparameter """
++    def __init__(self) -> None:
++        pass
++
+     def hyperparam_tuning(self):
+         # TODO
+         param_dict = {
+@@ -1046,15 +1069,4 @@ class PPOTrainer:
+                 'epsilon (adam optimizer)': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5],
+                 'number of epochs for update': [8, 16, 32, 64, 128, 256],
+                 'max sampled trajectories': [32, 64, 128, 256, 512, 1024, 2048, 4096]
+-        }
+-
+-    def shutdown(self):
+-        # cleanup 
+-        # self.env.close()
+-        wandb.run.finish() if wandb and wandb.run else None
+-
+-    def get_policy(self):
+-        checkpoints = os.path.join(self.model_dir, f'{self.env_name}_policyNet.pth')
+-        policy_net = PolicyNet(self.obs_dim, self.act_dim)
+-        policy_net = load_model(checkpoints, policy_net, self.device)
+-        return policy_net
++        }
+\ No newline at end of file
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py b/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
+index 4e1a1357..4c186619 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
+@@ -83,7 +83,17 @@ class StatsPlotter:
+         if wandb:
+             wandb.log({'Mean Episodic Time': plt})
+ 
+-    def plot_seaborn_fill(self, dataframe, x, y, y_min, y_max, title='title', x_label='Timestep', y_label='Mean Episodic Return', color='blue', smoothing=6, wandb=None):
++    def plot_seaborn_fill(self, 
++                dataframe, 
++                x, y, 
++                y_min, y_max, 
++                title='title', 
++                x_label='Episode', 
++                y_label='Mean Episodic Return', 
++                color='blue', 
++                smoothing=None, 
++                wandb=None):
++
+         # get values from df
+         # add smoothing
+         if smoothing:

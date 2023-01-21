@@ -1,0 +1,1923 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index a44a38d9..5497a18a 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -19,6 +19,7 @@ import torch
+ from torch import nn
+ from torch.optim import Adam, SGD
+ from torch.distributions import MultivariateNormal
++from scipy.ndimage.filters import gaussian_filter1d
+ from distutils.util import strtobool
+ import numpy as np
+ from datetime import datetime
+@@ -148,6 +149,7 @@ class PPO_PolicyGradient_V1:
+         adam=True,
+         render_steps=10,
+         render_video=False,
++        smoothing=None, 
+         save_model=10,
+         csv_writer=None,
+         stats_plotter=None,
+@@ -261,6 +263,7 @@ class PPO_PolicyGradient_V2:
+         save_model=10,
+         csv_writer=None,
+         stats_plotter=None,
++        smoothing=None,
+         log_video=False,
+         video_log_steps=100,
+         device='cpu',
+@@ -300,6 +303,7 @@ class PPO_PolicyGradient_V2:
+         # track video of gym
+         self.log_video = log_video
+         self.video_log_steps = video_log_steps
++        self.smoothing = smoothing # gaussian smoothing in calculation
+ 
+         # keep track of rewards per episode
+         self.ep_returns = deque(maxlen=max_trajectory_size)
+@@ -711,7 +715,7 @@ class PPO_PolicyGradient_V2:
+                 value_losses.append(value_loss.detach().numpy())
+ 
+             # log all statistical values to CSV
+-            self.log_stats(policy_losses, value_losses, rewards, ep_lens, training_steps, ep_time, done_so_far, exp_name=self.exp_name)
++            self.log_stats(policy_losses, value_losses, rewards, ep_lens, training_steps, ep_time, done_so_far, exp_name=self.exp_name, smoothing=self.smoothing)
+ 
+             # increment for each iteration
+             done_so_far += 1
+@@ -761,7 +765,8 @@ class PPO_PolicyGradient_V2:
+             self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns', 
+                                                 y_min='min episodic returns', y_max='max episodic returns',  
+                                                 title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return', 
+-                                                color='blue', smoothing=6, wandb=wandb, xlim_up=self.total_training_steps)
++                                                color='blue', wandb=wandb, xlim_up=self.total_training_steps,
++                                                smoothing=self.smoothing)
+ 
+             # self.stats_plotter.plot_box(df, x='timestep', y='mean episodic runtime', 
+             #                             title='title', x_label='Timestep', y_label='Mean Episodic Time', wandb=wandb)
+@@ -786,7 +791,7 @@ class PPO_PolicyGradient_V2:
+         video_path = os.path.join(path, filename)
+         anim.save(video_path, writer='imagemagick', fps=60)
+ 
+-    def log_stats(self, p_losses, v_losses, batch_return, episode_lens, training_steps, time, done_so_far, exp_name='experiment'):
++    def log_stats(self, p_losses, v_losses, batch_return, episode_lens, training_steps, time, done_so_far, exp_name='experiment', smoothing=2):
+         """Calculate stats and log to W&B, CSV, logger """
+         if torch.is_tensor(batch_return):
+             batch_return = batch_return.detach().numpy()
+@@ -796,16 +801,18 @@ class PPO_PolicyGradient_V2:
+ 
+         # Calculate the stats of an episode
+         cum_ret = [np.sum(ep_rews) for ep_rews in batch_return]
+-        mean_ep_time = round(np.mean(time), 6) 
++        mean_ep_time = round(np.mean(time), 6)
+         mean_ep_len = round(np.mean(episode_lens), 6)
+ 
++        # use gaussian smoothing
++        if smoothing:
++            max_ep_ret = gaussian_filter1d(cum_ret.to_numpy(), sigma=smoothing)
++
+         # statistical values for return
+         mean_ep_ret = round(np.mean(cum_ret), 6)
+         max_ep_ret = round(np.max(cum_ret), 6)
+         min_ep_ret = round(np.min(cum_ret), 6)
+-
+-        # calculate standard deviation (spred of distribution)
+-        std_ep_rew = round(np.std(cum_ret), 6)
++        std_ep_rew = round(np.std(cum_ret), 6) # standard deviation (spred of distribution)
+ 
+         # Log stats to CSV file
+         self.stats_data['episodes'].append(done_so_far)
+@@ -835,12 +842,12 @@ class PPO_PolicyGradient_V2:
+ 
+         logging.info('\n')
+         logging.info(f'------------ Episode: {training_steps} --------------')
+-        logging.info(f"Mean return:          {mean_ep_ret}")
+-        logging.info(f"Min return:           {min_ep_ret}")
+-        logging.info(f"Max return:           {max_ep_ret}")
++        logging.info(f"Max ep_return:        {max_ep_ret}")
++        logging.info(f"Min ep_return:        {min_ep_ret}")
++        logging.info(f"Mean ep_return:       {mean_ep_ret}")
+         logging.info(f"Mean policy loss:     {mean_p_loss}")
+         logging.info(f"Mean value loss:      {mean_v_loss}")
+-        logging.info('-----------------------------------------------------')
++        logging.info('--------------------------------------------')
+         logging.info('\n')
+ 
+ ####################
+@@ -960,7 +967,7 @@ def train(env, in_dim, out_dim, total_training_steps, max_trajectory_size=512, n
+           n_optepochs=32, learning_rate_p=1e-4, learning_rate_v=1e-3, gae_lambda=0.95, gamma=0.99, epsilon=0.2,
+           adam_epsilon=1e-8, render_steps=10, render_video=False, save_steps=10, csv_writer=None, stats_plotter=None,
+           normalize_adv=False, normalize_ret=False, log_video=False, video_log_steps=1000, ppo_version='v2', 
+-          device='cpu', exp_path='./log/', exp_name='PPO-experiment'):
++          device='cpu', exp_path='./log/', exp_name='PPO-experiment', smoothing=None):
+     """Train the policy network (actor) and the value network (critic) with PPO (clip version)"""
+     agent = None
+     if ppo_version == 'v2':
+@@ -989,7 +996,8 @@ def train(env, in_dim, out_dim, total_training_steps, max_trajectory_size=512, n
+                     video_log_steps=video_log_steps,
+                     device=device,
+                     exp_path=exp_path,
+-                    exp_name=exp_name)
++                    exp_name=exp_name,
++                    smoothing=smoothing)
+     # run training for a total amount of steps
+     agent.learn()
+ 
+@@ -1021,7 +1029,8 @@ def hyperparam_tuning(config=None):
+                 epsilon=config.epsilon,
+                 adam_eps=config.adam_epsilon,
+                 lr_p=config.learning_rate_p,
+-                lr_v=config.learning_rate_v)
++                lr_v=config.learning_rate_v,
++                smoothing=config.smoothing)
+     
+         # run training for a total amount of steps
+         agent.learn()
+@@ -1059,6 +1068,9 @@ if __name__ == '__main__':
+     normalize_adv = False                # wether to normalize the advantage estimate
+     normalize_ret = True                 # wether to normalize the return function
+     
++    # logging and plotting
++    smoothing = 3                        # smoothing in logging and calculation of mean, max, min episodic return
++    
+     # setup for torch save models and rendering
+     render_video = False
+     video_log_steps = 1000
+@@ -1143,7 +1155,8 @@ if __name__ == '__main__':
+                     'normalize return': normalize_ret,
+                     'seed': seed,
+                     'experiment path': exp_folder_name,
+-                    'experiment name': args.exp_name
++                    'experiment name': args.exp_name,
++                    'smooting': smoothing
+                 },
+                 dir=os.getcwd(),
+                 name=exp_name,
+@@ -1170,6 +1183,7 @@ if __name__ == '__main__':
+             normalize_ret=normalize_ret,
+             render_steps=render_steps,
+             render_video=render_video,
++            smoothing=smoothing,
+             save_steps=save_steps,
+             csv_writer=csv_writer,
+             stats_plotter=stats_plotter,
+@@ -1233,7 +1247,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': val[i],'learning rate (value net)': learning_rate_v,'epsilon (adam optimizer)': adam_epsilon,
+                                             'gamma (discount)': gamma,'epsilon (clip_range)': epsilon,'gae lambda (GAE)': gae_lambda,'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name, 'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1249,7 +1263,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+@@ -1285,7 +1300,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': learning_rate_p,'learning rate (value net)': val[i],'epsilon (adam optimizer)': adam_epsilon,
+                                             'gamma (discount)': gamma,'epsilon (clip_range)': epsilon,'gae lambda (GAE)': gae_lambda,'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name, 'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1301,7 +1316,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+@@ -1337,7 +1353,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': learning_rate_p,'learning rate (value net)': learning_rate_v,'epsilon (adam optimizer)': adam_epsilon,
+                                             'gamma (discount)': val[i],'epsilon (clip_range)': epsilon,'gae lambda (GAE)': gae_lambda,'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name, 'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1353,7 +1369,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+@@ -1389,7 +1406,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': learning_rate_p,'learning rate (value net)': learning_rate_v,'epsilon (adam optimizer)': adam_epsilon,
+                                             'gamma (discount)': gamma,'epsilon (clip_range)': val[i],'gae lambda (GAE)': gae_lambda,'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name, 'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1405,7 +1422,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+@@ -1441,7 +1459,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': learning_rate_p,'learning rate (value net)': learning_rate_v,'epsilon (adam optimizer)': adam_epsilon,
+                                             'gamma (discount)': gamma,'epsilon (clip_range)': epsilon,'gae lambda (GAE)': val[i],'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name,'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1458,7 +1476,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+@@ -1494,7 +1513,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': learning_rate_p,'learning rate (value net)': learning_rate_v,'epsilon (adam optimizer)': val[i],
+                                             'gamma (discount)': gamma,'epsilon (clip_range)': epsilon,'gae lambda (GAE)': gae_lambda,'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name, 'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1511,7 +1530,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+@@ -1547,7 +1567,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': learning_rate_p,'learning rate (value net)': learning_rate_v,'epsilon (adam optimizer)': adam_epsilon,
+                                             'gamma (discount)': gamma,'epsilon (clip_range)': epsilon,'gae lambda (GAE)': gae_lambda,'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name, 'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1564,7 +1584,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+@@ -1600,7 +1621,7 @@ if __name__ == '__main__':
+                                             'observation space': obs_shape,'action space': act_shape,'action space upper bound': upper_bound,'action space lower bound': lower_bound,
+                                             'learning rate (policy net)': learning_rate_p,'learning rate (value net)': learning_rate_v,'epsilon (adam optimizer)': adam_epsilon,
+                                             'gamma (discount)': gamma,'epsilon (clip_range)': epsilon,'gae lambda (GAE)': gae_lambda,'normalize advantage': normalize_adv,
+-                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name
++                                            'normalize return': normalize_ret,'seed': seed,'experiment path': exp_folder_name,'experiment name': args.exp_name, 'smoothing': smoothing
+                                         },
+                                         dir=os.getcwd(),
+                                         name=exp_name,
+@@ -1617,7 +1638,8 @@ if __name__ == '__main__':
+                                 exp_path=exp_folder_name,
+                                 exp_name=exp_name,
+                                 normalize_adv=normalize_adv,
+-                                normalize_ret=normalize_ret)
++                                normalize_ret=normalize_ret,
++                                smoothing=smoothing)
+ 
+                             # clean up
+                             logging.info("---- Done ----")
+diff --git a/PPO/ppo_torch/wrapper/stats_logger.py b/PPO/ppo_torch/wrapper/stats_logger.py
+index 79400e8e..6ae7ec58 100644
+--- a/PPO/ppo_torch/wrapper/stats_logger.py
++++ b/PPO/ppo_torch/wrapper/stats_logger.py
+@@ -81,14 +81,20 @@ class StatsPlotter:
+         if wandb:
+             wandb.log({'Mean Episodic Time': plt})
+ 
+-    def plot_seaborn_fill(self, dataframe, x, y, y_min, y_max, title='title', x_label='Timestep', y_label='Mean Episodic Return', upper_bound=0, lower_bound=-1800, xlim_up=3_000_000, ylim_low=-2000, ylim_up=200, color=None, smoothing=2, wandb=None):
++    def plot_seaborn_fill(self, dataframe, x, y, y_min, y_max, title='title', x_label='Timestep', y_label='Mean Episodic Return', upper_bound=0, lower_bound=-1800, xlim_up=3_000_000, ylim_low=-2000, ylim_up=200, color=None, smoothing=None, wandb=None):
+             
+         # get values from df
+         # add smoothing
+-        df_min = gaussian_filter1d(dataframe[y_min].to_numpy(), sigma=smoothing)
+-        df_max = gaussian_filter1d(dataframe[y_max].to_numpy(), sigma=smoothing)
++        if smoothing:
++            df_min = gaussian_filter1d(dataframe[y_min].to_numpy(), sigma=smoothing)
++            df_max = gaussian_filter1d(dataframe[y_max].to_numpy(), sigma=smoothing)
++            df_y = gaussian_filter1d(dataframe[y].to_numpy(), sigma=smoothing)
++        else:
++            df_min = dataframe[y_min].to_numpy()
++            df_max = dataframe[y_max].to_numpy()
++            df_y = dataframe[y].to_numpy()
++
+         df_x = dataframe[x].to_numpy(dtype=int)
+-        df_y = gaussian_filter1d(dataframe[y].to_numpy(), sigma=smoothing)
+         # get exp names
+         df_exp = dataframe['experiment'].values.astype('str')
+         df_exp_unique = list(dict.fromkeys(df_exp))
+diff --git a/README.md b/README.md
+index ba294bfd..1501211a 100644
+--- a/README.md
++++ b/README.md
+@@ -1,12 +1,15 @@
+-# ml-explorer-drone
+-Unity Machine Learning Controlled Explorer Drone
++# Getting Started
++
++
++## Custom PPO with Pendulum-v1
+ 
+-# gym-pybullet-drone
++## gym-pybullet-drone
+ 
+ [1] Getting started with PyBullet
+ 
+ For video install:
+ - Ubuntu: sudo apt install ffmpeg
++- maxcOS: brew install ffmpeg
+ - Windows: https://github.com/utiasDSL/gym-pybullet-drones/tree/master/assignments#on-windows
+ 
+ Then:
+@@ -17,5 +20,10 @@ Then:
+ - cd gym_pybullet_drones/gym_pybullet_drones/examples
+ - run >>> python fly.py
+ 
+-[3] Run training with PPO
+-- python ppo_tf.py or ppo_torch.py
+\ No newline at end of file
++[3] Run training with our PPO
++- run >>> python learn.py
++
++
++## ml-explorer-drone
++Unity Machine Learning Controlled Explorer Drone
++- not used yet
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/__init__.py b/gym_pybullet_drones/gym_pybullet_drones/__init__.py
+index dfdaeb10..4da6d4e8 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/__init__.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/__init__.py
+@@ -21,8 +21,6 @@ register(
+ )
+ 
+ 
+-
+-
+ register(
+     id='takeoff-aviary-v0',
+     entry_point='gym_pybullet_drones.envs.single_agent_rl:TakeoffAviary',
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+index 2e212b5c..7ee119c6 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+@@ -34,25 +34,37 @@ from gym_pybullet_drones.utils.utils import sync, str2bool
+ # import own modules
+ import ppo
+ 
++DEFAULT_ENVID = "takeoff-aviary-v0"
++DEFAULT_ENTRY = 'gym_pybullet_drones.envs.single_agent_rl:TakeoffAviary'
+ DEFAULT_RLLIB = True
++DEFAULT_PPO = 'PPOv2'
+ DEFAULT_GUI = True
+ DEFAULT_RECORD_VIDEO = True
+ DEFAULT_OUTPUT_FOLDER = 'results'
+ DEFAULT_COLAB = False
+ 
+-def make_env(env_id, seed=42):
++def make_env(env_id, seed=42, gym_wrappers=False):
+     env = gym.make(env_id)
++
++        # gym wrapper
++    if gym_wrappers:
++        env = gym.wrappers.ClipAction(env)
++        env = gym.wrappers.NormalizeObservation(env)
++        env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -1, 1))
++        env = gym.wrappers.NormalizeReward(env)
++        env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -1, 1))
++
+     env.seed(seed)
+     env.action_space.seed(seed)
+     env.observation_space.seed(seed)
+     return env
+ 
+-def run(rllib=DEFAULT_RLLIB,output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI, plot=True, colab=DEFAULT_COLAB, record_video=DEFAULT_RECORD_VIDEO, seed=42):
++def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, select_ppo=DEFAULT_PPO, output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI, plot=True, colab=DEFAULT_COLAB, record_video=DEFAULT_RECORD_VIDEO, seed=42):
+     
+     #####################
+     #### Check the environment's spaces ########################
+     #####################
+-    env = make_env("takeoff-aviary-v0", seed=seed)
++    env = make_env(env_id, seed=seed) #"takeoff-aviary-v0"
+ 
+     print("[INFO] Action space:", env.action_space)
+     print("[INFO] Observation space:", env.observation_space)
+@@ -68,28 +80,47 @@ def run(rllib=DEFAULT_RLLIB,output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI
+     #####################
+ 
+     if not rllib:
++        # stable baseline3
+         model = A2C(MlpPolicy,
+                     env,
+                     verbose=1
+                     )
+         model.learn(total_timesteps=10_000) # Typically not enough
+-    else:
+-        trainer = ppo.PPOTrainer(env,
+-                        total_training_steps=3_000_000,
+-                        n_optepochs=64,
+-                        gae_lambda=0.92,
+-                        gamma=0.95,
+-                        )
++    
++    elif select_ppo == 'PPOv2':
++        # our ppo-v2
++        ppo.register_env(id=env_id, entry_point=entry_point)
++        # get PPOTrainer
++        trainer = ppo.PPOTrainer(env, total_training_steps=10_000) # 3_000_000, everything shorter just for testing
+         # train PPO
+         agent = trainer.create_ppo()
+         agent.learn()
+-
+         # get trained policy
+         policy = trainer.get_policy()
+-
+         # cleanup
+         trainer.shutdown()
+ 
++    else:
++        # use ray-lib ppo
++        ray.shutdown()
++        ray.init(ignore_reinit_error=True)
++        register_env(env_id, lambda _: TakeoffAviary())
++        config = ppo.DEFAULT_CONFIG.copy()
++        config["num_workers"] = 2
++        config["framework"] = "torch"
++        config["env"] = "takeoff-aviary-v0"
++        agent = ppo.PPOTrainer(config)
++        for i in range(3): # Typically not enough
++            results = agent.train()
++            print("[INFO] {:d}: episode_reward max {:f} min {:f} mean {:f}".format(i,
++                                                                                   results["episode_reward_max"],
++                                                                                   results["episode_reward_min"],
++                                                                                   results["episode_reward_mean"]
++                                                                                   )
++            )
++        policy = agent.get_policy()
++        ray.shutdown()
++
+     #####################
+     #### Show (and record a video of) the model's performance ####
+     #####################
+@@ -129,6 +160,7 @@ def run(rllib=DEFAULT_RLLIB,output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI
+     if plot:
+         logger.plot()
+ 
++
+ if __name__ == "__main__":
+     #### Define and parse (optional) arguments for the script ##
+     parser = argparse.ArgumentParser(description='Single agent reinforcement learning example script using TakeoffAviary')
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230118-230319/takeoff-aviary-v0_20230118-230319.csv b/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230118-230319/takeoff-aviary-v0_20230118-230319.csv
+index eff5f77d..7d98b0f2 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230118-230319/takeoff-aviary-v0_20230118-230319.csv
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230118-230319/takeoff-aviary-v0_20230118-230319.csv
+@@ -123,3 +123,1198 @@
+ 19,exp_name: takeoff-aviary-v0_2023-01-18,264075,0.039362,140.666667,15,-145.05454,-212.659315,-111.245866,33.170888,121
+ 20,exp_name: takeoff-aviary-v0_2023-01-18,266144,0.038442,147.785714,14,-156.351479,-295.941111,-102.072088,67.304809,122
+ 21,exp_name: takeoff-aviary-v0_2023-01-18,268200,0.036135,137.066667,15,-140.173473,-350.325498,-105.682181,63.624055,123
++0,exp_name: takeoff-aviary-v0_2023-01-18,270257,0.038465,137.133333,15,-135.869335,-261.88783,-106.000508,38.969233,124
++1,exp_name: takeoff-aviary-v0_2023-01-18,272314,0.039418,146.928571,14,-153.856725,-416.597574,-102.299829,83.273221,125
++2,exp_name: takeoff-aviary-v0_2023-01-18,274449,0.040623,152.5,14,-165.999928,-748.44671,-103.296075,162.804726,126
++3,exp_name: takeoff-aviary-v0_2023-01-18,276611,0.048903,180.166667,12,-202.204583,-813.82545,-95.690143,202.639911,127
++4,exp_name: takeoff-aviary-v0_2023-01-18,278694,0.034278,130.1875,16,-127.055941,-229.702375,-98.540225,39.052649,128
++5,exp_name: takeoff-aviary-v0_2023-01-18,281006,0.057703,210.181818,11,-231.298705,-789.254221,-95.213948,187.677713,129
++6,exp_name: takeoff-aviary-v0_2023-01-18,283080,0.049856,188.545455,11,-213.557942,-1050.92359,-96.863625,269.075282,130
++0,exp_name: takeoff-aviary-v0_2023-01-18,285223,0.051619,194.818182,11,-216.346647,-590.294966,-99.959434,147.383283,131
++1,exp_name: takeoff-aviary-v0_2023-01-18,287424,0.054831,200.090909,11,-225.125767,-887.807381,-102.118536,215.365055,132
++2,exp_name: takeoff-aviary-v0_2023-01-18,289575,0.037554,143.4,15,-146.202029,-360.508501,-105.874833,68.851358,133
++3,exp_name: takeoff-aviary-v0_2023-01-18,291663,0.046157,174.0,12,-186.297287,-747.818087,-103.154421,172.627485,134
++4,exp_name: takeoff-aviary-v0_2023-01-18,293775,0.045271,162.461538,13,-163.512163,-309.21979,-103.474459,75.073111,135
++5,exp_name: takeoff-aviary-v0_2023-01-18,295977,0.05194,200.181818,11,-223.202079,-642.414323,-97.488285,178.911533,136
++6,exp_name: takeoff-aviary-v0_2023-01-18,298301,0.047389,178.769231,13,-192.427469,-571.172125,-95.108338,133.935862,137
++7,exp_name: takeoff-aviary-v0_2023-01-18,300479,0.067712,242.0,9,-287.105848,-690.293564,-105.802068,218.686968,138
++8,exp_name: takeoff-aviary-v0_2023-01-18,302535,0.054315,205.6,10,-237.067179,-707.408745,-101.628022,219.953597,139
++9,exp_name: takeoff-aviary-v0_2023-01-18,304631,0.050324,190.545455,11,-211.538114,-651.609684,-95.52776,157.29381,140
++10,exp_name: takeoff-aviary-v0_2023-01-18,306889,0.049283,173.692308,13,-192.719388,-477.495536,-91.98589,127.40509,141
++11,exp_name: takeoff-aviary-v0_2023-01-18,309093,0.067156,244.888889,9,-307.765181,-773.234358,-93.651892,265.210179,142
++12,exp_name: takeoff-aviary-v0_2023-01-18,311158,0.049662,187.727273,11,-202.932591,-904.603997,-92.157731,227.2214,143
++13,exp_name: takeoff-aviary-v0_2023-01-18,313238,0.052129,189.090909,11,-208.551103,-620.616773,-89.557096,160.232231,144
++14,exp_name: takeoff-aviary-v0_2023-01-18,315352,0.0391,151.0,14,-151.042479,-379.794006,-95.720486,81.975203,145
++15,exp_name: takeoff-aviary-v0_2023-01-18,317437,0.050305,189.545455,11,-215.303709,-801.974656,-90.310993,206.106263,146
++16,exp_name: takeoff-aviary-v0_2023-01-18,319703,0.06062,226.6,10,-274.547118,-787.365926,-95.696497,263.922276,147
++17,exp_name: takeoff-aviary-v0_2023-01-18,321814,0.036276,140.733333,15,-143.552819,-356.633302,-89.205869,89.810762,148
++18,exp_name: takeoff-aviary-v0_2023-01-18,323949,0.045738,164.230769,13,-173.471489,-757.632304,-91.064946,175.428144,149
++19,exp_name: takeoff-aviary-v0_2023-01-18,326024,0.046114,172.916667,12,-189.55703,-651.784627,-93.943894,162.945759,150
++20,exp_name: takeoff-aviary-v0_2023-01-18,328260,0.072867,279.5,8,-345.158156,-829.301617,-87.604934,324.76362,151
++0,exp_name: takeoff-aviary-v0_2023-01-18,330315,0.04159,146.785714,14,-158.843687,-973.020387,-87.979541,225.866304,152
++1,exp_name: takeoff-aviary-v0_2023-01-18,332430,0.031991,117.5,18,-106.080471,-214.654535,-86.004995,31.438621,153
++0,exp_name: takeoff-aviary-v0_2023-01-18,334596,0.1041,361.0,6,-424.177392,-1051.232589,-93.844934,412.246774,154
++1,exp_name: takeoff-aviary-v0_2023-01-18,336680,0.037107,130.25,16,-115.058501,-247.417272,-90.287862,42.102473,155
++0,exp_name: takeoff-aviary-v0_2023-01-18,338761,0.028463,109.526316,19,-100.945652,-205.854568,-84.148105,25.561149,156
++1,exp_name: takeoff-aviary-v0_2023-01-18,340904,0.031813,119.055556,18,-104.467004,-203.281232,-88.276381,25.001993,157
++2,exp_name: takeoff-aviary-v0_2023-01-18,343605,0.060767,225.083333,12,-258.682151,-1147.320601,-87.629828,351.307047,158
++3,exp_name: takeoff-aviary-v0_2023-01-18,345700,0.040989,149.642857,14,-125.553457,-247.804987,-87.102393,49.44542,159
++0,exp_name: takeoff-aviary-v0_2023-01-18,347817,0.028721,100.809524,21,-93.28138,-129.773574,-85.212832,8.635956,160
++1,exp_name: takeoff-aviary-v0_2023-01-18,349936,0.038796,141.266667,15,-148.740897,-803.84845,-89.828486,177.183436,161
++2,exp_name: takeoff-aviary-v0_2023-01-18,352149,0.035498,130.176471,17,-116.572425,-225.269839,-89.824117,44.499685,162
++3,exp_name: takeoff-aviary-v0_2023-01-18,354274,0.07621,265.625,8,-328.842118,-1101.493474,-91.518966,395.863515,163
++4,exp_name: takeoff-aviary-v0_2023-01-18,356677,0.034025,126.473684,19,-126.614426,-638.459963,-89.569893,120.763002,164
++5,exp_name: takeoff-aviary-v0_2023-01-18,358805,0.037153,133.0,16,-135.671172,-696.795211,-87.771322,145.510322,165
++6,exp_name: takeoff-aviary-v0_2023-01-18,360884,0.086512,297.0,7,-344.499915,-986.293216,-86.228994,362.631859,166
++7,exp_name: takeoff-aviary-v0_2023-01-18,363011,0.029597,111.947368,19,-99.245313,-188.318572,-85.53802,22.299987,167
++8,exp_name: takeoff-aviary-v0_2023-01-18,365073,0.074203,257.75,8,-326.407309,-816.931778,-91.137446,304.57041,168
++9,exp_name: takeoff-aviary-v0_2023-01-18,367159,0.068951,260.75,8,-305.818671,-965.036098,-88.888348,324.069585,169
++10,exp_name: takeoff-aviary-v0_2023-01-18,369516,0.062606,235.7,10,-277.737078,-803.945364,-91.223573,241.702395,170
++11,exp_name: takeoff-aviary-v0_2023-01-18,371703,0.047298,168.230769,13,-173.732234,-628.812773,-90.467613,150.081108,171
++12,exp_name: takeoff-aviary-v0_2023-01-18,373839,0.048056,178.0,12,-204.692881,-738.479312,-89.988021,204.303061,172
++13,exp_name: takeoff-aviary-v0_2023-01-18,376284,0.063255,244.5,10,-280.926838,-917.086484,-88.228071,282.01495,173
++14,exp_name: takeoff-aviary-v0_2023-01-18,378639,0.091031,336.428571,7,-396.351833,-918.885488,-90.483517,311.369857,174
++15,exp_name: takeoff-aviary-v0_2023-01-18,380771,0.055542,213.2,10,-245.223334,-821.210851,-89.34117,274.745265,175
++16,exp_name: takeoff-aviary-v0_2023-01-18,383232,0.059496,223.727273,11,-261.665619,-942.457751,-87.604834,300.131744,176
++17,exp_name: takeoff-aviary-v0_2023-01-18,385284,0.070797,256.5,8,-303.766431,-1164.628547,-86.109433,369.770357,177
++18,exp_name: takeoff-aviary-v0_2023-01-18,387445,0.037374,144.066667,15,-145.056021,-813.698098,-87.925899,179.039346,178
++19,exp_name: takeoff-aviary-v0_2023-01-18,389791,0.064601,234.6,10,-266.280545,-870.387762,-85.575141,267.940805,179
++20,exp_name: takeoff-aviary-v0_2023-01-18,392056,0.050703,188.75,12,-191.539862,-963.506388,-85.780128,236.971787,180
++21,exp_name: takeoff-aviary-v0_2023-01-18,394120,0.040043,147.428571,14,-152.295468,-783.225933,-83.372775,176.762992,181
++0,exp_name: takeoff-aviary-v0_2023-01-18,396231,0.035111,124.176471,17,-114.057978,-270.965064,-86.447296,50.790082,182
++1,exp_name: takeoff-aviary-v0_2023-01-18,398333,0.031428,116.777778,18,-102.611723,-148.775277,-86.426184,16.408704,183
++2,exp_name: takeoff-aviary-v0_2023-01-18,400442,0.040645,150.642857,14,-150.814805,-330.057483,-81.398162,86.260389,184
++3,exp_name: takeoff-aviary-v0_2023-01-18,402823,0.050352,183.153846,13,-197.447687,-778.916351,-83.588871,211.042942,185
++4,exp_name: takeoff-aviary-v0_2023-01-18,405461,0.043621,164.875,16,-162.440364,-777.874071,-84.665936,169.095761,186
++5,exp_name: takeoff-aviary-v0_2023-01-18,407529,0.036217,129.25,16,-115.267977,-268.773531,-82.84017,48.488384,187
++6,exp_name: takeoff-aviary-v0_2023-01-18,410008,0.046808,177.071429,14,-177.891561,-584.844279,-86.433219,136.986735,188
++7,exp_name: takeoff-aviary-v0_2023-01-18,412321,0.03908,144.5625,16,-142.663564,-831.838248,-85.054728,178.488749,189
++8,exp_name: takeoff-aviary-v0_2023-01-18,414413,0.028939,104.6,20,-95.759411,-157.726145,-82.950918,16.17971,190
++9,exp_name: takeoff-aviary-v0_2023-01-18,416504,0.046266,174.25,12,-171.135777,-731.775902,-85.091398,171.082327,191
++10,exp_name: takeoff-aviary-v0_2023-01-18,418597,0.03148,116.277778,18,-104.152913,-194.59109,-82.84137,26.953497,192
++11,exp_name: takeoff-aviary-v0_2023-01-18,420674,0.044786,173.083333,12,-155.046526,-515.347446,-88.878327,122.140577,193
++12,exp_name: takeoff-aviary-v0_2023-01-18,423360,0.10461,383.714286,7,-443.809578,-1105.192927,-88.726876,400.600633,194
++0,exp_name: takeoff-aviary-v0_2023-01-18,425505,0.037654,134.0625,16,-120.874363,-246.584305,-87.955388,47.18527,195
++1,exp_name: takeoff-aviary-v0_2023-01-18,427556,0.060962,227.888889,9,-263.563229,-778.480149,-78.751063,259.883645,196
++2,exp_name: takeoff-aviary-v0_2023-01-18,429737,0.051393,198.272727,11,-217.017051,-1052.473728,-86.835996,276.978367,197
++3,exp_name: takeoff-aviary-v0_2023-01-18,431864,0.083621,303.857143,7,-335.278724,-799.104237,-147.371704,241.144553,198
++4,exp_name: takeoff-aviary-v0_2023-01-18,434021,0.082308,308.142857,7,-355.195351,-887.352359,-88.16733,333.94653,199
++5,exp_name: takeoff-aviary-v0_2023-01-18,436128,0.039514,150.5,14,-130.681905,-255.863412,-80.74018,56.572637,200
++6,exp_name: takeoff-aviary-v0_2023-01-18,438192,0.048639,172.0,12,-153.937217,-291.115591,-83.501399,62.192446,201
++7,exp_name: takeoff-aviary-v0_2023-01-18,440328,0.058235,213.6,10,-224.492839,-873.976427,-80.483443,227.558252,202
++8,exp_name: takeoff-aviary-v0_2023-01-18,442534,0.075684,275.75,8,-329.854683,-821.439723,-95.655841,249.072537,203
++9,exp_name: takeoff-aviary-v0_2023-01-18,444591,0.037264,137.133333,15,-126.872699,-249.750266,-86.412334,49.019571,204
++10,exp_name: takeoff-aviary-v0_2023-01-18,446659,0.078028,295.428571,7,-355.90665,-770.261613,-88.35803,288.100884,205
++11,exp_name: takeoff-aviary-v0_2023-01-18,448805,0.035881,134.125,16,-135.134201,-576.724271,-84.094584,117.429351,206
++12,exp_name: takeoff-aviary-v0_2023-01-18,450984,0.044835,167.615385,13,-178.724625,-521.27168,-87.291972,122.434624,207
++13,exp_name: takeoff-aviary-v0_2023-01-18,453098,0.036914,140.933333,15,-143.021089,-690.527988,-84.745063,148.65448,208
++14,exp_name: takeoff-aviary-v0_2023-01-18,455201,0.041255,150.214286,14,-146.345762,-228.974126,-87.45055,59.162138,209
++15,exp_name: takeoff-aviary-v0_2023-01-18,457330,0.036977,141.933333,15,-138.868631,-239.617539,-85.954356,54.458683,210
++0,exp_name: takeoff-aviary-v0_2023-01-18,459400,0.041753,159.230769,13,-164.075316,-290.932998,-84.04504,67.817601,211
++0,exp_name: takeoff-aviary-v0_2023-01-18,461504,0.03911,140.266667,15,-136.217777,-226.007336,-85.839707,44.114596,212
++1,exp_name: takeoff-aviary-v0_2023-01-18,463606,0.038825,150.142857,14,-154.173877,-292.339146,-88.365196,61.350071,213
++2,exp_name: takeoff-aviary-v0_2023-01-18,465729,0.050246,193.0,11,-214.603687,-607.505915,-93.323896,141.558994,214
++3,exp_name: takeoff-aviary-v0_2023-01-18,468035,0.057645,209.636364,11,-215.082157,-731.767064,-87.693317,179.480432,215
++4,exp_name: takeoff-aviary-v0_2023-01-18,470101,0.040995,158.923077,13,-164.951414,-395.811788,-87.247905,95.637668,216
++5,exp_name: takeoff-aviary-v0_2023-01-18,472233,0.05549,213.2,10,-239.65349,-713.526146,-92.210115,172.920688,217
++6,exp_name: takeoff-aviary-v0_2023-01-18,474420,0.042779,156.214286,14,-156.675594,-273.713414,-92.377885,55.095121,218
++0,exp_name: takeoff-aviary-v0_2023-01-18,476621,0.040992,157.214286,14,-159.612961,-335.014274,-89.66227,63.110846,219
++1,exp_name: takeoff-aviary-v0_2023-01-18,478807,0.038783,145.733333,15,-137.517601,-272.07621,-89.768915,48.412493,220
++2,exp_name: takeoff-aviary-v0_2023-01-18,481094,0.042188,152.466667,15,-156.809948,-405.33453,-88.01737,95.805503,221
++3,exp_name: takeoff-aviary-v0_2023-01-18,483185,0.043214,160.846154,13,-168.867528,-762.794413,-85.009357,176.945113,222
++4,exp_name: takeoff-aviary-v0_2023-01-18,485262,0.054071,188.818182,11,-205.986455,-588.816927,-85.167202,160.979836,223
++5,exp_name: takeoff-aviary-v0_2023-01-18,487426,0.049394,180.333333,12,-191.695714,-707.821787,-82.519987,166.021505,224
++6,exp_name: takeoff-aviary-v0_2023-01-18,489816,0.045328,170.714286,14,-169.560964,-570.467805,-89.213286,121.827356,225
++7,exp_name: takeoff-aviary-v0_2023-01-18,492023,0.04865,169.769231,13,-173.615646,-395.474977,-88.02675,103.470175,226
++8,exp_name: takeoff-aviary-v0_2023-01-18,494109,0.040443,149.0,14,-138.061245,-400.293448,-87.255468,78.044574,227
++9,exp_name: takeoff-aviary-v0_2023-01-18,496219,0.038844,131.875,16,-114.55545,-231.282184,-83.782339,40.546102,228
++10,exp_name: takeoff-aviary-v0_2023-01-18,498285,0.069065,258.25,8,-313.392643,-745.407947,-82.835612,286.217593,229
++11,exp_name: takeoff-aviary-v0_2023-01-18,500663,0.045097,169.857143,14,-171.722535,-623.827398,-86.888292,142.378702,230
++12,exp_name: takeoff-aviary-v0_2023-01-18,502781,0.04001,141.2,15,-134.721385,-342.224289,-84.475303,72.830436,231
++13,exp_name: takeoff-aviary-v0_2023-01-18,505011,0.055214,202.727273,11,-225.750461,-742.461365,-87.238236,202.158154,232
++14,exp_name: takeoff-aviary-v0_2023-01-18,507113,0.094451,350.333333,6,-455.083263,-681.061853,-105.170038,180.113047,233
++15,exp_name: takeoff-aviary-v0_2023-01-18,509217,0.059503,210.4,10,-245.263329,-654.42829,-85.200192,221.797931,234
++16,exp_name: takeoff-aviary-v0_2023-01-18,511297,0.078111,297.142857,7,-372.509686,-753.784576,-93.425905,320.305184,235
++17,exp_name: takeoff-aviary-v0_2023-01-18,513441,0.056519,214.4,10,-237.261498,-699.044557,-88.308884,232.994472,236
++18,exp_name: takeoff-aviary-v0_2023-01-18,515931,0.113396,415.0,6,-549.189289,-735.077501,-90.537146,234.32033,237
++19,exp_name: takeoff-aviary-v0_2023-01-18,517986,0.06063,228.333333,9,-271.382152,-655.379574,-86.002443,250.157912,238
++20,exp_name: takeoff-aviary-v0_2023-01-18,520053,0.062982,229.666667,9,-255.083832,-736.932166,-90.591413,209.876219,239
++21,exp_name: takeoff-aviary-v0_2023-01-18,522453,0.09561,342.857143,7,-425.462346,-840.117632,-88.418368,280.861533,240
++22,exp_name: takeoff-aviary-v0_2023-01-18,524520,0.079884,295.285714,7,-368.963146,-785.591918,-87.124204,294.711511,241
++0,exp_name: takeoff-aviary-v0_2023-01-18,526677,0.064336,239.666667,9,-288.052308,-719.228255,-86.453646,263.671882,242
++1,exp_name: takeoff-aviary-v0_2023-01-18,528733,0.081508,293.714286,7,-365.91781,-738.399405,-89.319942,288.15077,243
++2,exp_name: takeoff-aviary-v0_2023-01-18,531062,0.121884,465.8,5,-592.900612,-741.697831,-94.238434,249.884796,244
++3,exp_name: takeoff-aviary-v0_2023-01-18,533562,0.072589,277.777778,9,-347.648694,-723.792647,-86.973213,293.571808,245
++4,exp_name: takeoff-aviary-v0_2023-01-18,535787,0.123409,445.0,5,-595.468886,-772.547124,-391.788897,125.003655,246
++5,exp_name: takeoff-aviary-v0_2023-01-18,537919,0.078828,304.571429,7,-385.489911,-695.097806,-88.048293,258.450702,247
++6,exp_name: takeoff-aviary-v0_2023-01-18,540070,0.062131,239.0,9,-289.490036,-742.002014,-87.533552,207.465233,248
++0,exp_name: takeoff-aviary-v0_2023-01-18,542195,0.074611,265.625,8,-307.532807,-651.970912,-86.805757,171.14244,249
++1,exp_name: takeoff-aviary-v0_2023-01-18,544245,0.075841,292.857143,7,-375.516573,-632.284494,-87.571249,203.164095,250
++2,exp_name: takeoff-aviary-v0_2023-01-18,546500,0.044994,173.461538,13,-191.172603,-624.418944,-87.253458,153.766149,251
++0,exp_name: takeoff-aviary-v0_2023-01-18,548567,0.064502,229.666667,9,-275.238555,-583.858803,-91.564718,151.824714,252
++1,exp_name: takeoff-aviary-v0_2023-01-18,550668,0.068033,262.625,8,-325.780627,-573.210115,-132.186203,169.080726,253
++2,exp_name: takeoff-aviary-v0_2023-01-18,552812,0.055815,214.4,10,-252.3865,-681.691921,-87.524773,169.926763,254
++3,exp_name: takeoff-aviary-v0_2023-01-18,554871,0.040656,147.071429,14,-152.60436,-343.462627,-84.422096,76.220305,255
++4,exp_name: takeoff-aviary-v0_2023-01-18,556994,0.045806,176.916667,12,-194.84611,-395.6596,-85.300636,110.399068,256
++5,exp_name: takeoff-aviary-v0_2023-01-18,559105,0.039415,150.785714,14,-152.412739,-397.873139,-85.921179,84.407625,257
++6,exp_name: takeoff-aviary-v0_2023-01-18,561221,0.044791,162.769231,13,-170.656715,-440.384273,-86.668627,104.205106,258
++7,exp_name: takeoff-aviary-v0_2023-01-18,563290,0.044501,172.416667,12,-181.815418,-465.500928,-83.848417,120.29827,259
++0,exp_name: takeoff-aviary-v0_2023-01-18,565364,0.053923,207.4,10,-230.754209,-631.549813,-84.192289,174.501063,260
++1,exp_name: takeoff-aviary-v0_2023-01-18,567508,0.03934,142.933333,15,-141.203168,-429.250782,-79.852092,96.303164,261
++2,exp_name: takeoff-aviary-v0_2023-01-18,569614,0.05003,191.454545,11,-205.416302,-698.471144,-83.678484,171.712885,262
++3,exp_name: takeoff-aviary-v0_2023-01-18,572055,0.053097,203.416667,12,-230.983407,-847.685464,-85.611005,237.65049,263
++4,exp_name: takeoff-aviary-v0_2023-01-18,574140,0.051078,189.545455,11,-198.216225,-520.323539,-84.342708,140.38478,264
++0,exp_name: takeoff-aviary-v0_2023-01-18,576280,0.055659,214.0,10,-233.49546,-583.544079,-81.614555,155.590052,265
++0,exp_name: takeoff-aviary-v0_2023-01-18,578425,0.070568,268.125,8,-320.181484,-694.620294,-87.238687,226.961646,266
++1,exp_name: takeoff-aviary-v0_2023-01-18,580576,0.073019,268.875,8,-326.849051,-735.341775,-85.819384,306.343611,267
++2,exp_name: takeoff-aviary-v0_2023-01-18,582861,0.083728,326.428571,7,-232.665622,-440.658978,-84.568001,143.894969,268
++3,exp_name: takeoff-aviary-v0_2023-01-18,585249,0.07857,298.5,8,-360.894949,-713.376529,-93.784789,191.574127,269
++4,exp_name: takeoff-aviary-v0_2023-01-18,587374,0.051889,193.181818,11,-208.393222,-675.17012,-81.734365,187.833595,270
++5,exp_name: takeoff-aviary-v0_2023-01-18,589448,0.059749,230.444444,9,-270.195838,-714.399912,-84.392114,220.698216,271
++6,exp_name: takeoff-aviary-v0_2023-01-18,591573,0.037399,141.666667,15,-143.098396,-679.768896,-81.730336,147.307061,272
++7,exp_name: takeoff-aviary-v0_2023-01-18,593641,0.051403,188.0,11,-207.494547,-694.301447,-82.270043,210.781914,273
++8,exp_name: takeoff-aviary-v0_2023-01-18,595699,0.045555,171.5,12,-171.539181,-455.551162,-86.269709,116.283823,274
++9,exp_name: takeoff-aviary-v0_2023-01-18,597753,0.042111,158.0,13,-154.003034,-256.554849,-88.181023,50.554451,275
++10,exp_name: takeoff-aviary-v0_2023-01-18,599855,0.036083,131.375,16,-121.768087,-266.301076,-85.322305,50.633289,276
++11,exp_name: takeoff-aviary-v0_2023-01-18,601927,0.036215,138.133333,15,-134.515106,-391.892564,-84.241705,83.038579,277
++12,exp_name: takeoff-aviary-v0_2023-01-18,603979,0.040572,146.571429,14,-140.169442,-392.91637,-87.107692,87.667043,278
++13,exp_name: takeoff-aviary-v0_2023-01-18,606286,0.04955,177.461538,13,-183.696258,-561.785697,-81.380793,158.620436,279
++14,exp_name: takeoff-aviary-v0_2023-01-18,608393,0.038342,140.466667,15,-126.846563,-217.481423,-81.594887,46.114231,280
++15,exp_name: takeoff-aviary-v0_2023-01-18,610475,0.052831,189.272727,11,-197.647433,-543.359652,-84.861246,130.464945,281
++16,exp_name: takeoff-aviary-v0_2023-01-18,612560,0.036772,139.0,15,-125.4472,-275.428082,-82.506734,57.647803,282
++0,exp_name: takeoff-aviary-v0_2023-01-18,615052,0.062437,226.545455,11,-241.960284,-645.296601,-83.525841,193.624714,283
++1,exp_name: takeoff-aviary-v0_2023-01-18,617151,0.059158,209.9,10,-207.453371,-600.64778,-81.98539,149.692473,284
++2,exp_name: takeoff-aviary-v0_2023-01-18,619251,0.042382,161.538462,13,-138.283813,-325.113702,-80.617919,70.319268,285
++3,exp_name: takeoff-aviary-v0_2023-01-18,621346,0.03628,130.9375,16,-113.700026,-273.430794,-80.255866,55.389699,286
++4,exp_name: takeoff-aviary-v0_2023-01-18,623549,0.043646,157.357143,14,-139.906427,-281.003183,-81.998856,64.176987,287
++5,exp_name: takeoff-aviary-v0_2023-01-18,625654,0.044958,161.923077,13,-153.005871,-317.589434,-83.231122,81.167478,288
++6,exp_name: takeoff-aviary-v0_2023-01-18,628088,0.079857,270.444444,9,-301.463485,-1390.535642,-88.614629,390.442181,289
++7,exp_name: takeoff-aviary-v0_2023-01-18,630241,0.042658,153.785714,14,-144.99407,-310.396291,-86.881301,72.316773,290
++8,exp_name: takeoff-aviary-v0_2023-01-18,632543,0.068591,255.777778,9,-271.707081,-1462.539976,-83.499656,421.947699,291
++9,exp_name: takeoff-aviary-v0_2023-01-18,634591,0.043621,157.538462,13,-142.715136,-344.906489,-84.269241,84.616302,292
++10,exp_name: takeoff-aviary-v0_2023-01-18,637274,0.05802,223.583333,12,-255.228428,-1401.732628,-83.904439,376.530843,293
++11,exp_name: takeoff-aviary-v0_2023-01-18,639428,0.071803,269.25,8,-306.118505,-1385.970082,-83.896148,424.338818,294
++12,exp_name: takeoff-aviary-v0_2023-01-18,641526,0.038373,139.866667,15,-112.833104,-221.213583,-83.232626,43.598102,295
++13,exp_name: takeoff-aviary-v0_2023-01-18,643574,0.040599,157.538462,13,-142.282041,-248.356992,-84.581563,61.915353,296
++14,exp_name: takeoff-aviary-v0_2023-01-18,645633,0.037714,137.266667,15,-125.088939,-281.136524,-83.737363,60.97874,297
++15,exp_name: takeoff-aviary-v0_2023-01-18,647744,0.028651,111.105263,19,-93.247043,-149.707127,-82.62152,15.889663,298
++16,exp_name: takeoff-aviary-v0_2023-01-18,649920,0.034292,120.888889,18,-103.048536,-152.664224,-79.023322,27.215917,299
++0,exp_name: takeoff-aviary-v0_2023-01-18,651999,0.04093,148.5,14,-122.836127,-210.80971,-84.639887,36.295617,300
++1,exp_name: takeoff-aviary-v0_2023-01-18,654060,0.0296,114.5,18,-96.975605,-144.028712,-78.521851,22.082176,301
++0,exp_name: takeoff-aviary-v0_2023-01-18,656193,0.031248,118.5,18,-99.49894,-139.541491,-81.412723,20.765772,302
++1,exp_name: takeoff-aviary-v0_2023-01-18,658300,0.033488,123.941176,17,-108.92595,-147.24659,-81.54671,25.689412,303
++0,exp_name: takeoff-aviary-v0_2023-01-18,660355,0.032743,120.882353,17,-103.844715,-153.214957,-83.292451,23.787979,304
++1,exp_name: takeoff-aviary-v0_2023-01-18,662424,0.032052,114.944444,18,-97.145207,-136.15535,-83.614567,17.520269,305
++2,exp_name: takeoff-aviary-v0_2023-01-18,664490,0.03951,147.571429,14,-133.705356,-568.854219,-80.680302,122.669351,306
++0,exp_name: takeoff-aviary-v0_2023-01-18,666625,0.032154,118.611111,18,-102.357686,-271.862587,-82.548619,43.27289,307
++1,exp_name: takeoff-aviary-v0_2023-01-18,668702,0.045646,159.769231,13,-140.627796,-382.273494,-81.357071,96.391755,308
++2,exp_name: takeoff-aviary-v0_2023-01-18,670796,0.032766,123.176471,17,-98.157026,-171.006213,-83.387882,24.768878,309
++3,exp_name: takeoff-aviary-v0_2023-01-18,673447,0.066095,241.0,11,-246.575028,-1213.713486,-83.205129,334.613505,310
++4,exp_name: takeoff-aviary-v0_2023-01-18,675574,0.030912,111.947368,19,-93.159298,-144.028398,-82.861254,15.743919,311
++5,exp_name: takeoff-aviary-v0_2023-01-18,677643,0.033099,121.705882,17,-100.794116,-171.528751,-79.953474,25.405767,312
++6,exp_name: takeoff-aviary-v0_2023-01-18,679700,0.037456,137.133333,15,-119.831421,-468.495382,-83.502513,95.129581,313
++0,exp_name: takeoff-aviary-v0_2023-01-18,681814,0.032925,124.352941,17,-98.778591,-145.002511,-86.157771,17.02702,314
++1,exp_name: takeoff-aviary-v0_2023-01-18,683941,0.031308,118.166667,18,-96.542932,-117.935535,-85.907034,10.466788,315
++2,exp_name: takeoff-aviary-v0_2023-01-18,686306,0.042606,147.8125,16,-109.565181,-194.702387,-84.277461,31.605428,316
++3,exp_name: takeoff-aviary-v0_2023-01-18,688425,0.036139,132.4375,16,-99.61787,-149.317072,-85.912196,17.914047,317
++4,exp_name: takeoff-aviary-v0_2023-01-18,690576,0.029728,113.210526,19,-93.418787,-115.894474,-87.706379,6.654881,318
++5,exp_name: takeoff-aviary-v0_2023-01-18,692772,0.037579,137.25,16,-103.326691,-160.421613,-88.572674,21.034435,319
++6,exp_name: takeoff-aviary-v0_2023-01-18,695257,0.052611,191.153846,13,-185.997813,-1272.38963,-86.67248,313.742761,320
++7,exp_name: takeoff-aviary-v0_2023-01-18,697326,0.036467,121.705882,17,-95.901108,-119.329846,-86.794398,7.167011,321
++8,exp_name: takeoff-aviary-v0_2023-01-18,699511,0.043862,156.071429,14,-129.160072,-570.063819,-84.422735,122.598426,322
++9,exp_name: takeoff-aviary-v0_2023-01-18,701734,0.039401,138.9375,16,-103.655106,-216.028235,-82.88921,35.374428,323
++10,exp_name: takeoff-aviary-v0_2023-01-18,703828,0.042302,149.571429,14,-118.337409,-308.31486,-84.618201,64.396993,324
++11,exp_name: takeoff-aviary-v0_2023-01-18,705886,0.035563,128.625,16,-97.251762,-127.916014,-87.499653,10.844819,325
++12,exp_name: takeoff-aviary-v0_2023-01-18,707971,0.036397,130.3125,16,-108.128757,-323.892278,-88.625675,55.868083,326
++13,exp_name: takeoff-aviary-v0_2023-01-18,710149,0.030268,114.631579,19,-92.22325,-111.473136,-85.317131,6.112792,327
++14,exp_name: takeoff-aviary-v0_2023-01-18,712283,0.059458,213.4,10,-138.703367,-257.888951,-89.18197,55.028529,328
++15,exp_name: takeoff-aviary-v0_2023-01-18,714420,0.033923,118.722222,18,-93.077664,-109.815937,-84.379714,7.759886,329
++0,exp_name: takeoff-aviary-v0_2023-01-18,716500,0.033204,122.352941,17,-100.177331,-240.235128,-86.653071,35.269583,330
++0,exp_name: takeoff-aviary-v0_2023-01-18,718664,0.042035,154.571429,14,-143.346768,-634.63983,-87.505955,139.807216,331
++1,exp_name: takeoff-aviary-v0_2023-01-18,720855,0.039897,146.066667,15,-116.657307,-250.490502,-89.436895,41.522708,332
++2,exp_name: takeoff-aviary-v0_2023-01-18,722974,0.067947,264.875,8,-286.024309,-700.745703,-88.79724,227.114811,333
++3,exp_name: takeoff-aviary-v0_2023-01-18,725073,0.057509,209.9,10,-206.473175,-615.132618,-89.174434,193.422745,334
++4,exp_name: takeoff-aviary-v0_2023-01-18,727191,0.033864,124.588235,17,-97.997919,-143.040929,-84.31747,18.946746,335
++5,exp_name: takeoff-aviary-v0_2023-01-18,729332,0.043045,164.692308,13,-133.39445,-218.508231,-89.391889,36.809195,336
++6,exp_name: takeoff-aviary-v0_2023-01-18,731381,0.039856,146.357143,14,-116.221048,-149.03615,-88.283372,20.272366,337
++7,exp_name: takeoff-aviary-v0_2023-01-18,733503,0.03787,141.466667,15,-120.467958,-226.963179,-90.132586,33.032007,338
++8,exp_name: takeoff-aviary-v0_2023-01-18,735619,0.037037,141.066667,15,-115.594605,-138.884349,-89.094241,19.500803,339
++9,exp_name: takeoff-aviary-v0_2023-01-18,737797,0.037625,136.125,16,-107.974295,-139.342274,-86.660228,20.050311,340
++10,exp_name: takeoff-aviary-v0_2023-01-18,739901,0.036272,140.266667,15,-110.569982,-143.076391,-86.080733,20.939502,341
++11,exp_name: takeoff-aviary-v0_2023-01-18,741992,0.038667,149.357143,14,-121.013716,-196.594026,-91.628485,25.671191,342
++12,exp_name: takeoff-aviary-v0_2023-01-18,744108,0.038486,141.066667,15,-112.896784,-144.983389,-90.042238,18.913294,343
++13,exp_name: takeoff-aviary-v0_2023-01-18,746260,0.03755,143.466667,15,-113.989191,-138.793092,-92.677709,15.24433,344
++0,exp_name: takeoff-aviary-v0_2023-01-18,748502,0.056924,203.818182,11,-183.323056,-824.561996,-93.844585,203.467418,345
++1,exp_name: takeoff-aviary-v0_2023-01-18,750994,0.068335,249.2,10,-240.810862,-684.922652,-95.326636,196.117527,346
++2,exp_name: takeoff-aviary-v0_2023-01-18,753139,0.063905,238.333333,9,-229.954162,-578.481186,-92.331902,190.591926,347
++3,exp_name: takeoff-aviary-v0_2023-01-18,755580,0.07758,271.222222,9,-293.149558,-775.974539,-90.797716,274.232821,348
++0,exp_name: takeoff-aviary-v0_2023-01-18,757649,0.054573,206.9,10,-184.405818,-808.516834,-89.857083,209.303008,349
++1,exp_name: takeoff-aviary-v0_2023-01-18,759729,0.053897,208.0,10,-200.713874,-891.325259,-89.752308,233.597646,350
++2,exp_name: takeoff-aviary-v0_2023-01-18,761881,0.049644,179.333333,12,-152.974446,-612.815971,-90.973794,140.202387,351
++3,exp_name: takeoff-aviary-v0_2023-01-18,764444,0.076916,284.777778,9,-291.88491,-918.328647,-86.95638,321.443964,352
++4,exp_name: takeoff-aviary-v0_2023-01-18,766529,0.070017,260.625,8,-254.727232,-691.699025,-90.472387,234.41446,353
++5,exp_name: takeoff-aviary-v0_2023-01-18,768670,0.064592,237.888889,9,-233.912329,-804.294533,-88.314369,250.451181,354
++0,exp_name: takeoff-aviary-v0_2023-01-18,770802,0.051749,193.818182,11,-158.269438,-552.557874,-93.33463,125.852754,355
++1,exp_name: takeoff-aviary-v0_2023-01-18,773159,0.075074,261.888889,9,-265.313333,-837.480968,-96.795254,297.272889,356
++2,exp_name: takeoff-aviary-v0_2023-01-18,775253,0.055569,209.4,10,-191.650328,-1004.280114,-91.829213,271.04821,357
++3,exp_name: takeoff-aviary-v0_2023-01-18,777542,0.11796,457.8,5,-530.541239,-935.019148,-93.665287,359.560555,358
++4,exp_name: takeoff-aviary-v0_2023-01-18,779948,0.081017,300.75,8,-296.552652,-864.288073,-94.125142,305.610968,359
++5,exp_name: takeoff-aviary-v0_2023-01-18,782856,0.127468,484.666667,6,-586.988789,-1557.003086,-130.628999,523.038777,360
++6,exp_name: takeoff-aviary-v0_2023-01-18,785105,0.08596,321.285714,7,-336.485373,-1020.203509,-92.134314,346.778425,361
++7,exp_name: takeoff-aviary-v0_2023-01-18,787163,0.097318,343.0,6,-317.415778,-728.67468,-101.186026,255.948042,362
++8,exp_name: takeoff-aviary-v0_2023-01-18,789314,0.095662,358.5,6,-405.006622,-1181.460309,-95.465832,432.273366,363
++9,exp_name: takeoff-aviary-v0_2023-01-18,791576,0.054627,205.636364,11,-118.363168,-142.305361,-93.532684,20.114562,364
++10,exp_name: takeoff-aviary-v0_2023-01-18,793979,0.136591,480.6,5,-551.522057,-1059.488973,-128.138854,371.738957,365
++11,exp_name: takeoff-aviary-v0_2023-01-18,796121,0.071089,267.75,8,-240.103926,-1040.307938,-96.62624,302.915341,366
++12,exp_name: takeoff-aviary-v0_2023-01-18,798353,0.05799,223.2,10,-165.864263,-567.278372,-102.201622,134.285321,367
++13,exp_name: takeoff-aviary-v0_2023-01-18,800546,0.082479,274.125,8,-218.070734,-846.638574,-107.393261,237.90701,368
++14,exp_name: takeoff-aviary-v0_2023-01-18,802646,0.11023,420.0,5,-469.754188,-1005.60621,-106.2302,420.89559,369
++15,exp_name: takeoff-aviary-v0_2023-01-18,805503,0.110173,408.142857,7,-380.668311,-1047.070001,-98.687252,372.453468,370
++16,exp_name: takeoff-aviary-v0_2023-01-18,808293,0.094807,348.75,8,-368.925145,-1046.428182,-99.301946,393.838938,371
++17,exp_name: takeoff-aviary-v0_2023-01-18,810399,0.135687,526.5,4,-563.226659,-999.019264,-133.053385,428.153264,372
++18,exp_name: takeoff-aviary-v0_2023-01-18,812905,0.08711,313.25,8,-339.343722,-1490.209732,-95.185706,462.295335,373
++19,exp_name: takeoff-aviary-v0_2023-01-18,815113,0.065782,245.333333,9,-217.595857,-1018.129663,-99.289168,284.460635,374
++20,exp_name: takeoff-aviary-v0_2023-01-18,817406,0.090028,327.571429,7,-368.299414,-1478.801436,-102.30095,481.184599,375
++21,exp_name: takeoff-aviary-v0_2023-01-18,819460,0.052541,186.727273,11,-128.202222,-187.295802,-100.394885,34.548484,376
++0,exp_name: takeoff-aviary-v0_2023-01-18,821540,0.095385,346.666667,6,-394.953156,-984.356667,-100.418426,415.129817,377
++0,exp_name: takeoff-aviary-v0_2023-01-18,823669,0.066082,236.555556,9,-214.228282,-1018.039817,-97.397019,284.829087,378
++1,exp_name: takeoff-aviary-v0_2023-01-18,825782,0.056519,192.090909,11,-148.284429,-526.451574,-98.115981,120.73322,379
++2,exp_name: takeoff-aviary-v0_2023-01-18,828373,0.116781,431.833333,6,-545.254135,-1121.071669,-98.598334,450.374081,380
++3,exp_name: takeoff-aviary-v0_2023-01-18,830574,0.142747,550.25,4,-705.245283,-1013.749765,-104.03118,360.985629,381
++4,exp_name: takeoff-aviary-v0_2023-01-18,832769,0.06818,243.888889,9,-218.787023,-1070.340252,-96.473166,301.705073,382
++5,exp_name: takeoff-aviary-v0_2023-01-18,834892,0.047683,176.916667,12,-136.707386,-511.453635,-98.229013,113.026643,383
++6,exp_name: takeoff-aviary-v0_2023-01-18,837715,0.145104,564.6,5,-753.734013,-1521.624382,-98.529429,562.873614,384
++7,exp_name: takeoff-aviary-v0_2023-01-18,840307,0.070064,259.2,10,-219.039251,-1138.034681,-101.290373,307.05334,385
++8,exp_name: takeoff-aviary-v0_2023-01-18,843228,0.196893,730.25,4,-1009.73982,-1522.885773,-102.425527,562.955641,386
++9,exp_name: takeoff-aviary-v0_2023-01-18,845345,0.066005,235.222222,9,-212.371031,-1094.761305,-96.890476,311.983429,387
++10,exp_name: takeoff-aviary-v0_2023-01-18,847830,0.073901,276.111111,9,-272.839905,-1090.748508,-98.914344,321.280199,388
++0,exp_name: takeoff-aviary-v0_2023-01-18,849952,0.071606,265.25,8,-238.410933,-1055.228373,-100.072769,309.922466,389
++1,exp_name: takeoff-aviary-v0_2023-01-18,852118,0.12474,433.2,5,-531.857012,-1292.033947,-99.513258,532.318994,390
++2,exp_name: takeoff-aviary-v0_2023-01-18,854339,0.146729,555.25,4,-713.820237,-1019.08583,-106.281151,359.729023,391
++3,exp_name: takeoff-aviary-v0_2023-01-18,856849,0.085216,313.75,8,-333.367664,-1394.288636,-96.319991,440.997752,392
++4,exp_name: takeoff-aviary-v0_2023-01-18,858904,0.143428,513.75,4,-658.508687,-1494.24312,-103.658774,588.886116,393
++5,exp_name: takeoff-aviary-v0_2023-01-18,861194,0.103571,381.666667,6,-461.759925,-1258.655943,-97.735727,510.261731,394
++6,exp_name: takeoff-aviary-v0_2023-01-18,863360,0.069707,270.75,8,-273.64378,-1065.576709,-93.606536,327.537506,395
++0,exp_name: takeoff-aviary-v0_2023-01-18,866021,0.091663,332.625,8,-383.544246,-1493.53135,-96.148619,506.866515,396
++1,exp_name: takeoff-aviary-v0_2023-01-18,868213,0.081166,313.142857,7,-353.480151,-1004.519876,-96.79795,401.691104,397
++2,exp_name: takeoff-aviary-v0_2023-01-18,870631,0.090879,345.428571,7,-401.077334,-1219.704936,-97.653506,473.965195,398
++3,exp_name: takeoff-aviary-v0_2023-01-18,872857,0.207425,742.0,3,-982.086912,-1459.515025,-119.437574,611.145611,399
++4,exp_name: takeoff-aviary-v0_2023-01-18,875498,0.178508,660.25,4,-862.995516,-1129.631425,-305.246978,334.718875,400
++5,exp_name: takeoff-aviary-v0_2023-01-18,878193,0.119687,449.166667,6,-494.434882,-1392.345986,-105.937687,541.330941,401
++6,exp_name: takeoff-aviary-v0_2023-01-18,880350,0.114351,431.4,5,-502.076029,-1089.222432,-106.428498,458.933172,402
++0,exp_name: takeoff-aviary-v0_2023-01-18,882399,0.137356,512.25,4,-612.915313,-1217.061978,-100.424382,508.032106,403
++1,exp_name: takeoff-aviary-v0_2023-01-18,884671,0.123616,454.4,5,-531.957356,-1253.342016,-97.736954,528.698356,404
++2,exp_name: takeoff-aviary-v0_2023-01-18,886826,0.198384,718.333333,3,-944.633028,-1388.849869,-103.568203,595.036963,405
++3,exp_name: takeoff-aviary-v0_2023-01-18,889028,0.11381,440.4,5,-541.334708,-1425.238857,-99.451023,556.339723,406
++4,exp_name: takeoff-aviary-v0_2023-01-18,891119,0.078674,298.714286,7,-319.223803,-1079.319451,-95.893109,362.732975,407
++5,exp_name: takeoff-aviary-v0_2023-01-18,893767,0.080904,294.222222,9,-305.997807,-1014.944927,-100.990858,374.901272,408
++6,exp_name: takeoff-aviary-v0_2023-01-18,896483,0.079474,301.777778,9,-324.831045,-1132.553723,-94.238606,415.596789,409
++7,exp_name: takeoff-aviary-v0_2023-01-18,898680,0.061709,219.7,10,-193.040374,-975.555986,-100.188236,260.86692,410
++0,exp_name: takeoff-aviary-v0_2023-01-18,900939,0.119521,451.8,5,-554.443176,-1456.243552,-99.314082,568.04949,411
++1,exp_name: takeoff-aviary-v0_2023-01-18,903274,0.103872,389.166667,6,-457.480326,-1223.930833,-99.621577,502.64713,412
++2,exp_name: takeoff-aviary-v0_2023-01-18,905326,0.117164,410.4,5,-490.695051,-1175.57492,-101.128265,476.18645,413
++3,exp_name: takeoff-aviary-v0_2023-01-18,907568,0.099968,373.666667,6,-449.062196,-1282.487554,-98.919551,496.360732,414
++4,exp_name: takeoff-aviary-v0_2023-01-18,910033,0.128768,493.0,5,-630.52213,-1470.924147,-98.964365,649.521858,415
++5,exp_name: takeoff-aviary-v0_2023-01-18,913013,0.094149,331.111111,9,-359.720823,-1418.519093,-103.087837,481.868474,416
++6,exp_name: takeoff-aviary-v0_2023-01-18,915646,0.235409,877.666667,3,-1208.669367,-1455.590553,-1056.453955,176.171117,417
++7,exp_name: takeoff-aviary-v0_2023-01-18,917944,0.157207,574.5,4,-712.764129,-1365.931547,-105.613672,605.138065,418
++8,exp_name: takeoff-aviary-v0_2023-01-18,920712,0.250353,922.666667,3,-1171.307305,-1449.235734,-956.775065,205.983309,419
++9,exp_name: takeoff-aviary-v0_2023-01-18,923352,0.250999,880.0,3,-1201.892108,-1261.407004,-1114.88576,62.896495,420
++10,exp_name: takeoff-aviary-v0_2023-01-18,926028,0.262923,892.0,3,-1143.053206,-1466.217666,-823.517408,262.393827,421
++11,exp_name: takeoff-aviary-v0_2023-01-18,928176,0.20013,716.0,3,-873.609685,-1396.959854,-182.333269,509.888127,422
++12,exp_name: takeoff-aviary-v0_2023-01-18,930506,0.206896,776.666667,3,-923.258107,-1440.361566,-193.173705,530.967702,423
++13,exp_name: takeoff-aviary-v0_2023-01-18,933230,0.152123,544.8,5,-563.253604,-1388.099362,-110.623981,538.416493,424
++0,exp_name: takeoff-aviary-v0_2023-01-18,935747,0.233081,839.0,3,-1090.080036,-1431.035762,-661.140743,320.406426,425
++1,exp_name: takeoff-aviary-v0_2023-01-18,938012,0.205348,755.0,3,-839.689751,-1220.724294,-131.204724,501.45195,426
++2,exp_name: takeoff-aviary-v0_2023-01-18,940077,0.145567,516.25,4,-428.595148,-1140.7519,-123.594419,418.904019,427
++3,exp_name: takeoff-aviary-v0_2023-01-18,942494,0.156228,604.25,4,-516.194606,-1035.69643,-124.801078,400.311329,428
++4,exp_name: takeoff-aviary-v0_2023-01-18,944712,0.144239,554.5,4,-593.397622,-1370.707642,-107.218395,524.175531,429
++5,exp_name: takeoff-aviary-v0_2023-01-18,946854,0.199453,714.0,3,-886.486368,-1376.673165,-121.427091,548.073497,430
++6,exp_name: takeoff-aviary-v0_2023-01-18,949586,0.246884,910.666667,3,-1240.723196,-1442.477946,-1111.453675,144.533383,431
++7,exp_name: takeoff-aviary-v0_2023-01-18,952022,0.219977,812.0,3,-1080.486783,-1105.737915,-1034.4102,32.631123,432
++8,exp_name: takeoff-aviary-v0_2023-01-18,954105,0.159984,520.75,4,-597.796268,-1116.409369,-109.721089,480.872931,433
++9,exp_name: takeoff-aviary-v0_2023-01-18,956722,0.238775,872.333333,3,-1152.838083,-1250.248967,-1086.915604,70.29977,434
++10,exp_name: takeoff-aviary-v0_2023-01-18,959602,0.208074,720.0,4,-920.268533,-1278.723812,-124.68018,463.747798,435
++11,exp_name: takeoff-aviary-v0_2023-01-18,962434,0.190516,708.0,4,-925.115573,-1377.29797,-101.1454,490.252607,436
++12,exp_name: takeoff-aviary-v0_2023-01-18,965099,0.103883,380.714286,7,-430.673633,-1408.724189,-104.749227,515.819609,437
++13,exp_name: takeoff-aviary-v0_2023-01-18,967999,0.165911,580.0,5,-760.059879,-1473.21176,-95.915632,558.81638,438
++14,exp_name: takeoff-aviary-v0_2023-01-18,970157,0.147721,539.5,4,-686.246949,-1409.483706,-103.46163,591.012091,439
++15,exp_name: takeoff-aviary-v0_2023-01-18,972329,0.096888,362.0,6,-411.05472,-1033.074663,-104.864578,429.532756,440
++16,exp_name: takeoff-aviary-v0_2023-01-18,974862,0.125069,422.166667,6,-489.745977,-1445.350266,-106.294654,549.601489,441
++17,exp_name: takeoff-aviary-v0_2023-01-18,977222,0.159174,590.0,4,-725.620591,-1244.592026,-109.555596,485.39257,442
++18,exp_name: takeoff-aviary-v0_2023-01-18,980097,0.198135,718.75,4,-949.530301,-1433.72055,-116.596393,497.638844,443
++19,exp_name: takeoff-aviary-v0_2023-01-18,982865,0.182609,692.0,4,-862.73582,-1139.895384,-126.798285,425.598077,444
++20,exp_name: takeoff-aviary-v0_2023-01-18,984954,0.194049,696.333333,3,-832.01069,-1197.954208,-129.643009,496.795141,445
++21,exp_name: takeoff-aviary-v0_2023-01-18,987837,0.206323,720.75,4,-855.520182,-1134.53482,-135.839761,416.206899,446
++22,exp_name: takeoff-aviary-v0_2023-01-18,990372,0.168941,633.75,4,-637.097744,-1208.970756,-132.240367,504.810176,447
++23,exp_name: takeoff-aviary-v0_2023-01-18,992912,0.133775,508.0,5,-326.033565,-1108.001149,-127.4315,390.989946,448
++24,exp_name: takeoff-aviary-v0_2023-01-18,995154,0.213951,747.333333,3,-735.227993,-1132.889983,-135.790908,431.344049,449
++25,exp_name: takeoff-aviary-v0_2023-01-18,997916,0.157071,552.4,5,-314.317511,-1049.423759,-128.131292,367.555789,450
++26,exp_name: takeoff-aviary-v0_2023-01-18,1000027,0.149855,527.75,4,-388.580107,-1161.175971,-125.669968,446.07143,451
++27,exp_name: takeoff-aviary-v0_2023-01-18,1002429,0.129656,480.4,5,-132.668016,-135.996446,-128.131803,2.926491,452
++28,exp_name: takeoff-aviary-v0_2023-01-18,1005061,0.234709,877.333333,3,-1181.350327,-1245.012607,-1140.464465,45.619093,453
++29,exp_name: takeoff-aviary-v0_2023-01-18,1007400,0.171657,584.75,4,-638.760033,-1210.306593,-122.732917,515.334121,454
++0,exp_name: takeoff-aviary-v0_2023-01-18,1009733,0.157764,583.25,4,-617.170288,-1173.437605,-124.781995,492.842509,455
++1,exp_name: takeoff-aviary-v0_2023-01-18,1012378,0.141157,529.0,5,-540.092719,-1187.776019,-122.389917,507.578191,456
++2,exp_name: takeoff-aviary-v0_2023-01-18,1015285,0.207829,726.75,4,-903.942085,-1171.083875,-123.884819,450.433315,457
++3,exp_name: takeoff-aviary-v0_2023-01-18,1017658,0.217244,791.0,3,-963.316846,-1328.376121,-431.004641,384.966709,458
++4,exp_name: takeoff-aviary-v0_2023-01-18,1019823,0.191044,721.666667,3,-790.882145,-1164.581703,-132.484739,466.973007,459
++5,exp_name: takeoff-aviary-v0_2023-01-18,1022238,0.165908,603.75,4,-681.202583,-1278.427123,-132.917714,547.885815,460
++6,exp_name: takeoff-aviary-v0_2023-01-18,1024848,0.232279,870.0,3,-1168.506589,-1311.701457,-1087.304173,101.557318,461
++7,exp_name: takeoff-aviary-v0_2023-01-18,1027210,0.164629,590.5,4,-692.727316,-1301.507041,-116.398535,524.275057,462
++0,exp_name: takeoff-aviary-v0_2023-01-18,1029736,0.223198,842.0,3,-1158.731571,-1235.79647,-1092.543741,58.986264,463
++1,exp_name: takeoff-aviary-v0_2023-01-18,1032023,0.150724,571.75,4,-692.785005,-1354.547894,-120.030211,568.061253,464
++2,exp_name: takeoff-aviary-v0_2023-01-18,1034315,0.21491,764.0,3,-929.865133,-1501.181147,-142.117125,575.555303,465
++3,exp_name: takeoff-aviary-v0_2023-01-18,1037110,0.25189,931.666667,3,-1270.121536,-1352.687671,-1215.200264,59.435543,466
++0,exp_name: takeoff-aviary-v0_2023-01-18,1039261,0.194649,717.0,3,-800.116498,-1145.793565,-143.340484,464.625269,467
++1,exp_name: takeoff-aviary-v0_2023-01-18,1041580,0.163428,579.75,4,-433.609267,-1321.584599,-132.815729,512.682481,468
++0,exp_name: takeoff-aviary-v0_2023-01-18,1043985,0.156244,601.25,4,-406.12475,-1211.144635,-134.940373,464.782978,469
++1,exp_name: takeoff-aviary-v0_2023-01-18,1046526,0.133962,508.2,5,-140.118441,-145.594901,-133.393955,4.151241,470
++2,exp_name: takeoff-aviary-v0_2023-01-18,1048600,0.194174,691.333333,3,-803.350877,-1153.891945,-143.432392,466.935339,471
++0,exp_name: takeoff-aviary-v0_2023-01-18,1051206,0.172718,651.5,4,-640.88313,-1175.788611,-127.850564,510.892763,472
++1,exp_name: takeoff-aviary-v0_2023-01-18,1053391,0.114171,437.0,5,-336.24589,-1153.022159,-110.818366,408.609059,473
++2,exp_name: takeoff-aviary-v0_2023-01-18,1055799,0.134741,481.6,5,-331.625722,-1116.94538,-128.320919,392.696283,474
++3,exp_name: takeoff-aviary-v0_2023-01-18,1058149,0.104156,391.666667,6,-136.650521,-141.567126,-132.356468,3.30483,475
++4,exp_name: takeoff-aviary-v0_2023-01-18,1060339,0.119949,438.0,5,-326.866138,-1112.504446,-107.581981,393.010202,476
++5,exp_name: takeoff-aviary-v0_2023-01-18,1062921,0.156564,516.4,5,-476.172011,-1057.870947,-112.420836,428.697119,477
++6,exp_name: takeoff-aviary-v0_2023-01-18,1065123,0.117424,440.4,5,-342.077681,-1184.423323,-120.511076,421.226118,478
++7,exp_name: takeoff-aviary-v0_2023-01-18,1067404,0.151252,570.25,4,-383.95739,-1111.414288,-139.071085,420.001197,479
++8,exp_name: takeoff-aviary-v0_2023-01-18,1069792,0.167685,597.0,4,-420.105757,-1183.735654,-135.175264,442.202598,480
++9,exp_name: takeoff-aviary-v0_2023-01-18,1071966,0.14513,543.5,4,-481.192147,-1116.995371,-134.361292,402.369903,481
++10,exp_name: takeoff-aviary-v0_2023-01-18,1074353,0.208222,795.666667,3,-1026.903527,-1172.461378,-879.59097,119.570281,482
++11,exp_name: takeoff-aviary-v0_2023-01-18,1076500,0.118927,429.4,5,-363.940836,-1026.102779,-130.38328,337.945118,483
++0,exp_name: takeoff-aviary-v0_2023-01-18,1078814,0.120124,462.8,5,-365.44092,-1140.074102,-123.008281,393.584314,484
++1,exp_name: takeoff-aviary-v0_2023-01-18,1081391,0.223137,859.0,3,-1118.008344,-1126.390171,-1101.719105,11.51986,485
++2,exp_name: takeoff-aviary-v0_2023-01-18,1083608,0.154777,554.25,4,-621.50325,-1115.398488,-131.434169,460.529498,486
++3,exp_name: takeoff-aviary-v0_2023-01-18,1085788,0.189216,726.666667,3,-796.184044,-1160.046473,-134.566547,468.612014,487
++4,exp_name: takeoff-aviary-v0_2023-01-18,1088028,0.150448,560.0,4,-513.414078,-1019.849624,-133.567392,362.407329,488
++5,exp_name: takeoff-aviary-v0_2023-01-18,1090285,0.212265,752.333333,3,-982.156878,-1061.201961,-935.111099,56.229843,489
++6,exp_name: takeoff-aviary-v0_2023-01-18,1092819,0.164277,633.5,4,-788.748621,-1075.153788,-123.61322,390.74622,490
++7,exp_name: takeoff-aviary-v0_2023-01-18,1095135,0.199477,772.0,3,-1030.683946,-1131.235538,-867.562113,116.382115,491
++8,exp_name: takeoff-aviary-v0_2023-01-18,1097561,0.169975,606.5,4,-758.107613,-996.266959,-118.294872,369.712984,492
++9,exp_name: takeoff-aviary-v0_2023-01-18,1099993,0.163553,608.0,4,-742.725353,-1022.312511,-123.342515,365.421704,493
++10,exp_name: takeoff-aviary-v0_2023-01-18,1102270,0.205721,759.0,3,-1000.837766,-1103.820269,-936.562276,73.563957,494
++0,exp_name: takeoff-aviary-v0_2023-01-18,1104655,0.225592,795.0,3,-1077.877644,-1151.380881,-956.928567,86.18297,495
++1,exp_name: takeoff-aviary-v0_2023-01-18,1106917,0.201989,754.0,3,-997.298692,-1068.622624,-934.633655,55.042367,496
++2,exp_name: takeoff-aviary-v0_2023-01-18,1109049,0.141352,533.0,4,-596.824513,-1155.636694,-109.314437,480.550942,497
++3,exp_name: takeoff-aviary-v0_2023-01-18,1111348,0.217979,766.333333,3,-1050.667539,-1068.929426,-1027.877899,17.062286,498
++4,exp_name: takeoff-aviary-v0_2023-01-18,1113644,0.156271,574.0,4,-739.556886,-986.212989,-104.903645,367.047301,499
++5,exp_name: takeoff-aviary-v0_2023-01-18,1116095,0.226889,817.0,3,-1122.304462,-1261.500611,-1005.631535,105.66525,500
++6,exp_name: takeoff-aviary-v0_2023-01-18,1118238,0.212492,714.333333,3,-985.304948,-1047.193024,-920.814675,51.626546,501
++7,exp_name: takeoff-aviary-v0_2023-01-18,1121060,0.192923,705.5,4,-959.080736,-1098.778947,-868.778921,86.111049,502
++0,exp_name: takeoff-aviary-v0_2023-01-18,1123433,0.167589,593.25,4,-797.630776,-1098.137385,-104.903498,405.655558,503
++1,exp_name: takeoff-aviary-v0_2023-01-18,1125926,0.137479,498.6,5,-657.78014,-1087.325571,-100.064821,457.015967,504
++2,exp_name: takeoff-aviary-v0_2023-01-18,1127994,0.18966,689.333333,3,-977.348029,-1086.445426,-853.497919,95.67085,505
++3,exp_name: takeoff-aviary-v0_2023-01-18,1130591,0.122645,432.833333,6,-552.12159,-1112.712197,-94.400176,461.03135,506
++4,exp_name: takeoff-aviary-v0_2023-01-18,1132876,0.161011,571.25,4,-778.880411,-1033.072194,-101.749452,391.363027,507
++5,exp_name: takeoff-aviary-v0_2023-01-18,1134981,0.188976,701.666667,3,-989.132655,-1023.789688,-919.9453,48.922875,508
++6,exp_name: takeoff-aviary-v0_2023-01-18,1137187,0.156344,551.5,4,-748.381348,-1063.729501,-97.570259,383.631834,509
++7,exp_name: takeoff-aviary-v0_2023-01-18,1139305,0.079512,302.571429,7,-343.788122,-973.205258,-97.932724,382.040397,510
++8,exp_name: takeoff-aviary-v0_2023-01-18,1141576,0.086535,324.428571,7,-371.255435,-951.726281,-98.248095,369.272019,511
++9,exp_name: takeoff-aviary-v0_2023-01-18,1143819,0.20774,747.666667,3,-1056.692163,-1065.626272,-1045.398074,8.425047,512
++10,exp_name: takeoff-aviary-v0_2023-01-18,1146187,0.158197,592.0,4,-797.848443,-1075.743722,-96.551985,407.677131,513
++11,exp_name: takeoff-aviary-v0_2023-01-18,1148406,0.148918,554.75,4,-740.221349,-973.353817,-96.124132,372.110742,514
++12,exp_name: takeoff-aviary-v0_2023-01-18,1150715,0.162812,577.25,4,-753.519863,-1093.240488,-101.649712,384.358607,515
++13,exp_name: takeoff-aviary-v0_2023-01-18,1153163,0.16912,612.0,4,-804.238083,-1096.787388,-107.336564,404.841233,516
++14,exp_name: takeoff-aviary-v0_2023-01-18,1155960,0.108971,399.571429,7,-481.226059,-1092.735026,-99.878197,441.398446,517
++0,exp_name: takeoff-aviary-v0_2023-01-18,1158418,0.138082,491.6,5,-637.648043,-1017.325941,-98.320362,399.898795,518
++1,exp_name: takeoff-aviary-v0_2023-01-18,1160544,0.182729,708.666667,3,-986.694228,-1071.993593,-902.198224,69.320996,519
++2,exp_name: takeoff-aviary-v0_2023-01-18,1163297,0.142937,550.6,5,-725.796578,-1113.708242,-106.899419,359.519695,520
++3,exp_name: takeoff-aviary-v0_2023-01-18,1165981,0.182886,671.0,4,-922.021632,-1081.835264,-786.8097,107.619004,521
++4,exp_name: takeoff-aviary-v0_2023-01-18,1168077,0.181008,698.666667,3,-938.84159,-1041.9386,-840.879955,82.162131,522
++5,exp_name: takeoff-aviary-v0_2023-01-18,1170519,0.13552,488.4,5,-637.912273,-1064.775014,-99.594512,441.087439,523
++6,exp_name: takeoff-aviary-v0_2023-01-18,1172750,0.16298,557.75,4,-739.456264,-1007.665242,-100.602653,370.524604,524
++0,exp_name: takeoff-aviary-v0_2023-01-18,1175214,0.218524,821.333333,3,-1130.120375,-1384.460423,-913.674394,194.05642,525
++1,exp_name: takeoff-aviary-v0_2023-01-18,1177860,0.176211,661.5,4,-850.681595,-1146.005699,-290.302996,330.292244,526
++0,exp_name: takeoff-aviary-v0_2023-01-18,1180461,0.139466,520.2,5,-628.060538,-1060.351236,-117.153579,421.274301,527
++1,exp_name: takeoff-aviary-v0_2023-01-18,1183007,0.110358,424.333333,6,-453.69764,-932.365712,-106.717738,348.994573,528
++2,exp_name: takeoff-aviary-v0_2023-01-18,1185322,0.206667,771.666667,3,-1047.66828,-1066.849664,-1033.347573,14.102415,529
++3,exp_name: takeoff-aviary-v0_2023-01-18,1187689,0.20827,789.0,3,-1090.977267,-1112.296112,-1066.128733,19.01229,530
++4,exp_name: takeoff-aviary-v0_2023-01-18,1189784,0.134692,523.75,4,-631.51563,-1067.276907,-115.59938,396.262385,531
++5,exp_name: takeoff-aviary-v0_2023-01-18,1192375,0.174677,647.75,4,-818.885639,-1134.577115,-283.965522,320.638828,532
++6,exp_name: takeoff-aviary-v0_2023-01-18,1194659,0.208499,761.333333,3,-1034.382955,-1166.9878,-934.259026,97.74773,533
++7,exp_name: takeoff-aviary-v0_2023-01-18,1197031,0.155454,593.0,4,-771.599201,-1067.830904,-119.967391,379.892854,534
++8,exp_name: takeoff-aviary-v0_2023-01-18,1199379,0.220132,782.666667,3,-1057.419832,-1149.527067,-951.923622,81.22491,535
++9,exp_name: takeoff-aviary-v0_2023-01-18,1201599,0.193324,740.0,3,-1011.467154,-1106.828038,-896.629768,86.911176,536
++10,exp_name: takeoff-aviary-v0_2023-01-18,1203759,0.186125,720.0,3,-984.555004,-1079.812692,-925.200064,68.034411,537
++11,exp_name: takeoff-aviary-v0_2023-01-18,1205891,0.189892,710.666667,3,-975.002964,-991.020471,-954.369409,15.314612,538
++12,exp_name: takeoff-aviary-v0_2023-01-18,1208614,0.144522,544.6,5,-681.540709,-1057.133285,-103.171398,380.871027,539
++13,exp_name: takeoff-aviary-v0_2023-01-18,1210860,0.195546,748.666667,3,-1012.958606,-1031.83238,-991.823511,16.411634,540
++0,exp_name: takeoff-aviary-v0_2023-01-18,1213226,0.214383,788.666667,3,-1071.079569,-1166.385858,-945.150369,92.878441,541
++1,exp_name: takeoff-aviary-v0_2023-01-18,1215518,0.149797,573.0,4,-729.045408,-1104.514797,-123.03694,365.855453,542
++2,exp_name: takeoff-aviary-v0_2023-01-18,1218126,0.137333,521.6,5,-648.584445,-1119.350597,-106.72381,440.323912,543
++3,exp_name: takeoff-aviary-v0_2023-01-18,1220657,0.174779,632.75,4,-846.24706,-1120.332594,-187.200419,382.070774,544
++4,exp_name: takeoff-aviary-v0_2023-01-18,1223032,0.206825,791.666667,3,-1090.405302,-1184.299906,-913.170527,125.397961,545
++5,exp_name: takeoff-aviary-v0_2023-01-18,1225526,0.129305,498.8,5,-633.562422,-1059.732695,-104.25628,432.702079,546
++6,exp_name: takeoff-aviary-v0_2023-01-18,1227968,0.173327,610.5,4,-797.788928,-1051.768127,-114.194105,395.016682,547
++7,exp_name: takeoff-aviary-v0_2023-01-18,1230392,0.219936,808.0,3,-1088.442702,-1144.138905,-988.762512,70.646534,548
++8,exp_name: takeoff-aviary-v0_2023-01-18,1232569,0.14694,544.25,4,-607.872008,-1143.748722,-118.715631,442.617169,549
++9,exp_name: takeoff-aviary-v0_2023-01-18,1235052,0.142209,496.6,5,-531.464565,-1151.627616,-116.710317,501.882379,550
++10,exp_name: takeoff-aviary-v0_2023-01-18,1237424,0.211659,790.666667,3,-1079.0638,-1128.217136,-991.634407,61.981196,551
++11,exp_name: takeoff-aviary-v0_2023-01-18,1239671,0.208941,749.0,3,-1027.430119,-1124.648586,-889.22659,100.384961,552
++12,exp_name: takeoff-aviary-v0_2023-01-18,1241834,0.199906,721.0,3,-989.31729,-1064.267691,-894.846214,70.529908,553
++13,exp_name: takeoff-aviary-v0_2023-01-18,1244107,0.148363,568.25,4,-752.69496,-1036.696559,-106.87859,375.639271,554
++14,exp_name: takeoff-aviary-v0_2023-01-18,1246217,0.137647,527.5,4,-675.781546,-1031.300882,-114.092352,343.197301,555
++15,exp_name: takeoff-aviary-v0_2023-01-18,1248668,0.16882,612.75,4,-819.152481,-1143.995191,-103.448749,416.677881,556
++16,exp_name: takeoff-aviary-v0_2023-01-18,1250750,0.180322,694.0,3,-968.486855,-1022.334274,-899.228068,51.425786,557
++0,exp_name: takeoff-aviary-v0_2023-01-18,1253397,0.179055,661.75,4,-916.704893,-941.33039,-885.175902,21.693717,558
++1,exp_name: takeoff-aviary-v0_2023-01-18,1255539,0.106577,357.0,6,-421.7903,-1088.129114,-100.411486,449.974673,559
++2,exp_name: takeoff-aviary-v0_2023-01-18,1257938,0.156119,599.75,4,-807.293737,-1126.307294,-101.36288,411.250228,560
++3,exp_name: takeoff-aviary-v0_2023-01-18,1260159,0.143434,555.25,4,-739.253733,-1131.550073,-106.971111,410.52152,561
++4,exp_name: takeoff-aviary-v0_2023-01-18,1262413,0.208578,751.333333,3,-1028.726527,-1148.15605,-967.812792,84.4551,562
++5,exp_name: takeoff-aviary-v0_2023-01-18,1264695,0.199154,760.666667,3,-1050.092499,-1065.017334,-1042.537802,10.553721,563
++6,exp_name: takeoff-aviary-v0_2023-01-18,1266792,0.190666,699.0,3,-950.303357,-1053.292161,-875.706166,75.227474,564
++7,exp_name: takeoff-aviary-v0_2023-01-18,1269311,0.175158,629.75,4,-832.378702,-1064.961377,-353.56153,280.573076,565
++8,exp_name: takeoff-aviary-v0_2023-01-18,1271408,0.183638,699.0,3,-953.237527,-1057.836435,-826.411357,95.777277,566
++9,exp_name: takeoff-aviary-v0_2023-01-18,1273952,0.180799,636.0,4,-810.652762,-1124.817435,-114.675372,405.391952,567
++10,exp_name: takeoff-aviary-v0_2023-01-18,1276613,0.152541,532.2,5,-651.580255,-1067.286094,-107.823619,444.237733,568
++11,exp_name: takeoff-aviary-v0_2023-01-18,1279023,0.162827,602.5,4,-788.39957,-1124.589068,-118.696539,395.391714,569
++12,exp_name: takeoff-aviary-v0_2023-01-18,1281275,0.207247,750.666667,3,-1023.88009,-1101.065083,-966.849426,56.616302,570
++13,exp_name: takeoff-aviary-v0_2023-01-18,1283612,0.163977,584.25,4,-774.464904,-1104.737877,-98.04037,398.514707,571
++14,exp_name: takeoff-aviary-v0_2023-01-18,1285800,0.193178,729.333333,3,-1001.149552,-1039.46907,-946.020927,39.958715,572
++0,exp_name: takeoff-aviary-v0_2023-01-18,1287893,0.185921,697.666667,3,-958.610627,-1038.303291,-895.037616,59.588286,573
++1,exp_name: takeoff-aviary-v0_2023-01-18,1290535,0.183414,660.5,4,-889.140755,-913.744884,-866.956362,18.333232,574
++2,exp_name: takeoff-aviary-v0_2023-01-18,1292676,0.185672,713.666667,3,-993.380608,-1069.886834,-917.698197,62.133482,575
++3,exp_name: takeoff-aviary-v0_2023-01-18,1294754,0.180043,692.666667,3,-948.986201,-972.159779,-922.817888,20.254742,576
++4,exp_name: takeoff-aviary-v0_2023-01-18,1297469,0.187195,678.75,4,-928.120109,-1012.801746,-877.369918,55.882667,577
++5,exp_name: takeoff-aviary-v0_2023-01-18,1300175,0.177784,676.5,4,-935.824882,-952.411733,-906.449793,17.516727,578
++6,exp_name: takeoff-aviary-v0_2023-01-18,1302416,0.145313,560.25,4,-749.610757,-1032.634747,-96.96901,379.866553,579
++7,exp_name: takeoff-aviary-v0_2023-01-18,1305095,0.183419,669.75,4,-923.874669,-966.390166,-887.288378,33.58333,580
++8,exp_name: takeoff-aviary-v0_2023-01-18,1307778,0.11598,447.166667,6,-585.151137,-1022.834221,-93.030077,364.169575,581
++9,exp_name: takeoff-aviary-v0_2023-01-18,1310160,0.095907,340.285714,7,-412.97468,-1078.700969,-98.084569,384.734265,582
++0,exp_name: takeoff-aviary-v0_2023-01-18,1312256,0.117938,419.2,5,-529.704133,-933.035466,-92.910903,368.09776,583
++1,exp_name: takeoff-aviary-v0_2023-01-18,1314619,0.10623,393.833333,6,-503.647868,-921.394836,-94.681982,406.012432,584
++2,exp_name: takeoff-aviary-v0_2023-01-18,1317007,0.161453,597.0,4,-810.392803,-922.477404,-569.303738,143.743698,585
++3,exp_name: takeoff-aviary-v0_2023-01-18,1319094,0.140895,521.75,4,-683.764262,-881.132855,-574.222703,117.587284,586
++4,exp_name: takeoff-aviary-v0_2023-01-18,1321499,0.129169,481.0,5,-617.057084,-930.150931,-102.493138,346.389258,587
++5,exp_name: takeoff-aviary-v0_2023-01-18,1323847,0.162074,587.0,4,-783.999471,-935.340388,-696.155319,98.545734,588
++6,exp_name: takeoff-aviary-v0_2023-01-18,1326446,0.112457,433.166667,6,-533.939177,-1053.586796,-97.272087,436.010706,589
++7,exp_name: takeoff-aviary-v0_2023-01-18,1328549,0.187919,701.0,3,-967.707228,-999.828335,-939.155245,24.897924,590
++8,exp_name: takeoff-aviary-v0_2023-01-18,1330774,0.160875,556.25,4,-751.384519,-938.881938,-575.621604,153.758619,591
++9,exp_name: takeoff-aviary-v0_2023-01-18,1333358,0.118403,430.666667,6,-528.367256,-1062.817401,-91.38724,430.262298,592
++10,exp_name: takeoff-aviary-v0_2023-01-18,1335844,0.145807,497.2,5,-643.721249,-990.861219,-100.666168,294.519524,593
++11,exp_name: takeoff-aviary-v0_2023-01-18,1338493,0.185948,662.25,4,-915.970347,-1004.069954,-860.860193,57.183164,594
++12,exp_name: takeoff-aviary-v0_2023-01-18,1340617,0.098242,354.0,6,-432.989014,-876.240246,-93.855131,351.079439,595
++13,exp_name: takeoff-aviary-v0_2023-01-18,1342771,0.09541,359.0,6,-444.562602,-892.918223,-93.732797,358.343434,596
++14,exp_name: takeoff-aviary-v0_2023-01-18,1345000,0.089693,318.428571,7,-375.647108,-649.978644,-94.325652,245.608807,597
++0,exp_name: takeoff-aviary-v0_2023-01-18,1347087,0.071877,260.875,8,-286.527222,-628.277968,-89.644712,246.889336,598
++1,exp_name: takeoff-aviary-v0_2023-01-18,1349171,0.100831,347.333333,6,-424.381692,-931.146245,-94.811147,340.798888,599
++2,exp_name: takeoff-aviary-v0_2023-01-18,1351485,0.065619,231.4,10,-234.430671,-915.908599,-91.006854,280.749149,600
++3,exp_name: takeoff-aviary-v0_2023-01-18,1353601,0.065903,235.111111,9,-240.88453,-860.767529,-94.168812,274.543599,601
++4,exp_name: takeoff-aviary-v0_2023-01-18,1355729,0.04755,163.692308,13,-128.564171,-506.468236,-91.276256,109.127076,602
++5,exp_name: takeoff-aviary-v0_2023-01-18,1357790,0.071474,257.625,8,-276.95782,-866.35361,-90.575034,316.995441,603
++0,exp_name: takeoff-aviary-v0_2023-01-18,1359941,0.051483,195.545455,11,-181.251544,-612.703388,-91.101692,184.655179,604
++1,exp_name: takeoff-aviary-v0_2023-01-18,1362081,0.053808,194.545455,11,-181.979207,-582.387154,-90.620244,187.462586,605
++2,exp_name: takeoff-aviary-v0_2023-01-18,1364218,0.043054,164.384615,13,-135.298936,-637.428609,-88.803851,144.981365,606
++3,exp_name: takeoff-aviary-v0_2023-01-18,1366384,0.03626,135.375,16,-92.560371,-97.80656,-89.473125,2.872592,607
++4,exp_name: takeoff-aviary-v0_2023-01-18,1368538,0.038706,134.625,16,-92.701289,-97.666041,-89.547056,2.077429,608
++5,exp_name: takeoff-aviary-v0_2023-01-18,1370638,0.093506,350.0,6,-428.564192,-898.302523,-90.650419,347.810015,609
++6,exp_name: takeoff-aviary-v0_2023-01-18,1372752,0.069303,264.25,8,-286.453976,-891.225714,-92.340598,330.23322,610
++7,exp_name: takeoff-aviary-v0_2023-01-18,1374999,0.063004,224.7,10,-224.448109,-926.163556,-93.745066,270.037712,611
++8,exp_name: takeoff-aviary-v0_2023-01-18,1377168,0.090286,309.857143,7,-354.152935,-950.985122,-96.086506,318.087724,612
++9,exp_name: takeoff-aviary-v0_2023-01-18,1379233,0.120418,413.0,5,-509.489563,-918.918618,-94.527372,363.26922,613
++10,exp_name: takeoff-aviary-v0_2023-01-18,1381615,0.163652,595.5,4,-798.931061,-927.371194,-494.413096,177.787464,614
++11,exp_name: takeoff-aviary-v0_2023-01-18,1383722,0.136774,526.75,4,-677.367816,-1045.577671,-104.241397,352.732837,615
++12,exp_name: takeoff-aviary-v0_2023-01-18,1385927,0.145636,551.25,4,-729.150601,-912.982656,-571.294101,153.933059,616
++13,exp_name: takeoff-aviary-v0_2023-01-18,1388439,0.10329,358.857143,7,-426.674269,-889.872238,-93.848039,306.195416,617
++14,exp_name: takeoff-aviary-v0_2023-01-18,1390718,0.118837,455.8,5,-580.990175,-875.980831,-99.246363,284.010384,618
++15,exp_name: takeoff-aviary-v0_2023-01-18,1392803,0.134883,521.25,4,-665.47782,-843.5835,-558.791168,111.038469,619
++16,exp_name: takeoff-aviary-v0_2023-01-18,1395039,0.122654,447.2,5,-543.163523,-1017.410388,-94.465063,381.485206,620
++17,exp_name: takeoff-aviary-v0_2023-01-18,1397128,0.135646,522.25,4,-688.190157,-860.41885,-520.953234,164.794276,621
++18,exp_name: takeoff-aviary-v0_2023-01-18,1399695,0.094997,366.714286,7,-439.471872,-819.386298,-96.935625,312.229489,622
++19,exp_name: takeoff-aviary-v0_2023-01-18,1402138,0.111336,407.166667,6,-500.280601,-685.300616,-99.445975,192.168087,623
++20,exp_name: takeoff-aviary-v0_2023-01-18,1404669,0.120009,421.833333,6,-498.063866,-912.17282,-97.752746,301.634086,624
++21,exp_name: takeoff-aviary-v0_2023-01-18,1406864,0.122354,439.0,5,-531.003586,-645.757987,-113.204695,209.060305,625
++22,exp_name: takeoff-aviary-v0_2023-01-18,1409256,0.135641,478.4,5,-598.425876,-679.244534,-513.386298,64.650519,626
++23,exp_name: takeoff-aviary-v0_2023-01-18,1411328,0.20114,690.666667,3,-907.752354,-1158.001032,-754.702701,178.415477,627
++24,exp_name: takeoff-aviary-v0_2023-01-18,1413935,0.147435,521.4,5,-647.521889,-895.332916,-108.852,280.371419,628
++25,exp_name: takeoff-aviary-v0_2023-01-18,1416271,0.155,584.0,4,-762.681659,-894.070218,-585.816336,126.88,629
++26,exp_name: takeoff-aviary-v0_2023-01-18,1418866,0.141431,519.0,5,-658.163213,-744.225375,-568.127112,66.047786,630
++27,exp_name: takeoff-aviary-v0_2023-01-18,1421193,0.173447,581.75,4,-768.81443,-903.453988,-632.090047,123.42636,631
++28,exp_name: takeoff-aviary-v0_2023-01-18,1423303,0.140442,527.5,4,-680.823822,-868.667443,-596.059461,110.647047,632
++29,exp_name: takeoff-aviary-v0_2023-01-18,1425587,0.14777,571.0,4,-744.395164,-893.033708,-602.128814,136.942315,633
++30,exp_name: takeoff-aviary-v0_2023-01-18,1428143,0.138459,511.2,5,-651.433064,-907.205671,-101.452596,288.683718,634
++31,exp_name: takeoff-aviary-v0_2023-01-18,1430602,0.091587,351.285714,7,-393.855287,-657.829721,-94.867092,257.348424,635
++32,exp_name: takeoff-aviary-v0_2023-01-18,1432926,0.121261,464.8,5,-581.115503,-621.12145,-530.667889,30.078408,636
++33,exp_name: takeoff-aviary-v0_2023-01-18,1435521,0.120073,432.5,6,-531.707113,-929.847349,-95.515977,253.932425,637
++34,exp_name: takeoff-aviary-v0_2023-01-18,1438028,0.096009,358.142857,7,-426.270102,-646.015302,-94.938639,214.074211,638
++35,exp_name: takeoff-aviary-v0_2023-01-18,1440286,0.125474,451.6,5,-562.064423,-982.420191,-95.710497,281.606869,639
++36,exp_name: takeoff-aviary-v0_2023-01-18,1442677,0.13811,478.2,5,-616.078725,-819.457933,-507.745024,114.104876,640
++37,exp_name: takeoff-aviary-v0_2023-01-18,1445034,0.106924,392.833333,6,-474.479309,-595.725475,-105.83012,167.832849,641
++38,exp_name: takeoff-aviary-v0_2023-01-18,1447092,0.094026,343.0,6,-391.219798,-587.293824,-96.909255,205.555756,642
++39,exp_name: takeoff-aviary-v0_2023-01-18,1449314,0.124719,444.4,5,-547.747776,-677.950641,-97.288035,225.432296,643
++40,exp_name: takeoff-aviary-v0_2023-01-18,1451415,0.114733,420.2,5,-500.471182,-719.087046,-110.036788,208.374461,644
++41,exp_name: takeoff-aviary-v0_2023-01-18,1453889,0.166707,618.5,4,-824.349237,-887.979618,-710.864366,70.293258,645
++42,exp_name: takeoff-aviary-v0_2023-01-18,1456166,0.10466,379.5,6,-430.25778,-675.34211,-106.86003,239.236794,646
++43,exp_name: takeoff-aviary-v0_2023-01-18,1458561,0.104471,399.166667,6,-452.17005,-675.50327,-106.52495,245.645027,647
++44,exp_name: takeoff-aviary-v0_2023-01-18,1460884,0.077021,290.375,8,-253.498499,-838.570566,-107.305156,260.300875,648
++45,exp_name: takeoff-aviary-v0_2023-01-18,1463051,0.095861,361.166667,6,-378.787414,-674.603834,-108.244169,269.78367,649
++46,exp_name: takeoff-aviary-v0_2023-01-18,1465227,0.112646,435.2,5,-479.358125,-856.958464,-107.137777,307.529821,650
++47,exp_name: takeoff-aviary-v0_2023-01-18,1467583,0.104396,392.666667,6,-434.694322,-609.231433,-109.749354,229.315034,651
++48,exp_name: takeoff-aviary-v0_2023-01-18,1469639,0.09488,342.666667,6,-329.787014,-847.971454,-105.733275,304.750021,652
++49,exp_name: takeoff-aviary-v0_2023-01-18,1471694,0.107876,411.0,5,-443.838918,-803.050062,-109.701376,282.671818,653
++50,exp_name: takeoff-aviary-v0_2023-01-18,1473986,0.100179,382.0,6,-426.031908,-671.815646,-105.67823,229.027227,654
++51,exp_name: takeoff-aviary-v0_2023-01-18,1476175,0.121211,437.8,5,-514.853862,-680.045612,-109.659251,205.774105,655
++52,exp_name: takeoff-aviary-v0_2023-01-18,1478265,0.092098,348.333333,6,-369.61039,-714.400889,-95.955009,270.513372,656
++53,exp_name: takeoff-aviary-v0_2023-01-18,1480329,0.137402,516.0,4,-633.939916,-1084.67722,-105.70407,348.310804,657
++54,exp_name: takeoff-aviary-v0_2023-01-18,1482386,0.107432,342.833333,6,-349.643474,-652.618252,-105.119568,243.05757,658
++55,exp_name: takeoff-aviary-v0_2023-01-18,1484843,0.109429,409.5,6,-444.66822,-670.373525,-108.406283,239.249257,659
++56,exp_name: takeoff-aviary-v0_2023-01-18,1487024,0.096018,363.5,6,-379.86045,-692.334974,-107.446254,272.604722,660
++57,exp_name: takeoff-aviary-v0_2023-01-18,1489178,0.098204,359.0,6,-361.941825,-658.936971,-107.45646,249.671464,661
++58,exp_name: takeoff-aviary-v0_2023-01-18,1491520,0.124482,468.4,5,-532.924096,-654.572614,-113.514377,210.088174,662
++0,exp_name: takeoff-aviary-v0_2023-01-18,1493678,0.074819,269.75,8,-222.427835,-742.598918,-96.817151,209.521648,663
++1,exp_name: takeoff-aviary-v0_2023-01-18,1495945,0.106473,377.833333,6,-370.267908,-785.004921,-109.904176,277.794876,664
++2,exp_name: takeoff-aviary-v0_2023-01-18,1498144,0.064413,244.333333,9,-148.456836,-421.971827,-107.219505,97.078006,665
++3,exp_name: takeoff-aviary-v0_2023-01-18,1500204,0.09329,343.333333,6,-341.381757,-622.087369,-105.064222,235.846639,666
++4,exp_name: takeoff-aviary-v0_2023-01-18,1502306,0.080541,300.285714,7,-263.606251,-767.643427,-104.863089,250.475659,667
++5,exp_name: takeoff-aviary-v0_2023-01-18,1504454,0.062206,238.666667,9,-144.185663,-429.987235,-103.986828,101.109288,668
++6,exp_name: takeoff-aviary-v0_2023-01-18,1506502,0.138263,512.0,4,-642.356926,-684.623305,-607.046195,29.295065,669
++7,exp_name: takeoff-aviary-v0_2023-01-18,1508901,0.085856,299.875,8,-279.812088,-599.400474,-103.747679,208.564831,670
++8,exp_name: takeoff-aviary-v0_2023-01-18,1511111,0.122029,442.0,5,-529.568439,-756.433629,-109.715002,224.635647,671
++9,exp_name: takeoff-aviary-v0_2023-01-18,1513179,0.148912,517.0,4,-625.60761,-662.791444,-601.023486,24.453504,672
++10,exp_name: takeoff-aviary-v0_2023-01-18,1515420,0.086228,320.142857,7,-315.478384,-644.821778,-106.747099,242.027476,673
++0,exp_name: takeoff-aviary-v0_2023-01-18,1517765,0.107242,390.833333,6,-441.374437,-621.604817,-107.345138,236.339729,674
++1,exp_name: takeoff-aviary-v0_2023-01-18,1520017,0.120783,450.4,5,-557.936308,-664.119933,-463.817761,69.329859,675
++2,exp_name: takeoff-aviary-v0_2023-01-18,1522126,0.114405,421.8,5,-486.894962,-655.592611,-114.26419,190.827594,676
++3,exp_name: takeoff-aviary-v0_2023-01-18,1524209,0.089242,347.166667,6,-386.231861,-596.016747,-104.444684,201.286837,677
++4,exp_name: takeoff-aviary-v0_2023-01-18,1526577,0.103869,394.666667,6,-473.83234,-601.971472,-107.561338,168.14206,678
++5,exp_name: takeoff-aviary-v0_2023-01-18,1528993,0.094055,345.142857,7,-399.505346,-610.073741,-96.307532,193.157141,679
++6,exp_name: takeoff-aviary-v0_2023-01-18,1531214,0.115244,444.2,5,-557.969602,-652.938623,-502.518529,56.768707,680
++7,exp_name: takeoff-aviary-v0_2023-01-18,1533635,0.106408,403.5,6,-495.202657,-660.770221,-96.821541,191.430687,681
++8,exp_name: takeoff-aviary-v0_2023-01-18,1536013,0.125853,475.6,5,-590.94114,-779.509439,-521.71499,96.374041,682
++9,exp_name: takeoff-aviary-v0_2023-01-18,1538123,0.078001,301.428571,7,-341.193724,-586.23088,-92.920103,219.340835,683
++10,exp_name: takeoff-aviary-v0_2023-01-18,1540283,0.11399,432.0,5,-540.665846,-596.134957,-484.939264,43.277625,684
++11,exp_name: takeoff-aviary-v0_2023-01-18,1542516,0.076084,279.125,8,-296.181244,-611.689788,-94.181593,203.165496,685
++12,exp_name: takeoff-aviary-v0_2023-01-18,1544832,0.100931,386.0,6,-471.237919,-600.681343,-93.81635,172.010187,686
++13,exp_name: takeoff-aviary-v0_2023-01-18,1546885,0.105675,410.6,5,-497.47965,-528.952326,-468.838549,26.473943,687
++14,exp_name: takeoff-aviary-v0_2023-01-18,1549025,0.118269,428.0,5,-530.526352,-656.521745,-465.18716,66.103344,688
++15,exp_name: takeoff-aviary-v0_2023-01-18,1551115,0.109589,418.0,5,-528.020859,-583.69222,-457.352544,41.421689,689
++16,exp_name: takeoff-aviary-v0_2023-01-18,1553234,0.091395,353.166667,6,-404.372205,-599.61263,-97.142431,214.958249,690
++17,exp_name: takeoff-aviary-v0_2023-01-18,1555497,0.094534,323.285714,7,-356.54581,-646.654058,-94.490476,228.727158,691
++18,exp_name: takeoff-aviary-v0_2023-01-18,1557649,0.112207,430.4,5,-513.993483,-746.381592,-108.011652,215.148837,692
++19,exp_name: takeoff-aviary-v0_2023-01-18,1559700,0.088427,341.833333,6,-371.017573,-610.114057,-109.122559,191.746273,693
++0,exp_name: takeoff-aviary-v0_2023-01-18,1561895,0.086342,313.571429,7,-308.615062,-604.251829,-105.617815,232.309007,694
++1,exp_name: takeoff-aviary-v0_2023-01-18,1564082,0.080634,312.428571,7,-304.412027,-702.589501,-106.853938,233.918879,695
++2,exp_name: takeoff-aviary-v0_2023-01-18,1566338,0.08699,322.285714,7,-315.355036,-613.269437,-106.594124,240.197987,696
++3,exp_name: takeoff-aviary-v0_2023-01-18,1568577,0.090784,279.875,8,-249.39208,-604.330797,-103.942515,197.061025,697
++4,exp_name: takeoff-aviary-v0_2023-01-18,1570872,0.085246,327.857143,7,-333.000142,-926.363838,-104.925116,294.836399,698
++5,exp_name: takeoff-aviary-v0_2023-01-18,1573261,0.094898,341.285714,7,-354.224084,-593.85747,-104.149528,213.817627,699
++6,exp_name: takeoff-aviary-v0_2023-01-18,1575346,0.08202,297.857143,7,-282.476501,-584.616418,-103.722713,191.082761,700
++7,exp_name: takeoff-aviary-v0_2023-01-18,1577416,0.088769,345.0,6,-352.588983,-671.681933,-103.582889,247.976386,701
++8,exp_name: takeoff-aviary-v0_2023-01-18,1579493,0.090252,346.166667,6,-358.147457,-617.024172,-105.112708,251.106537,702
++9,exp_name: takeoff-aviary-v0_2023-01-18,1581654,0.066845,240.111111,9,-171.673063,-459.165944,-100.13641,114.187743,703
++10,exp_name: takeoff-aviary-v0_2023-01-18,1583828,0.07044,271.75,8,-226.421311,-510.444265,-104.592402,164.656671,704
++11,exp_name: takeoff-aviary-v0_2023-01-18,1586014,0.081332,312.285714,7,-314.432377,-618.40798,-103.679298,221.0285,705
++12,exp_name: takeoff-aviary-v0_2023-01-18,1588077,0.114249,412.6,5,-497.850781,-550.326512,-396.462067,59.081498,706
++13,exp_name: takeoff-aviary-v0_2023-01-18,1590128,0.100015,341.833333,6,-380.460247,-600.848222,-103.673444,200.42013,707
++14,exp_name: takeoff-aviary-v0_2023-01-18,1592519,0.097924,341.571429,7,-362.212147,-612.7946,-105.037631,231.485033,708
++15,exp_name: takeoff-aviary-v0_2023-01-18,1594571,0.095226,342.0,6,-350.193517,-595.821538,-106.527182,240.710439,709
++16,exp_name: takeoff-aviary-v0_2023-01-18,1596945,0.087449,339.142857,7,-357.482936,-651.556898,-103.265499,227.484083,710
++17,exp_name: takeoff-aviary-v0_2023-01-18,1599087,0.078608,306.0,7,-292.912328,-603.572282,-104.871201,222.198862,711
++18,exp_name: takeoff-aviary-v0_2023-01-18,1601314,0.091645,318.142857,7,-323.098397,-599.602379,-107.09706,198.041724,712
++19,exp_name: takeoff-aviary-v0_2023-01-18,1603375,0.100204,343.5,6,-363.161548,-652.423006,-105.656635,255.737349,713
++20,exp_name: takeoff-aviary-v0_2023-01-18,1605702,0.075738,290.875,8,-262.619989,-591.987144,-106.110929,202.056543,714
++21,exp_name: takeoff-aviary-v0_2023-01-18,1607837,0.075181,266.875,8,-226.325833,-612.717547,-104.354328,205.927414,715
++22,exp_name: takeoff-aviary-v0_2023-01-18,1610206,0.102977,394.833333,6,-469.350245,-607.482019,-107.176461,172.150545,716
++23,exp_name: takeoff-aviary-v0_2023-01-18,1612527,0.119938,464.2,5,-580.478467,-615.428845,-545.194355,27.208333,717
++24,exp_name: takeoff-aviary-v0_2023-01-18,1614638,0.119399,422.2,5,-488.243241,-619.636996,-109.17972,196.346477,718
++25,exp_name: takeoff-aviary-v0_2023-01-18,1616746,0.085531,301.142857,7,-303.905028,-705.496744,-107.543495,234.740489,719
++26,exp_name: takeoff-aviary-v0_2023-01-18,1619148,0.117173,400.333333,6,-475.138546,-707.089449,-118.157529,184.471668,720
++27,exp_name: takeoff-aviary-v0_2023-01-18,1621394,0.106632,374.333333,6,-444.005285,-615.325704,-106.135447,159.260447,721
++28,exp_name: takeoff-aviary-v0_2023-01-18,1623832,0.106174,406.333333,6,-495.586994,-598.542448,-163.010674,151.221227,722
++29,exp_name: takeoff-aviary-v0_2023-01-18,1626104,0.101088,378.666667,6,-454.953124,-592.446904,-92.261981,166.799645,723
++30,exp_name: takeoff-aviary-v0_2023-01-18,1628316,0.119457,442.4,5,-548.94538,-594.937943,-461.141002,48.375468,724
++31,exp_name: takeoff-aviary-v0_2023-01-18,1630366,0.110707,410.0,5,-504.880351,-602.26111,-415.285885,60.5287,725
++32,exp_name: takeoff-aviary-v0_2023-01-18,1632744,0.092298,339.714286,7,-399.176131,-550.390889,-92.434969,194.388639,726
++33,exp_name: takeoff-aviary-v0_2023-01-18,1634947,0.097355,367.166667,6,-448.401903,-553.946366,-95.718775,159.090653,727
++34,exp_name: takeoff-aviary-v0_2023-01-18,1637022,0.114917,415.0,5,-532.068052,-592.845773,-481.797414,39.733741,728
++35,exp_name: takeoff-aviary-v0_2023-01-18,1639425,0.095919,343.285714,7,-407.657386,-599.173733,-97.199313,199.063418,729
++36,exp_name: takeoff-aviary-v0_2023-01-18,1641654,0.097597,371.5,6,-452.58094,-609.435556,-97.177946,164.694762,730
++37,exp_name: takeoff-aviary-v0_2023-01-18,1644081,0.089709,346.714286,7,-414.488936,-583.959053,-93.774301,204.730336,731
++38,exp_name: takeoff-aviary-v0_2023-01-18,1646175,0.084279,299.142857,7,-337.655492,-585.532115,-94.799605,211.557445,732
++39,exp_name: takeoff-aviary-v0_2023-01-18,1648261,0.080637,298.0,7,-340.379165,-766.821357,-91.260796,239.560397,733
++40,exp_name: takeoff-aviary-v0_2023-01-18,1650481,0.096341,370.0,6,-432.884772,-590.473808,-110.273241,163.40119,734
++41,exp_name: takeoff-aviary-v0_2023-01-18,1652633,0.101838,358.666667,6,-411.676745,-588.035944,-111.066919,155.887178,735
++42,exp_name: takeoff-aviary-v0_2023-01-18,1654953,0.112814,386.666667,6,-455.380618,-647.313658,-107.948309,168.365247,736
++43,exp_name: takeoff-aviary-v0_2023-01-18,1657082,0.083656,304.142857,7,-315.328372,-700.954504,-95.368111,249.421909,737
++44,exp_name: takeoff-aviary-v0_2023-01-18,1659409,0.109372,387.833333,6,-441.482284,-705.029925,-108.058168,241.115983,738
++45,exp_name: takeoff-aviary-v0_2023-01-18,1661462,0.106446,410.6,5,-487.194746,-713.97455,-107.765339,207.287676,739
++46,exp_name: takeoff-aviary-v0_2023-01-18,1663813,0.086309,335.857143,7,-348.596117,-558.780958,-102.986366,210.534456,740
++47,exp_name: takeoff-aviary-v0_2023-01-18,1666033,0.076787,277.5,8,-259.543337,-596.340556,-104.38213,203.092549,741
++48,exp_name: takeoff-aviary-v0_2023-01-18,1668165,0.07859,304.571429,7,-296.089148,-619.770054,-103.159775,221.707224,742
++49,exp_name: takeoff-aviary-v0_2023-01-18,1670262,0.089789,349.5,6,-361.550153,-698.262728,-112.196188,247.998605,743
++50,exp_name: takeoff-aviary-v0_2023-01-18,1672480,0.088081,316.857143,7,-313.329542,-644.891632,-105.760983,192.585791,744
++0,exp_name: takeoff-aviary-v0_2023-01-18,1674690,0.09583,368.333333,6,-403.375554,-671.939547,-115.537727,202.452874,745
++0,exp_name: takeoff-aviary-v0_2023-01-18,1676964,0.099198,379.0,6,-426.433111,-649.872686,-108.119414,227.396969,746
++1,exp_name: takeoff-aviary-v0_2023-01-18,1679323,0.107938,393.166667,6,-469.281198,-582.863005,-114.685915,163.122427,747
++2,exp_name: takeoff-aviary-v0_2023-01-18,1681802,0.091787,354.142857,7,-383.381745,-619.090824,-113.422453,200.039731,748
++3,exp_name: takeoff-aviary-v0_2023-01-18,1684036,0.082141,319.142857,7,-341.81297,-518.897362,-104.389854,174.568508,749
++4,exp_name: takeoff-aviary-v0_2023-01-18,1686121,0.097146,347.5,6,-382.003684,-557.448447,-110.321099,191.765411,750
++5,exp_name: takeoff-aviary-v0_2023-01-18,1688181,0.10599,412.0,5,-481.4539,-629.549766,-110.750094,188.421649,751
++6,exp_name: takeoff-aviary-v0_2023-01-18,1690612,0.104364,405.166667,6,-448.693272,-660.347625,-112.610764,212.17917,752
++7,exp_name: takeoff-aviary-v0_2023-01-18,1693094,0.098788,354.571429,7,-379.357276,-661.108785,-110.000633,237.008126,753
++8,exp_name: takeoff-aviary-v0_2023-01-18,1695167,0.107156,414.6,5,-478.244626,-603.298789,-109.823022,185.352367,754
++9,exp_name: takeoff-aviary-v0_2023-01-18,1697231,0.076701,294.857143,7,-285.957368,-547.217309,-105.798589,202.103823,755
++10,exp_name: takeoff-aviary-v0_2023-01-18,1699669,0.09703,348.285714,7,-385.905849,-646.081358,-99.532994,246.243133,756
++11,exp_name: takeoff-aviary-v0_2023-01-18,1701881,0.115234,442.4,5,-541.971257,-609.434989,-440.903387,59.066722,757
++12,exp_name: takeoff-aviary-v0_2023-01-18,1703991,0.109362,422.0,5,-498.610555,-668.205682,-116.324217,197.043436,758
++13,exp_name: takeoff-aviary-v0_2023-01-18,1706094,0.115936,420.6,5,-500.207726,-623.759311,-112.871268,195.14404,759
++14,exp_name: takeoff-aviary-v0_2023-01-18,1708186,0.108382,418.4,5,-513.755202,-602.565686,-414.327778,61.109436,760
++15,exp_name: takeoff-aviary-v0_2023-01-18,1710437,0.097115,375.166667,6,-453.11886,-610.376538,-100.691579,178.473438,761
++16,exp_name: takeoff-aviary-v0_2023-01-18,1712513,0.111628,415.2,5,-513.043213,-579.727141,-401.088914,63.496933,762
++17,exp_name: takeoff-aviary-v0_2023-01-18,1714823,0.12076,462.0,5,-573.448212,-623.662048,-535.472128,40.986254,763
++18,exp_name: takeoff-aviary-v0_2023-01-18,1717286,0.10561,410.5,6,-492.96362,-619.225559,-110.998547,174.249501,764
++19,exp_name: takeoff-aviary-v0_2023-01-18,1719479,0.097671,365.5,6,-424.27714,-626.078032,-122.090543,208.34554,765
++20,exp_name: takeoff-aviary-v0_2023-01-18,1721866,0.089229,341.0,7,-373.360789,-602.116012,-105.065576,202.418329,766
++21,exp_name: takeoff-aviary-v0_2023-01-18,1724258,0.077241,299.0,8,-288.4689,-664.461663,-105.276771,224.109035,767
++22,exp_name: takeoff-aviary-v0_2023-01-18,1726766,0.096647,358.285714,7,-379.458266,-658.465709,-107.642662,235.376556,768
++23,exp_name: takeoff-aviary-v0_2023-01-18,1729084,0.101255,386.333333,6,-441.561448,-615.601427,-115.192676,200.341691,769
++24,exp_name: takeoff-aviary-v0_2023-01-18,1731306,0.115166,444.4,5,-523.748919,-696.835263,-116.347073,210.506189,770
++25,exp_name: takeoff-aviary-v0_2023-01-18,1733436,0.09577,355.0,6,-395.452902,-608.868136,-116.015395,200.733331,771
++26,exp_name: takeoff-aviary-v0_2023-01-18,1735520,0.089703,347.333333,6,-387.144347,-572.310593,-98.528169,199.476739,772
++0,exp_name: takeoff-aviary-v0_2023-01-18,1737855,0.100697,389.166667,6,-480.317203,-606.045162,-99.710185,172.625255,773
++1,exp_name: takeoff-aviary-v0_2023-01-18,1740246,0.079672,298.875,8,-317.96826,-618.524202,-96.531002,220.680353,774
++2,exp_name: takeoff-aviary-v0_2023-01-18,1742783,0.109504,422.833333,6,-518.517525,-629.376834,-425.165608,60.450837,775
++3,exp_name: takeoff-aviary-v0_2023-01-18,1744976,0.094485,365.5,6,-429.564016,-545.514336,-113.831705,146.95376,776
++4,exp_name: takeoff-aviary-v0_2023-01-18,1747110,0.096644,355.666667,6,-417.959131,-743.375993,-97.578439,239.333177,777
++0,exp_name: takeoff-aviary-v0_2023-01-18,1749233,0.110539,424.6,5,-532.522726,-605.923082,-464.496091,45.045948,778
++1,exp_name: takeoff-aviary-v0_2023-01-18,1751672,0.125609,487.8,5,-607.327955,-768.292979,-494.779406,91.238505,779
++2,exp_name: takeoff-aviary-v0_2023-01-18,1754137,0.095408,352.142857,7,-405.213987,-547.893279,-101.139639,190.092964,780
++3,exp_name: takeoff-aviary-v0_2023-01-18,1756252,0.109668,423.0,5,-524.70232,-567.570746,-482.893021,34.154026,781
++4,exp_name: takeoff-aviary-v0_2023-01-18,1758726,0.105534,412.333333,6,-502.763124,-644.612079,-102.913342,185.296079,782
++5,exp_name: takeoff-aviary-v0_2023-01-18,1760855,0.105187,354.833333,6,-393.416022,-611.283848,-96.506298,214.299557,783
++6,exp_name: takeoff-aviary-v0_2023-01-18,1763029,0.093532,362.333333,6,-404.992946,-586.675477,-99.529422,208.40997,784
++7,exp_name: takeoff-aviary-v0_2023-01-18,1765501,0.105583,412.0,6,-496.573759,-601.192036,-112.154862,172.954948,785
++8,exp_name: takeoff-aviary-v0_2023-01-18,1767996,0.112057,415.833333,6,-462.335341,-607.39409,-124.783445,163.102919,786
++9,exp_name: takeoff-aviary-v0_2023-01-18,1770189,0.093427,365.5,6,-384.176198,-678.889798,-109.304741,273.656028,787
++10,exp_name: takeoff-aviary-v0_2023-01-18,1772362,0.07944,310.428571,7,-289.765052,-597.08273,-110.076872,203.910937,788
++11,exp_name: takeoff-aviary-v0_2023-01-18,1774678,0.104486,386.0,6,-399.063555,-673.080526,-110.211441,239.506837,789
++12,exp_name: takeoff-aviary-v0_2023-01-18,1777174,0.079581,312.0,8,-246.012509,-673.551983,-110.875348,203.020998,790
++13,exp_name: takeoff-aviary-v0_2023-01-18,1779418,0.096828,374.0,6,-310.671319,-834.766203,-115.327155,276.30455,791
++14,exp_name: takeoff-aviary-v0_2023-01-18,1781621,0.099858,367.166667,6,-221.72756,-636.181252,-121.271266,185.639381,792
++15,exp_name: takeoff-aviary-v0_2023-01-18,1783893,0.097193,378.666667,6,-354.758921,-665.058323,-129.033344,225.031253,793
++16,exp_name: takeoff-aviary-v0_2023-01-18,1785943,0.088058,341.666667,6,-241.494103,-604.59651,-119.090956,174.690174,794
++17,exp_name: takeoff-aviary-v0_2023-01-18,1788112,0.082514,309.857143,7,-282.849623,-676.379332,-107.898163,235.070556,795
++18,exp_name: takeoff-aviary-v0_2023-01-18,1790210,0.090573,349.666667,6,-341.032286,-631.438912,-109.87014,221.948002,796
++0,exp_name: takeoff-aviary-v0_2023-01-18,1792527,0.074692,289.625,8,-237.942962,-563.443335,-109.014838,172.529612,797
++1,exp_name: takeoff-aviary-v0_2023-01-18,1794767,0.084924,320.0,7,-287.520274,-585.534068,-106.880609,206.049128,798
++2,exp_name: takeoff-aviary-v0_2023-01-18,1796926,0.093717,359.833333,6,-311.173086,-739.960085,-110.807909,240.687208,799
++3,exp_name: takeoff-aviary-v0_2023-01-18,1799332,0.10142,401.0,6,-139.204754,-184.646242,-110.034417,26.057344,800
++4,exp_name: takeoff-aviary-v0_2023-01-18,1801405,0.09087,345.5,6,-358.010002,-734.895088,-106.211625,263.550082,801
++5,exp_name: takeoff-aviary-v0_2023-01-18,1803609,0.082916,314.857143,7,-261.04757,-717.534286,-108.347855,224.826113,802
++6,exp_name: takeoff-aviary-v0_2023-01-18,1805805,0.08079,313.714286,7,-263.945361,-624.33064,-111.976463,225.144062,803
++7,exp_name: takeoff-aviary-v0_2023-01-18,1808342,0.074333,281.888889,9,-229.720026,-683.58903,-110.686906,198.455469,804
++8,exp_name: takeoff-aviary-v0_2023-01-18,1810436,0.078915,299.142857,7,-238.369272,-590.190601,-112.568623,193.342998,805
++9,exp_name: takeoff-aviary-v0_2023-01-18,1812541,0.090955,350.833333,6,-342.606017,-606.061683,-124.97085,214.592479,806
++10,exp_name: takeoff-aviary-v0_2023-01-18,1814929,0.069259,265.333333,9,-214.097526,-572.842001,-107.416583,179.269702,807
++11,exp_name: takeoff-aviary-v0_2023-01-18,1817161,0.083708,318.857143,7,-285.300532,-616.780382,-110.594982,216.563234,808
++12,exp_name: takeoff-aviary-v0_2023-01-18,1819321,0.092419,360.0,6,-358.531083,-668.399854,-115.13195,245.502357,809
++13,exp_name: takeoff-aviary-v0_2023-01-18,1821523,0.081748,314.571429,7,-287.101031,-647.579705,-112.135956,221.227702,810
++14,exp_name: takeoff-aviary-v0_2023-01-18,1823984,0.092789,351.571429,7,-353.401006,-628.116495,-110.970251,204.879733,811
++15,exp_name: takeoff-aviary-v0_2023-01-18,1826241,0.072111,282.125,8,-186.660715,-627.399858,-111.563566,167.088165,812
++16,exp_name: takeoff-aviary-v0_2023-01-18,1828679,0.093528,348.285714,7,-348.882758,-685.029409,-111.000337,247.960828,813
++17,exp_name: takeoff-aviary-v0_2023-01-18,1830951,0.074155,284.0,8,-242.078336,-626.704363,-108.10894,218.475376,814
++18,exp_name: takeoff-aviary-v0_2023-01-18,1833062,0.076845,301.571429,7,-266.890845,-631.95439,-110.773056,220.388482,815
++19,exp_name: takeoff-aviary-v0_2023-01-18,1835536,0.082377,309.25,8,-284.87522,-598.171188,-108.809732,222.571152,816
++20,exp_name: takeoff-aviary-v0_2023-01-18,1837751,0.073443,276.875,8,-234.623533,-597.687131,-108.990312,206.24644,817
++21,exp_name: takeoff-aviary-v0_2023-01-18,1839905,0.08312,307.714286,7,-251.043841,-590.362933,-108.458915,204.369962,818
++22,exp_name: takeoff-aviary-v0_2023-01-18,1842056,0.065345,239.0,9,-129.110599,-204.996519,-110.066417,27.971063,819
++23,exp_name: takeoff-aviary-v0_2023-01-18,1844377,0.066124,232.1,10,-126.375971,-214.396936,-111.026982,29.912496,820
++24,exp_name: takeoff-aviary-v0_2023-01-18,1846463,0.079029,298.0,7,-214.795777,-504.999917,-108.076215,134.305663,821
++25,exp_name: takeoff-aviary-v0_2023-01-18,1848518,0.075801,256.875,8,-144.608368,-231.144271,-112.712881,40.049174,822
++26,exp_name: takeoff-aviary-v0_2023-01-18,1850648,0.07396,266.25,8,-200.083162,-599.963888,-108.854887,163.115288,823
++27,exp_name: takeoff-aviary-v0_2023-01-18,1853097,0.096053,349.857143,7,-289.714398,-616.361187,-109.075386,195.144917,824
++28,exp_name: takeoff-aviary-v0_2023-01-18,1855173,0.082085,296.571429,7,-232.99063,-547.464651,-110.433339,184.193719,825
++29,exp_name: takeoff-aviary-v0_2023-01-18,1857511,0.075511,292.25,8,-257.486415,-668.697554,-112.214662,228.80625,826
++30,exp_name: takeoff-aviary-v0_2023-01-18,1859834,0.074793,290.375,8,-254.188569,-689.732675,-105.952305,247.253564,827
++31,exp_name: takeoff-aviary-v0_2023-01-18,1861978,0.072418,268.0,8,-188.715363,-612.827675,-108.388997,162.538589,828
++32,exp_name: takeoff-aviary-v0_2023-01-18,1864111,0.068701,266.625,8,-191.491827,-666.56864,-109.00397,181.370663,829
++33,exp_name: takeoff-aviary-v0_2023-01-18,1866569,0.079709,307.25,8,-241.516231,-626.16621,-109.632196,218.983591,830
++34,exp_name: takeoff-aviary-v0_2023-01-18,1868648,0.079704,297.0,7,-199.667051,-682.360752,-109.934093,197.280274,831
++35,exp_name: takeoff-aviary-v0_2023-01-18,1870786,0.068152,267.25,8,-130.455036,-186.636174,-112.626971,22.334079,832
++36,exp_name: takeoff-aviary-v0_2023-01-18,1872969,0.069633,272.875,8,-178.175146,-565.57436,-113.716148,146.662732,833
++37,exp_name: takeoff-aviary-v0_2023-01-18,1875038,0.069517,258.625,8,-135.545944,-237.323922,-112.772039,39.211675,834
++38,exp_name: takeoff-aviary-v0_2023-01-18,1877363,0.123739,465.0,5,-418.981796,-668.749024,-124.771896,240.354619,835
++39,exp_name: takeoff-aviary-v0_2023-01-18,1879566,0.082462,314.714286,7,-157.032685,-243.982759,-123.512751,43.488432,836
++40,exp_name: takeoff-aviary-v0_2023-01-18,1881667,0.096473,350.166667,6,-144.114856,-200.385569,-123.718205,25.945086,837
++41,exp_name: takeoff-aviary-v0_2023-01-18,1883750,0.088616,347.166667,6,-174.52281,-231.327132,-113.946866,48.455073,838
++0,exp_name: takeoff-aviary-v0_2023-01-18,1885901,0.092715,358.5,6,-222.209462,-695.68232,-124.285221,211.760843,839
++1,exp_name: takeoff-aviary-v0_2023-01-18,1888467,0.116423,427.666667,6,-314.384235,-715.683279,-125.007739,258.642472,840
++2,exp_name: takeoff-aviary-v0_2023-01-18,1890633,0.06953,270.75,8,-127.29013,-147.967267,-108.063237,13.114246,841
++3,exp_name: takeoff-aviary-v0_2023-01-18,1892744,0.067498,263.875,8,-176.773574,-554.245539,-104.724448,143.181081,842
++4,exp_name: takeoff-aviary-v0_2023-01-18,1895021,0.077105,284.625,8,-172.208204,-538.455476,-112.561257,138.6008,843
++5,exp_name: takeoff-aviary-v0_2023-01-18,1897223,0.08086,314.571429,7,-279.042629,-721.645383,-110.262121,253.643857,844
++6,exp_name: takeoff-aviary-v0_2023-01-18,1899347,0.091161,354.0,6,-345.844494,-624.410819,-116.695219,228.816479,845
++7,exp_name: takeoff-aviary-v0_2023-01-18,1901802,0.095229,350.714286,7,-332.327187,-712.008655,-119.656787,244.571149,846
++8,exp_name: takeoff-aviary-v0_2023-01-18,1904033,0.082604,318.714286,7,-308.502581,-778.933126,-100.757471,249.194301,847
++9,exp_name: takeoff-aviary-v0_2023-01-18,1906172,0.078992,305.571429,7,-272.151293,-667.142674,-112.387145,215.186297,848
++10,exp_name: takeoff-aviary-v0_2023-01-18,1908257,0.125374,417.0,5,-489.977404,-629.862586,-110.594811,192.82481,849
++11,exp_name: takeoff-aviary-v0_2023-01-18,1910504,0.097402,374.5,6,-422.580456,-618.507963,-102.229989,162.098404,850
++12,exp_name: takeoff-aviary-v0_2023-01-18,1912956,0.090262,350.285714,7,-385.41719,-626.206922,-97.894006,220.324529,851
++13,exp_name: takeoff-aviary-v0_2023-01-18,1915049,0.094781,348.833333,6,-392.952869,-631.346801,-101.078344,206.204864,852
++14,exp_name: takeoff-aviary-v0_2023-01-18,1917268,0.063827,246.555556,9,-238.044687,-528.461441,-95.928041,187.880253,853
++15,exp_name: takeoff-aviary-v0_2023-01-18,1919550,0.08503,326.0,7,-365.817904,-619.92058,-99.780709,232.851081,854
++0,exp_name: takeoff-aviary-v0_2023-01-18,1921936,0.092297,340.857143,7,-383.440468,-560.677532,-100.25407,182.034825,855
++1,exp_name: takeoff-aviary-v0_2023-01-18,1924158,0.081615,317.428571,7,-337.163685,-607.950883,-104.95808,203.092142,856
++2,exp_name: takeoff-aviary-v0_2023-01-18,1926358,0.095004,366.666667,6,-410.913424,-626.118006,-100.860056,217.701074,857
++3,exp_name: takeoff-aviary-v0_2023-01-18,1928564,0.09893,367.666667,6,-371.265576,-622.576104,-115.507288,224.86696,858
++4,exp_name: takeoff-aviary-v0_2023-01-18,1930969,0.104231,400.833333,6,-426.881669,-639.483025,-119.811997,220.0748,859
++5,exp_name: takeoff-aviary-v0_2023-01-18,1933018,0.075549,292.714286,7,-270.570085,-652.652697,-103.665115,233.085637,860
++6,exp_name: takeoff-aviary-v0_2023-01-18,1935382,0.089995,337.714286,7,-314.158533,-677.979479,-114.662738,231.30364,861
++7,exp_name: takeoff-aviary-v0_2023-01-18,1937584,0.081084,314.571429,7,-303.047817,-633.836652,-111.632577,224.559458,862
++8,exp_name: takeoff-aviary-v0_2023-01-18,1939721,0.092991,356.166667,6,-371.313305,-664.043601,-118.670687,194.957732,863
++9,exp_name: takeoff-aviary-v0_2023-01-18,1941923,0.083993,314.571429,7,-270.100243,-626.569256,-112.552295,206.30534,864
++10,exp_name: takeoff-aviary-v0_2023-01-18,1944138,0.083389,316.428571,7,-297.797123,-579.848346,-110.147505,208.039732,865
++11,exp_name: takeoff-aviary-v0_2023-01-18,1946326,0.112617,437.6,5,-506.866106,-786.07604,-120.445255,227.326179,866
++12,exp_name: takeoff-aviary-v0_2023-01-18,1948627,0.088014,328.714286,7,-322.005131,-663.388584,-104.463943,245.685559,867
++13,exp_name: takeoff-aviary-v0_2023-01-18,1950865,0.083195,319.714286,7,-331.077606,-621.859188,-100.81214,201.636216,868
++14,exp_name: takeoff-aviary-v0_2023-01-18,1952917,0.088399,342.0,6,-362.57328,-682.413307,-111.961174,201.99357,869
++15,exp_name: takeoff-aviary-v0_2023-01-18,1955180,0.08776,323.285714,7,-339.8347,-598.915857,-99.958553,212.296196,870
++0,exp_name: takeoff-aviary-v0_2023-01-18,1957269,0.108649,417.8,5,-499.32364,-613.389368,-439.435942,62.314968,871
++1,exp_name: takeoff-aviary-v0_2023-01-18,1959350,0.094537,346.833333,6,-371.863795,-615.645606,-107.569935,193.367831,872
++0,exp_name: takeoff-aviary-v0_2023-01-18,1961696,0.08927,293.25,8,-300.893326,-553.086634,-99.748317,197.956819,873
++1,exp_name: takeoff-aviary-v0_2023-01-18,1964333,0.1114,376.714286,7,-442.775621,-874.183279,-97.234101,256.88499,874
++2,exp_name: takeoff-aviary-v0_2023-01-18,1966515,0.075734,272.75,8,-255.927827,-609.032944,-101.193863,192.600818,875
++3,exp_name: takeoff-aviary-v0_2023-01-18,1968811,0.076873,287.0,8,-258.166997,-539.158468,-113.311401,172.672246,876
++4,exp_name: takeoff-aviary-v0_2023-01-18,1970869,0.075165,294.0,7,-282.2801,-548.686096,-110.580906,183.701557,877
++5,exp_name: takeoff-aviary-v0_2023-01-18,1973108,0.085988,319.857143,7,-351.743354,-523.739007,-97.92955,160.739397,878
++6,exp_name: takeoff-aviary-v0_2023-01-18,1975293,0.08072,312.142857,7,-301.95382,-615.471819,-111.577734,217.522085,879
++7,exp_name: takeoff-aviary-v0_2023-01-18,1977717,0.095283,346.285714,7,-368.258127,-562.909876,-110.224967,189.973089,880
++8,exp_name: takeoff-aviary-v0_2023-01-18,1980182,0.119414,410.833333,6,-487.85825,-621.508828,-111.055805,176.729076,881
++9,exp_name: takeoff-aviary-v0_2023-01-18,1982740,0.12013,426.333333,6,-484.763705,-786.511912,-113.993421,268.18772,882
++0,exp_name: takeoff-aviary-v0_2023-01-18,1984960,0.099496,370.0,6,-355.925575,-670.470829,-111.924389,232.582571,883
++0,exp_name: takeoff-aviary-v0_2023-01-18,1987317,0.109103,392.833333,6,-442.785568,-670.303461,-108.629804,241.306374,884
++1,exp_name: takeoff-aviary-v0_2023-01-18,1989633,0.100063,386.0,6,-446.807474,-565.119613,-112.788961,168.021977,885
++2,exp_name: takeoff-aviary-v0_2023-01-18,1992031,0.104471,399.666667,6,-473.751833,-653.086814,-100.69697,182.002446,886
++3,exp_name: takeoff-aviary-v0_2023-01-18,1994330,0.104586,383.166667,6,-431.225783,-617.979311,-114.428218,169.162746,887
++0,exp_name: takeoff-aviary-v0_2023-01-18,1996466,0.097286,356.0,6,-398.635251,-669.936156,-99.92915,220.449094,888
++1,exp_name: takeoff-aviary-v0_2023-01-18,1998794,0.107072,388.0,6,-454.163362,-615.81195,-113.058169,169.185599,889
++2,exp_name: takeoff-aviary-v0_2023-01-18,2000941,0.095583,357.833333,6,-405.492051,-604.504229,-109.250602,158.850893,890
++3,exp_name: takeoff-aviary-v0_2023-01-18,2003168,0.103488,371.166667,6,-424.36657,-569.768976,-115.751425,149.454143,891
++4,exp_name: takeoff-aviary-v0_2023-01-18,2005232,0.093127,344.0,6,-399.522801,-544.863214,-109.849728,142.47347,892
++5,exp_name: takeoff-aviary-v0_2023-01-18,2007414,0.122006,436.4,5,-541.027748,-630.699149,-460.77242,66.848057,893
++6,exp_name: takeoff-aviary-v0_2023-01-18,2009529,0.090958,352.5,6,-390.870374,-615.070496,-111.453451,207.855914,894
++7,exp_name: takeoff-aviary-v0_2023-01-18,2011640,0.095766,351.833333,6,-392.388954,-553.643075,-112.18869,196.64351,895
++0,exp_name: takeoff-aviary-v0_2023-01-18,2013739,0.108044,349.833333,6,-409.181434,-617.287344,-97.809269,229.71738,896
++1,exp_name: takeoff-aviary-v0_2023-01-18,2016070,0.08841,333.0,7,-369.565052,-674.668364,-100.119238,232.342319,897
++0,exp_name: takeoff-aviary-v0_2023-01-18,2018459,0.093853,341.285714,7,-376.286624,-621.016722,-99.244369,217.181847,898
++1,exp_name: takeoff-aviary-v0_2023-01-18,2020797,0.073421,259.777778,9,-247.211083,-623.720696,-97.089593,205.359176,899
++2,exp_name: takeoff-aviary-v0_2023-01-18,2022951,0.113468,430.8,5,-529.094788,-631.247249,-470.933421,56.660623,900
++3,exp_name: takeoff-aviary-v0_2023-01-18,2025060,0.116665,421.8,5,-502.932818,-616.128872,-356.629733,90.071024,901
++0,exp_name: takeoff-aviary-v0_2023-01-18,2027154,0.094253,349.0,6,-400.437761,-674.80201,-100.04338,225.412464,902
++1,exp_name: takeoff-aviary-v0_2023-01-18,2029216,0.111451,412.4,5,-505.065829,-668.843013,-102.063301,206.542541,903
++2,exp_name: takeoff-aviary-v0_2023-01-18,2031460,0.073671,280.5,8,-282.847465,-616.938822,-97.549111,229.125883,904
++0,exp_name: takeoff-aviary-v0_2023-01-18,2033781,0.071228,257.888889,9,-247.092132,-540.935252,-97.950088,195.520217,905
++1,exp_name: takeoff-aviary-v0_2023-01-18,2036177,0.088539,342.285714,7,-382.522087,-628.198504,-103.031909,238.743716,906
++2,exp_name: takeoff-aviary-v0_2023-01-18,2038400,0.075741,277.875,8,-271.99988,-678.669544,-99.221287,220.088557,907
++0,exp_name: takeoff-aviary-v0_2023-01-18,2040568,0.117021,433.6,5,-499.573887,-677.631806,-119.210727,215.971972,908
++1,exp_name: takeoff-aviary-v0_2023-01-18,2042621,0.111832,410.6,5,-437.103277,-720.646161,-99.70356,270.84204,909
++2,exp_name: takeoff-aviary-v0_2023-01-18,2045038,0.124788,402.833333,6,-446.688353,-670.101999,-118.297081,223.437876,910
++3,exp_name: takeoff-aviary-v0_2023-01-18,2047089,0.106217,410.2,5,-453.231649,-688.918294,-116.32577,216.684477,911
++4,exp_name: takeoff-aviary-v0_2023-01-18,2049216,0.091257,354.5,6,-377.586112,-668.915214,-100.222179,269.188477,912
++5,exp_name: takeoff-aviary-v0_2023-01-18,2051683,0.110753,411.166667,6,-423.880184,-659.032198,-118.915466,221.04792,913
++6,exp_name: takeoff-aviary-v0_2023-01-18,2054072,0.107773,398.166667,6,-377.924156,-680.785752,-116.55234,253.308593,914
++7,exp_name: takeoff-aviary-v0_2023-01-18,2056163,0.077365,298.714286,7,-273.593606,-604.170867,-111.465521,193.160218,915
++8,exp_name: takeoff-aviary-v0_2023-01-18,2058716,0.114607,425.5,6,-476.158649,-691.261842,-115.742821,251.453787,916
++9,exp_name: takeoff-aviary-v0_2023-01-18,2060999,0.099902,380.5,6,-293.96948,-698.183289,-116.648315,237.702912,917
++10,exp_name: takeoff-aviary-v0_2023-01-18,2063103,0.092408,350.666667,6,-272.555026,-675.201355,-117.227233,188.767241,918
++11,exp_name: takeoff-aviary-v0_2023-01-18,2065250,0.097177,357.833333,6,-291.778828,-624.193475,-121.880756,232.573187,919
++0,exp_name: takeoff-aviary-v0_2023-01-18,2067500,0.108589,375.0,6,-354.581392,-813.313913,-118.801813,281.141771,920
++0,exp_name: takeoff-aviary-v0_2023-01-18,2070055,0.13216,511.0,5,-500.710087,-927.636335,-132.439184,299.420385,921
++1,exp_name: takeoff-aviary-v0_2023-01-18,2072355,0.102813,383.333333,6,-304.902331,-669.036169,-123.087944,248.266604,922
++2,exp_name: takeoff-aviary-v0_2023-01-18,2074751,0.088151,342.285714,7,-269.415496,-664.616265,-116.006776,231.7542,923
++3,exp_name: takeoff-aviary-v0_2023-01-18,2076862,0.089912,351.833333,6,-287.631926,-663.611915,-114.704003,235.284128,924
++4,exp_name: takeoff-aviary-v0_2023-01-18,2079162,0.088199,328.571429,7,-206.597876,-677.301584,-117.509795,192.314169,925
++5,exp_name: takeoff-aviary-v0_2023-01-18,2081479,0.084544,331.0,7,-229.542319,-681.027091,-117.749543,191.125449,926
++6,exp_name: takeoff-aviary-v0_2023-01-18,2083632,0.078062,307.571429,7,-203.077606,-677.325385,-113.996625,193.667738,927
++7,exp_name: takeoff-aviary-v0_2023-01-18,2086145,0.096243,359.0,7,-290.568372,-681.212326,-116.770804,247.29067,928
++8,exp_name: takeoff-aviary-v0_2023-01-18,2088268,0.09126,353.833333,6,-245.319912,-680.923186,-127.163244,197.63159,929
++9,exp_name: takeoff-aviary-v0_2023-01-18,2090830,0.093478,366.0,7,-290.551459,-707.325371,-120.270453,231.825769,930
++0,exp_name: takeoff-aviary-v0_2023-01-18,2092967,0.0971,356.166667,6,-226.888396,-730.989859,-117.179741,225.491295,931
++1,exp_name: takeoff-aviary-v0_2023-01-18,2095040,0.105918,414.6,5,-373.218062,-631.249833,-119.379476,209.808864,932
++0,exp_name: takeoff-aviary-v0_2023-01-18,2097223,0.112428,436.6,5,-428.140802,-671.098805,-133.023507,243.053792,933
++1,exp_name: takeoff-aviary-v0_2023-01-18,2099279,0.090399,342.666667,6,-312.459918,-638.926833,-118.276851,222.825167,934
++2,exp_name: takeoff-aviary-v0_2023-01-18,2101991,0.142124,542.4,5,-619.96865,-795.158549,-120.212307,253.453842,935
++3,exp_name: takeoff-aviary-v0_2023-01-18,2104046,0.088159,342.5,6,-307.727602,-693.163892,-116.786061,264.554304,936
++4,exp_name: takeoff-aviary-v0_2023-01-18,2106226,0.081901,311.428571,7,-263.063193,-640.100906,-114.566757,228.091271,937
++5,exp_name: takeoff-aviary-v0_2023-01-18,2108408,0.095835,363.666667,6,-409.200718,-713.567202,-102.21929,239.852208,938
++6,exp_name: takeoff-aviary-v0_2023-01-18,2110533,0.108861,425.0,5,-447.957112,-709.443115,-128.923072,258.69648,939
++7,exp_name: takeoff-aviary-v0_2023-01-18,2112899,0.125208,473.2,5,-546.302717,-749.959723,-107.018719,225.32924,940
++8,exp_name: takeoff-aviary-v0_2023-01-18,2115424,0.095128,360.714286,7,-348.895136,-667.179384,-114.497284,265.613981,941
++9,exp_name: takeoff-aviary-v0_2023-01-18,2117576,0.091955,358.666667,6,-376.049031,-652.732374,-113.877756,256.981931,942
++10,exp_name: takeoff-aviary-v0_2023-01-18,2119848,0.120218,454.4,5,-534.133501,-701.262738,-117.43766,212.308725,943
++11,exp_name: takeoff-aviary-v0_2023-01-18,2122441,0.115468,432.166667,6,-495.335282,-815.677506,-119.752384,272.942386,944
++12,exp_name: takeoff-aviary-v0_2023-01-18,2124694,0.074425,281.625,8,-248.400796,-653.128881,-108.939319,230.702803,945
++13,exp_name: takeoff-aviary-v0_2023-01-18,2127181,0.112046,414.5,6,-484.920082,-700.997441,-102.834495,264.304534,946
++14,exp_name: takeoff-aviary-v0_2023-01-18,2129771,0.134308,518.0,5,-652.569711,-758.511022,-558.468498,63.527614,947
++15,exp_name: takeoff-aviary-v0_2023-01-18,2131986,0.095697,369.166667,6,-403.49329,-711.977128,-107.334088,292.284631,948
++16,exp_name: takeoff-aviary-v0_2023-01-18,2134108,0.097518,353.666667,6,-426.220193,-929.638469,-104.245518,332.370612,949
++17,exp_name: takeoff-aviary-v0_2023-01-18,2136453,0.10163,390.833333,6,-476.178554,-697.609907,-108.098748,260.672939,950
++18,exp_name: takeoff-aviary-v0_2023-01-18,2138770,0.075042,289.625,8,-313.568522,-682.71151,-103.084493,269.320703,951
++0,exp_name: takeoff-aviary-v0_2023-01-18,2141022,0.078813,281.5,8,-305.630916,-663.530097,-98.373178,260.359586,952
++1,exp_name: takeoff-aviary-v0_2023-01-18,2143344,0.099827,387.0,6,-468.137752,-733.75615,-102.458279,261.003609,953
++2,exp_name: takeoff-aviary-v0_2023-01-18,2145677,0.100765,388.833333,6,-477.660472,-737.099991,-103.85081,266.313887,954
++3,exp_name: takeoff-aviary-v0_2023-01-18,2147905,0.126437,445.6,5,-562.501652,-737.638359,-102.180433,232.90573,955
++4,exp_name: takeoff-aviary-v0_2023-01-18,2150409,0.10741,417.333333,6,-502.980569,-750.457298,-106.222373,282.161199,956
++5,exp_name: takeoff-aviary-v0_2023-01-18,2152664,0.146243,563.75,4,-706.97192,-730.663403,-687.890109,15.525106,957
++6,exp_name: takeoff-aviary-v0_2023-01-18,2154794,0.148824,532.5,4,-672.243195,-712.722277,-596.763903,44.726332,958
++7,exp_name: takeoff-aviary-v0_2023-01-18,2156909,0.137185,528.75,4,-646.708359,-755.254719,-501.030061,93.867297,959
++8,exp_name: takeoff-aviary-v0_2023-01-18,2159131,0.144803,555.5,4,-695.12884,-756.581422,-637.592786,42.949412,960
++9,exp_name: takeoff-aviary-v0_2023-01-18,2161446,0.090643,330.714286,7,-326.650838,-746.784082,-100.975942,264.284554,961
++10,exp_name: takeoff-aviary-v0_2023-01-18,2163768,0.128858,464.4,5,-524.124272,-645.628334,-119.800086,203.333909,962
++11,exp_name: takeoff-aviary-v0_2023-01-18,2166024,0.122343,451.2,5,-513.108613,-943.986295,-108.553821,335.650079,963
++12,exp_name: takeoff-aviary-v0_2023-01-18,2168231,0.10329,367.833333,6,-389.292795,-692.776352,-112.024521,275.763698,964
++13,exp_name: takeoff-aviary-v0_2023-01-18,2170355,0.138228,531.0,4,-651.850511,-695.684447,-614.695209,29.177313,965
++14,exp_name: takeoff-aviary-v0_2023-01-18,2172410,0.075338,293.571429,7,-226.737832,-591.926053,-114.881285,162.689693,966
++0,exp_name: takeoff-aviary-v0_2023-01-18,2174771,0.10979,393.5,6,-411.340768,-681.948394,-119.074006,246.564214,967
++1,exp_name: takeoff-aviary-v0_2023-01-18,2176949,0.09404,363.0,6,-389.946196,-736.843047,-106.888944,279.582777,968
++2,exp_name: takeoff-aviary-v0_2023-01-18,2179147,0.14579,549.5,4,-680.841573,-722.563402,-646.778054,28.575729,969
++3,exp_name: takeoff-aviary-v0_2023-01-18,2181675,0.101909,361.142857,7,-377.837097,-737.581115,-103.766969,275.845357,970
++4,exp_name: takeoff-aviary-v0_2023-01-18,2183805,0.099316,355.0,6,-309.148754,-694.150163,-119.432307,260.865764,971
++5,exp_name: takeoff-aviary-v0_2023-01-18,2186006,0.150475,550.25,4,-693.638107,-830.049253,-598.893933,85.110627,972
++6,exp_name: takeoff-aviary-v0_2023-01-18,2188286,0.111,380.0,6,-412.338084,-731.380642,-107.435927,291.831042,973
++7,exp_name: takeoff-aviary-v0_2023-01-18,2190919,0.134899,438.833333,6,-531.782401,-954.176237,-104.450167,314.687759,974
++8,exp_name: takeoff-aviary-v0_2023-01-18,2193149,0.107934,371.666667,6,-374.467039,-986.408658,-105.673588,350.996988,975
++9,exp_name: takeoff-aviary-v0_2023-01-18,2195426,0.134948,455.4,5,-563.064296,-722.53999,-110.931069,227.72685,976
++10,exp_name: takeoff-aviary-v0_2023-01-18,2197571,0.106,357.5,6,-389.267079,-686.586681,-100.719597,276.862027,977
++11,exp_name: takeoff-aviary-v0_2023-01-18,2199867,0.110335,382.666667,6,-415.447818,-807.762738,-109.787143,303.525975,978
++12,exp_name: takeoff-aviary-v0_2023-01-18,2202148,0.123496,456.2,5,-571.963372,-745.797385,-110.303647,234.413667,979
++13,exp_name: takeoff-aviary-v0_2023-01-18,2204350,0.084483,314.571429,7,-338.786322,-662.774892,-101.852544,264.057957,980
++0,exp_name: takeoff-aviary-v0_2023-01-18,2206867,0.079607,279.666667,9,-301.492918,-702.626258,-102.423196,274.595832,981
++1,exp_name: takeoff-aviary-v0_2023-01-18,2208981,0.066124,234.888889,9,-233.382011,-715.121815,-100.624527,236.968508,982
++2,exp_name: takeoff-aviary-v0_2023-01-18,2211203,0.082998,317.428571,7,-360.794249,-738.045222,-100.328366,297.524654,983
++3,exp_name: takeoff-aviary-v0_2023-01-18,2213311,0.147832,527.0,4,-666.185249,-709.438309,-643.105345,25.916266,984
++4,exp_name: takeoff-aviary-v0_2023-01-18,2215707,0.077115,299.5,8,-323.221577,-695.228086,-100.265709,279.176921,985
++5,exp_name: takeoff-aviary-v0_2023-01-18,2218204,0.092509,356.714286,7,-386.909367,-756.561113,-105.988581,280.930717,986
++6,exp_name: takeoff-aviary-v0_2023-01-18,2220712,0.114411,418.0,6,-460.774858,-795.704183,-114.248889,269.941079,987
++7,exp_name: takeoff-aviary-v0_2023-01-18,2223099,0.125399,477.4,5,-478.443231,-711.830492,-122.109189,264.571255,988
++8,exp_name: takeoff-aviary-v0_2023-01-18,2225215,0.137231,529.0,4,-593.792053,-816.74711,-128.360993,271.946456,989
++9,exp_name: takeoff-aviary-v0_2023-01-18,2227648,0.113274,405.5,6,-408.90238,-721.214286,-116.349509,287.716966,990
++10,exp_name: takeoff-aviary-v0_2023-01-18,2229853,0.117933,441.0,5,-392.266579,-895.16359,-123.822227,329.584358,991
++11,exp_name: takeoff-aviary-v0_2023-01-18,2232036,0.14575,545.75,4,-467.909971,-851.246815,-135.355014,334.280816,992
++12,exp_name: takeoff-aviary-v0_2023-01-18,2234537,0.138476,500.2,5,-387.846763,-741.584758,-132.363801,262.140516,993
++13,exp_name: takeoff-aviary-v0_2023-01-18,2236964,0.108825,404.5,6,-255.145677,-648.842748,-125.168633,184.324109,994
++14,exp_name: takeoff-aviary-v0_2023-01-18,2239291,0.128175,465.4,5,-168.321547,-289.449045,-136.174013,60.584105,995
++15,exp_name: takeoff-aviary-v0_2023-01-18,2241777,0.113977,414.333333,6,-183.341832,-278.516319,-125.673952,57.318041,996
++16,exp_name: takeoff-aviary-v0_2023-01-18,2244050,0.090915,324.714286,7,-183.163535,-506.048443,-121.599333,132.001675,997
++0,exp_name: takeoff-aviary-v0_2023-01-18,2246461,0.142489,482.2,5,-501.336,-745.576663,-121.480326,256.167955,998
++1,exp_name: takeoff-aviary-v0_2023-01-18,2248786,0.112198,387.5,6,-416.154756,-727.780077,-115.489993,296.450796,999
++2,exp_name: takeoff-aviary-v0_2023-01-18,2250952,0.082398,309.428571,7,-278.592248,-714.851349,-112.699215,249.394077,1000
++3,exp_name: takeoff-aviary-v0_2023-01-18,2253464,0.147155,502.4,5,-620.485138,-929.095285,-102.806905,278.454518,1001
++4,exp_name: takeoff-aviary-v0_2023-01-18,2255633,0.112754,433.8,5,-478.787894,-778.630852,-119.580695,294.081394,1002
++5,exp_name: takeoff-aviary-v0_2023-01-18,2257909,0.123478,455.2,5,-581.506714,-738.62326,-111.383303,236.013331,1003
++6,exp_name: takeoff-aviary-v0_2023-01-18,2260029,0.151658,530.0,4,-674.583545,-726.421638,-600.24972,46.107883,1004
++7,exp_name: takeoff-aviary-v0_2023-01-18,2262248,0.12299,443.8,5,-555.352233,-690.665801,-106.399191,225.027306,1005
++8,exp_name: takeoff-aviary-v0_2023-01-18,2264376,0.06857,266.0,8,-216.54283,-671.94238,-106.089092,180.942005,1006
++9,exp_name: takeoff-aviary-v0_2023-01-18,2266743,0.12978,473.4,5,-527.907879,-695.946825,-213.246582,181.988343,1007
++10,exp_name: takeoff-aviary-v0_2023-01-18,2268887,0.096691,357.333333,6,-330.228588,-725.059279,-121.596003,257.238771,1008
++11,exp_name: takeoff-aviary-v0_2023-01-18,2271116,0.117639,445.8,5,-502.623623,-832.473114,-121.200971,314.007282,1009
++12,exp_name: takeoff-aviary-v0_2023-01-18,2273374,0.102692,376.333333,6,-336.174053,-694.21952,-123.354636,253.622896,1010
++13,exp_name: takeoff-aviary-v0_2023-01-18,2275965,0.111291,431.833333,6,-477.123373,-718.926898,-121.292352,260.752175,1011
++14,exp_name: takeoff-aviary-v0_2023-01-18,2278403,0.129126,487.6,5,-554.215132,-748.493025,-119.749373,238.013498,1012
++15,exp_name: takeoff-aviary-v0_2023-01-18,2280918,0.096484,359.285714,7,-294.624575,-725.440163,-118.909463,266.766702,1013
++16,exp_name: takeoff-aviary-v0_2023-01-18,2283054,0.138089,534.0,4,-684.897424,-723.173355,-653.306046,24.998216,1014
++17,exp_name: takeoff-aviary-v0_2023-01-18,2285193,0.110576,427.8,5,-499.294965,-734.077922,-119.01942,246.597489,1015
++18,exp_name: takeoff-aviary-v0_2023-01-18,2287637,0.144841,488.8,5,-570.228842,-702.784689,-135.896927,217.767092,1016
++19,exp_name: takeoff-aviary-v0_2023-01-18,2290097,0.134776,492.0,5,-596.881342,-820.810791,-117.100072,247.763279,1017
++20,exp_name: takeoff-aviary-v0_2023-01-18,2292450,0.124403,470.6,5,-592.452193,-762.537673,-105.05154,246.1041,1018
++0,exp_name: takeoff-aviary-v0_2023-01-18,2295013,0.135927,512.6,5,-657.742179,-1071.06486,-109.82323,312.696066,1019
++1,exp_name: takeoff-aviary-v0_2023-01-18,2297343,0.120599,466.0,5,-576.166904,-697.308052,-233.238465,172.444467,1020
++2,exp_name: takeoff-aviary-v0_2023-01-18,2299546,0.146942,550.75,4,-700.49626,-767.295367,-655.726472,40.973433,1021
++3,exp_name: takeoff-aviary-v0_2023-01-18,2301898,0.156061,588.0,4,-753.736524,-814.816849,-637.553972,71.507905,1022
++4,exp_name: takeoff-aviary-v0_2023-01-18,2304276,0.102093,396.333333,6,-397.863843,-701.09417,-119.106725,274.69209,1023
++5,exp_name: takeoff-aviary-v0_2023-01-18,2306522,0.118687,449.2,5,-517.032558,-788.868763,-105.19609,271.914905,1024
++6,exp_name: takeoff-aviary-v0_2023-01-18,2308924,0.126234,480.4,5,-583.91353,-767.894569,-122.900433,234.153705,1025
++7,exp_name: takeoff-aviary-v0_2023-01-18,2311402,0.128173,495.6,5,-597.184882,-795.873495,-118.176053,246.006392,1026
++8,exp_name: takeoff-aviary-v0_2023-01-18,2313820,0.130741,483.6,5,-599.744762,-771.032107,-118.081472,242.668707,1027
++0,exp_name: takeoff-aviary-v0_2023-01-18,2315971,0.112814,430.2,5,-486.733434,-752.77928,-119.117167,299.125089,1028
++1,exp_name: takeoff-aviary-v0_2023-01-18,2318057,0.136743,521.5,4,-614.083582,-856.209569,-130.922593,283.401119,1029
++2,exp_name: takeoff-aviary-v0_2023-01-18,2320185,0.092261,354.666667,6,-330.128129,-740.998458,-122.311743,224.867426,1030
++3,exp_name: takeoff-aviary-v0_2023-01-18,2322691,0.111041,417.666667,6,-426.499333,-779.902349,-116.926879,292.058075,1031
++4,exp_name: takeoff-aviary-v0_2023-01-18,2325096,0.102766,400.833333,6,-363.056224,-753.059383,-122.076387,276.404702,1032
++5,exp_name: takeoff-aviary-v0_2023-01-18,2327648,0.135608,510.4,5,-592.964963,-801.811405,-132.503644,240.759809,1033
++6,exp_name: takeoff-aviary-v0_2023-01-18,2329784,0.144024,534.0,4,-585.898588,-790.999696,-130.742741,264.814655,1034
++7,exp_name: takeoff-aviary-v0_2023-01-18,2331910,0.138245,531.5,4,-599.618259,-836.521185,-123.036517,279.801856,1035
++0,exp_name: takeoff-aviary-v0_2023-01-18,2333981,0.13527,517.75,4,-433.952451,-758.685287,-122.443655,309.712233,1036
++1,exp_name: takeoff-aviary-v0_2023-01-18,2336185,0.116398,440.8,5,-317.459316,-740.599811,-127.090327,224.577912,1037
++2,exp_name: takeoff-aviary-v0_2023-01-18,2338699,0.107507,419.0,6,-414.906392,-745.962367,-118.942415,277.309121,1038
++3,exp_name: takeoff-aviary-v0_2023-01-18,2340809,0.109893,422.0,5,-391.022094,-757.367309,-121.135969,296.930538,1039
++4,exp_name: takeoff-aviary-v0_2023-01-18,2343192,0.158728,595.75,4,-631.424654,-891.38505,-242.876658,238.196199,1040
++5,exp_name: takeoff-aviary-v0_2023-01-18,2345385,0.093992,365.5,6,-261.605007,-697.647648,-124.323944,206.116179,1041
++6,exp_name: takeoff-aviary-v0_2023-01-18,2347574,0.113026,437.8,5,-383.051736,-658.759236,-125.884089,186.651503,1042
++7,exp_name: takeoff-aviary-v0_2023-01-18,2349753,0.097022,363.166667,6,-274.36628,-802.210893,-122.898069,238.841899,1043
++8,exp_name: takeoff-aviary-v0_2023-01-18,2352028,0.096946,379.166667,6,-318.321312,-677.682636,-120.310755,249.958536,1044
++9,exp_name: takeoff-aviary-v0_2023-01-18,2354082,0.087498,342.333333,6,-249.710492,-887.32931,-117.380625,285.179962,1045
++10,exp_name: takeoff-aviary-v0_2023-01-18,2356249,0.083981,309.571429,7,-211.932045,-752.759812,-118.645567,220.817482,1046
++11,exp_name: takeoff-aviary-v0_2023-01-18,2358681,0.103657,405.333333,6,-333.799987,-813.757332,-115.406327,299.15399,1047
++12,exp_name: takeoff-aviary-v0_2023-01-18,2360804,0.090843,353.833333,6,-281.7754,-636.123146,-116.935785,212.048269,1048
++13,exp_name: takeoff-aviary-v0_2023-01-18,2363477,0.145297,534.6,5,-611.937201,-779.959899,-264.042059,179.16755,1049
++14,exp_name: takeoff-aviary-v0_2023-01-18,2365692,0.113175,443.0,5,-494.728873,-764.847897,-119.918074,281.764657,1050
++15,exp_name: takeoff-aviary-v0_2023-01-18,2368019,0.149525,581.75,4,-717.406418,-798.363765,-649.18017,59.355748,1051
++16,exp_name: takeoff-aviary-v0_2023-01-18,2370490,0.132741,494.2,5,-594.162046,-753.546005,-121.728028,237.599534,1052
++0,exp_name: takeoff-aviary-v0_2023-01-18,2372588,0.136747,524.5,4,-688.321214,-746.392147,-659.003384,34.310315,1053
++1,exp_name: takeoff-aviary-v0_2023-01-18,2374785,0.141301,549.25,4,-702.187951,-745.268292,-645.462477,35.960257,1054
++2,exp_name: takeoff-aviary-v0_2023-01-18,2377107,0.157782,580.5,4,-679.728928,-716.454225,-588.180734,53.371683,1055
++3,exp_name: takeoff-aviary-v0_2023-01-18,2379208,0.107384,420.2,5,-396.42566,-785.975131,-123.200436,277.258427,1056
++4,exp_name: takeoff-aviary-v0_2023-01-18,2381488,0.09847,380.0,6,-351.458791,-798.522127,-120.070808,305.147983,1057
++5,exp_name: takeoff-aviary-v0_2023-01-18,2383827,0.127458,467.8,5,-386.366462,-798.020292,-126.919006,299.722999,1058
++6,exp_name: takeoff-aviary-v0_2023-01-18,2386074,0.114977,449.4,5,-294.732411,-778.905506,-125.926958,246.373436,1059
++7,exp_name: takeoff-aviary-v0_2023-01-18,2388430,0.150457,589.0,4,-509.630797,-820.869417,-128.573267,273.199235,1060
++0,exp_name: takeoff-aviary-v0_2023-01-18,2390510,0.14507,520.0,4,-460.10175,-848.446563,-128.907482,331.989033,1061
++0,exp_name: takeoff-aviary-v0_2023-01-18,2392861,0.119766,470.2,5,-272.717635,-655.410109,-130.468665,196.615792,1062
++1,exp_name: takeoff-aviary-v0_2023-01-18,2395393,0.161902,633.0,4,-417.762181,-746.945175,-130.824836,288.414002,1063
++2,exp_name: takeoff-aviary-v0_2023-01-18,2397542,0.146236,537.25,4,-390.49835,-703.753565,-193.081429,201.34189,1064
++3,exp_name: takeoff-aviary-v0_2023-01-18,2400037,0.15791,623.75,4,-331.716756,-708.444682,-129.741571,225.345582,1065
++4,exp_name: takeoff-aviary-v0_2023-01-18,2402309,0.116948,454.4,5,-235.947849,-664.121497,-122.968791,214.120128,1066
++5,exp_name: takeoff-aviary-v0_2023-01-18,2404791,0.135942,496.4,5,-189.576206,-255.702401,-128.717884,52.574383,1067
++6,exp_name: takeoff-aviary-v0_2023-01-18,2407221,0.15405,607.5,4,-339.397656,-847.916136,-134.289074,294.401739,1068
++7,exp_name: takeoff-aviary-v0_2023-01-18,2409487,0.196309,755.333333,3,-574.413044,-711.304869,-412.419873,123.303469,1069
++8,exp_name: takeoff-aviary-v0_2023-01-18,2411915,0.131134,485.6,5,-161.849957,-227.773607,-127.199612,41.71243,1070
++9,exp_name: takeoff-aviary-v0_2023-01-18,2414229,0.119367,462.8,5,-329.479664,-752.250183,-129.16972,227.635572,1071
++10,exp_name: takeoff-aviary-v0_2023-01-18,2416403,0.091878,362.333333,6,-144.304395,-182.527889,-128.577611,21.028552,1072
++11,exp_name: takeoff-aviary-v0_2023-01-18,2418485,0.190234,694.0,3,-547.081329,-715.657824,-231.55648,223.284411,1073
++12,exp_name: takeoff-aviary-v0_2023-01-18,2420972,0.105982,414.5,6,-229.023737,-590.945845,-129.796148,164.436558,1074
++13,exp_name: takeoff-aviary-v0_2023-01-18,2423544,0.163394,643.0,4,-482.394383,-725.174121,-139.129387,244.671955,1075
++14,exp_name: takeoff-aviary-v0_2023-01-18,2425619,0.093278,345.833333,6,-156.703401,-218.103124,-125.172912,40.300511,1076
++15,exp_name: takeoff-aviary-v0_2023-01-18,2427895,0.144473,569.0,4,-422.595549,-724.809926,-129.618278,291.4158,1077
++16,exp_name: takeoff-aviary-v0_2023-01-18,2430098,0.139347,550.75,4,-261.92764,-388.423847,-132.417371,97.39845,1078
++17,exp_name: takeoff-aviary-v0_2023-01-18,2432154,0.108932,411.2,5,-242.933574,-550.823917,-127.557102,157.493832,1079
++18,exp_name: takeoff-aviary-v0_2023-01-18,2434473,0.150224,579.75,4,-426.292987,-722.031897,-305.841986,171.575698,1080
++19,exp_name: takeoff-aviary-v0_2023-01-18,2436634,0.110324,432.2,5,-204.539251,-296.567057,-125.679577,69.976183,1081
++20,exp_name: takeoff-aviary-v0_2023-01-18,2439049,0.126449,483.0,5,-281.383451,-618.536995,-127.852525,178.743109,1082
++21,exp_name: takeoff-aviary-v0_2023-01-18,2441334,0.149318,571.25,4,-440.318376,-701.584919,-129.423054,261.915952,1083
++22,exp_name: takeoff-aviary-v0_2023-01-18,2443894,0.164265,640.0,4,-455.270017,-789.527417,-128.341839,299.565528,1084
++23,exp_name: takeoff-aviary-v0_2023-01-18,2446141,0.117923,449.4,5,-159.882377,-216.885468,-130.380337,35.976849,1085
++24,exp_name: takeoff-aviary-v0_2023-01-18,2448335,0.142913,548.5,4,-290.831634,-669.004094,-132.331338,221.824061,1086
++25,exp_name: takeoff-aviary-v0_2023-01-18,2451013,0.16913,669.5,4,-313.687779,-768.506843,-131.102089,265.007854,1087
++26,exp_name: takeoff-aviary-v0_2023-01-18,2453560,0.222703,849.0,3,-584.804341,-717.270272,-424.698081,121.030609,1088
++0,exp_name: takeoff-aviary-v0_2023-01-18,2455660,0.181306,700.0,3,-215.068208,-382.32783,-131.394526,118.270418,1089
++0,exp_name: takeoff-aviary-v0_2023-01-18,2457838,0.138885,544.5,4,-181.024469,-231.351791,-131.483067,48.737201,1090
++1,exp_name: takeoff-aviary-v0_2023-01-18,2460141,0.197515,767.666667,3,-377.89243,-748.89517,-133.363626,266.728968,1091
++2,exp_name: takeoff-aviary-v0_2023-01-18,2462250,0.205372,703.0,3,-344.735153,-704.443343,-136.870907,255.378223,1092
++0,exp_name: takeoff-aviary-v0_2023-01-18,2464320,0.179508,690.0,3,-256.973907,-405.858667,-133.074316,112.756433,1093
++0,exp_name: takeoff-aviary-v0_2023-01-18,2466945,0.223421,875.0,3,-466.504406,-635.116015,-218.584432,179.056793,1094
++1,exp_name: takeoff-aviary-v0_2023-01-18,2469384,0.219466,813.0,3,-330.158058,-720.239297,-134.841166,275.829181,1095
++2,exp_name: takeoff-aviary-v0_2023-01-18,2472256,0.183079,718.0,4,-279.48819,-715.625907,-133.00208,251.805607,1096
++3,exp_name: takeoff-aviary-v0_2023-01-18,2474837,0.224316,860.333333,3,-409.674791,-507.28582,-254.632344,110.851915,1097
++4,exp_name: takeoff-aviary-v0_2023-01-18,2476961,0.181803,708.0,3,-176.626533,-259.948899,-131.065467,59.003794,1098
++5,exp_name: takeoff-aviary-v0_2023-01-18,2479057,0.176623,698.666667,3,-309.750216,-654.127351,-134.164022,243.527209,1099
++6,exp_name: takeoff-aviary-v0_2023-01-18,2481604,0.164944,636.75,4,-247.071788,-477.959596,-133.286151,139.289022,1100
++7,exp_name: takeoff-aviary-v0_2023-01-18,2483834,0.193924,743.333333,3,-318.074469,-385.047546,-243.27548,58.142144,1101
++8,exp_name: takeoff-aviary-v0_2023-01-18,2486128,0.195356,764.666667,3,-342.545753,-634.960729,-130.960611,213.548006,1102
++9,exp_name: takeoff-aviary-v0_2023-01-18,2488551,0.154533,605.75,4,-184.410841,-285.968739,-131.321736,63.064562,1103
++10,exp_name: takeoff-aviary-v0_2023-01-18,2490971,0.214006,806.666667,3,-379.670155,-780.459602,-130.672493,286.165897,1104
++11,exp_name: takeoff-aviary-v0_2023-01-18,2493572,0.164006,650.25,4,-204.189549,-364.175395,-130.837885,95.336465,1105
++12,exp_name: takeoff-aviary-v0_2023-01-18,2496212,0.17242,660.0,4,-275.952413,-714.117728,-128.806603,252.975745,1106
++13,exp_name: takeoff-aviary-v0_2023-01-18,2498929,0.17658,679.25,4,-146.003389,-194.350071,-128.477181,27.940328,1107
++14,exp_name: takeoff-aviary-v0_2023-01-18,2501311,0.200652,794.0,3,-388.976237,-591.920215,-127.52031,194.052491,1108
++15,exp_name: takeoff-aviary-v0_2023-01-18,2503731,0.211942,806.666667,3,-357.692857,-516.604261,-128.97931,165.76596,1109
++16,exp_name: takeoff-aviary-v0_2023-01-18,2506431,0.17331,675.0,4,-233.88957,-474.726239,-129.169338,142.105473,1110
++17,exp_name: takeoff-aviary-v0_2023-01-18,2508696,0.191082,755.0,3,-243.575245,-373.26728,-126.755529,101.048778,1111
++18,exp_name: takeoff-aviary-v0_2023-01-18,2511257,0.225033,853.666667,3,-471.285497,-696.22429,-128.661621,246.196642,1112
++19,exp_name: takeoff-aviary-v0_2023-01-18,2513946,0.170689,672.25,4,-206.579445,-432.425341,-129.602911,130.402672,1113
++20,exp_name: takeoff-aviary-v0_2023-01-18,2516332,0.151179,596.5,4,-147.762225,-198.417295,-126.49451,29.50377,1114
++21,exp_name: takeoff-aviary-v0_2023-01-18,2518831,0.16691,624.75,4,-304.976643,-709.6432,-130.431845,234.893211,1115
++22,exp_name: takeoff-aviary-v0_2023-01-18,2521520,0.2293,896.333333,3,-670.049364,-1071.109656,-131.312333,395.829016,1116
++0,exp_name: takeoff-aviary-v0_2023-01-18,2523786,0.14474,566.5,4,-144.921893,-188.979367,-127.154477,25.521863,1117
++1,exp_name: takeoff-aviary-v0_2023-01-18,2525869,0.18653,694.333333,3,-256.053201,-440.488356,-133.436816,132.756249,1118
++2,exp_name: takeoff-aviary-v0_2023-01-18,2528516,0.168198,661.75,4,-147.091432,-192.290817,-129.703361,26.156433,1119
++3,exp_name: takeoff-aviary-v0_2023-01-18,2531073,0.162732,639.25,4,-226.426564,-391.47454,-129.163944,107.945361,1120
++4,exp_name: takeoff-aviary-v0_2023-01-18,2533700,0.178544,656.75,4,-150.494429,-210.347035,-129.741255,34.566291,1121
++0,exp_name: takeoff-aviary-v0_2023-01-18,2536370,0.17013,667.5,4,-211.063877,-255.890968,-135.519805,48.500459,1122
++0,exp_name: takeoff-aviary-v0_2023-01-18,2538965,0.168028,648.75,4,-680.323051,-939.711817,-136.796247,323.687707,1123
++1,exp_name: takeoff-aviary-v0_2023-01-18,2541308,0.105626,390.5,6,-248.530573,-626.697258,-127.707576,185.610884,1124
++2,exp_name: takeoff-aviary-v0_2023-01-18,2543745,0.155431,609.25,4,-527.812238,-779.372143,-133.056162,260.094807,1125
++3,exp_name: takeoff-aviary-v0_2023-01-18,2546114,0.124893,473.8,5,-428.222125,-814.721709,-136.159071,286.144469,1126
++4,exp_name: takeoff-aviary-v0_2023-01-18,2548216,0.143485,525.5,4,-455.43393,-761.532861,-134.661726,267.776348,1127
++5,exp_name: takeoff-aviary-v0_2023-01-18,2550920,0.174861,676.0,4,-722.218227,-1119.480759,-215.093562,325.040588,1128
++0,exp_name: takeoff-aviary-v0_2023-01-18,2553267,0.150749,586.75,4,-502.278117,-820.43522,-204.109461,279.932805,1129
++1,exp_name: takeoff-aviary-v0_2023-01-18,2555531,0.122328,452.8,5,-338.614016,-976.857275,-124.601981,322.583283,1130
++2,exp_name: takeoff-aviary-v0_2023-01-18,2557850,0.098725,386.5,6,-255.529532,-759.298525,-126.022634,229.570864,1131
++0,exp_name: takeoff-aviary-v0_2023-01-18,2560141,0.149459,572.75,4,-658.02168,-742.060693,-496.144867,98.027765,1132
++1,exp_name: takeoff-aviary-v0_2023-01-18,2562412,0.153566,567.75,4,-593.55159,-795.861954,-130.460404,269.182999,1133
++2,exp_name: takeoff-aviary-v0_2023-01-18,2564518,0.134178,526.5,4,-469.097558,-1374.565464,-125.538618,524.878709,1134
++3,exp_name: takeoff-aviary-v0_2023-01-18,2567031,0.128877,502.6,5,-567.58053,-828.439393,-124.951403,282.767415,1135
++4,exp_name: takeoff-aviary-v0_2023-01-18,2569240,0.085218,315.571429,7,-215.907648,-565.93803,-124.412831,146.458488,1136
++0,exp_name: takeoff-aviary-v0_2023-01-18,2571722,0.160417,620.5,4,-699.395363,-790.791615,-585.956371,78.285947,1137
++1,exp_name: takeoff-aviary-v0_2023-01-18,2573877,0.078346,307.857143,7,-235.824346,-781.693674,-112.750317,228.634649,1138
++2,exp_name: takeoff-aviary-v0_2023-01-18,2575931,0.079952,293.428571,7,-222.630464,-753.563062,-113.074004,217.827166,1139
++3,exp_name: takeoff-aviary-v0_2023-01-18,2578170,0.114818,447.8,5,-501.567558,-784.330621,-115.307253,312.815016,1140
++0,exp_name: takeoff-aviary-v0_2023-01-18,2580469,0.119364,459.8,5,-515.016641,-826.685782,-127.631462,316.846679,1141
++1,exp_name: takeoff-aviary-v0_2023-01-18,2582636,0.149716,541.75,4,-674.392531,-878.991993,-233.173472,257.647898,1142
++2,exp_name: takeoff-aviary-v0_2023-01-18,2585061,0.088889,346.428571,7,-361.744312,-789.66376,-114.987199,294.756721,1143
++3,exp_name: takeoff-aviary-v0_2023-01-18,2587433,0.101981,395.333333,6,-447.091743,-823.414535,-115.101807,328.37335,1144
++4,exp_name: takeoff-aviary-v0_2023-01-18,2589981,0.117034,424.666667,6,-517.017615,-772.327215,-108.437586,289.468328,1145
++5,exp_name: takeoff-aviary-v0_2023-01-18,2592291,0.108299,385.0,6,-445.698371,-806.385205,-110.890694,331.65555,1146
++6,exp_name: takeoff-aviary-v0_2023-01-18,2594661,0.101365,395.0,6,-448.127538,-811.618946,-119.249588,328.958544,1147
++7,exp_name: takeoff-aviary-v0_2023-01-18,2596980,0.159889,579.75,4,-678.26621,-910.751415,-193.931166,282.99835,1148
++0,exp_name: takeoff-aviary-v0_2023-01-18,2599528,0.110481,424.666667,6,-420.69905,-761.774584,-123.269515,295.454134,1149
++1,exp_name: takeoff-aviary-v0_2023-01-18,2601583,0.106662,411.0,5,-425.052491,-863.635035,-115.174141,338.510832,1150
++2,exp_name: takeoff-aviary-v0_2023-01-18,2603759,0.150687,544.0,4,-641.552046,-868.021216,-224.132073,246.864827,1151
++3,exp_name: takeoff-aviary-v0_2023-01-18,2606013,0.115408,450.8,5,-468.754651,-845.709237,-114.530472,310.021088,1152
++4,exp_name: takeoff-aviary-v0_2023-01-18,2608630,0.16883,654.25,4,-840.644657,-875.352123,-821.710104,20.765434,1153
++0,exp_name: takeoff-aviary-v0_2023-01-18,2611144,0.171916,628.5,4,-729.730568,-827.51114,-609.032495,82.33498,1154
++1,exp_name: takeoff-aviary-v0_2023-01-18,2613529,0.122386,477.0,5,-540.235256,-831.811242,-129.998892,334.424147,1155
++2,exp_name: takeoff-aviary-v0_2023-01-18,2616142,0.171961,653.25,4,-806.448801,-851.04911,-708.160767,57.762223,1156
++3,exp_name: takeoff-aviary-v0_2023-01-18,2618515,0.157832,593.25,4,-682.827957,-900.270183,-135.464609,318.573505,1157
++4,exp_name: takeoff-aviary-v0_2023-01-18,2620702,0.140363,546.75,4,-596.826163,-870.318766,-166.749789,290.721777,1158
++5,exp_name: takeoff-aviary-v0_2023-01-18,2623260,0.133588,511.6,5,-572.774837,-866.200676,-170.103002,305.956025,1159
++0,exp_name: takeoff-aviary-v0_2023-01-18,2625498,0.150937,559.5,4,-684.771295,-873.213814,-247.758704,253.668551,1160
++1,exp_name: takeoff-aviary-v0_2023-01-18,2627963,0.168194,616.25,4,-808.574178,-858.372333,-717.214084,54.070542,1161
++2,exp_name: takeoff-aviary-v0_2023-01-18,2630059,0.181895,698.666667,3,-868.606658,-902.130277,-834.770426,27.500433,1162
++3,exp_name: takeoff-aviary-v0_2023-01-18,2632621,0.171506,640.5,4,-799.987657,-844.230784,-762.363957,33.291148,1163
++4,exp_name: takeoff-aviary-v0_2023-01-18,2634949,0.150427,582.0,4,-775.019217,-841.998862,-722.792323,44.837919,1164
++5,exp_name: takeoff-aviary-v0_2023-01-18,2637237,0.149798,572.0,4,-728.403391,-823.068151,-539.890616,115.251502,1165
++6,exp_name: takeoff-aviary-v0_2023-01-18,2639674,0.161003,609.25,4,-792.126956,-916.646138,-611.238945,111.616958,1166
++7,exp_name: takeoff-aviary-v0_2023-01-18,2641999,0.327539,581.25,4,-782.588015,-847.893049,-672.214817,66.178998,1167
++8,exp_name: takeoff-aviary-v0_2023-01-18,2644156,0.120964,431.4,5,-547.606008,-850.329585,-207.220274,267.726484,1168
++9,exp_name: takeoff-aviary-v0_2023-01-18,2646529,0.132226,474.6,5,-624.913014,-813.494645,-109.104953,267.05123,1169
++10,exp_name: takeoff-aviary-v0_2023-01-18,2649069,0.141611,508.0,5,-692.447929,-768.286257,-542.783626,81.087981,1170
++11,exp_name: takeoff-aviary-v0_2023-01-18,2651175,0.092157,351.0,6,-445.966037,-715.434769,-108.773559,229.025224,1171
++12,exp_name: takeoff-aviary-v0_2023-01-18,2653645,0.080423,308.75,8,-383.795782,-725.673025,-102.768751,279.262971,1172
++13,exp_name: takeoff-aviary-v0_2023-01-18,2655831,0.078624,273.25,8,-332.552186,-696.879642,-106.84451,241.576387,1173
++14,exp_name: takeoff-aviary-v0_2023-01-18,2657969,0.062454,237.555556,9,-273.465931,-744.97294,-101.977767,243.95846,1174
++15,exp_name: takeoff-aviary-v0_2023-01-18,2660023,0.057672,205.4,10,-222.187396,-719.743237,-98.028833,237.780559,1175
++16,exp_name: takeoff-aviary-v0_2023-01-18,2662279,0.041294,150.4,15,-134.985478,-520.635173,-97.760423,104.15153,1176
++17,exp_name: takeoff-aviary-v0_2023-01-18,2664393,0.041914,151.0,14,-141.056696,-667.291881,-94.229009,146.008846,1177
++18,exp_name: takeoff-aviary-v0_2023-01-18,2666456,0.042541,147.357143,14,-135.590667,-613.505239,-92.541126,132.632095,1178
++19,exp_name: takeoff-aviary-v0_2023-01-18,2668612,0.038726,143.733333,15,-132.180036,-588.700048,-93.884727,122.055491,1179
++20,exp_name: takeoff-aviary-v0_2023-01-18,2670725,0.032825,124.294118,17,-98.685947,-106.167394,-93.070692,3.859954,1180
++21,exp_name: takeoff-aviary-v0_2023-01-18,2672799,0.033597,122.0,17,-98.003056,-108.650409,-90.678557,4.864217,1181
++22,exp_name: takeoff-aviary-v0_2023-01-18,2674848,0.031827,120.529412,17,-96.466161,-104.908283,-91.68148,3.466005,1182
++23,exp_name: takeoff-aviary-v0_2023-01-18,2676908,0.036781,128.75,16,-99.81974,-105.305254,-93.094903,3.94934,1183
++24,exp_name: takeoff-aviary-v0_2023-01-18,2678972,0.035655,129.0,16,-100.629458,-113.587435,-91.459884,5.696174,1184
++25,exp_name: takeoff-aviary-v0_2023-01-18,2681056,0.035691,138.933333,15,-102.511771,-107.318775,-98.593295,3.126598,1185
++26,exp_name: takeoff-aviary-v0_2023-01-18,2683215,0.036267,134.9375,16,-102.424056,-113.246437,-92.928981,5.422946,1186
++27,exp_name: takeoff-aviary-v0_2023-01-18,2685298,0.038825,130.1875,16,-99.363226,-104.00604,-95.857704,2.279486,1187
++28,exp_name: takeoff-aviary-v0_2023-01-18,2687402,0.034624,123.764706,17,-96.489744,-102.693178,-91.417965,3.172815,1188
++29,exp_name: takeoff-aviary-v0_2023-01-18,2689499,0.034309,123.352941,17,-96.032659,-102.35143,-91.203335,2.68385,1189
++30,exp_name: takeoff-aviary-v0_2023-01-18,2691636,0.031982,118.722222,18,-94.04503,-100.532271,-87.990513,3.266306,1190
++31,exp_name: takeoff-aviary-v0_2023-01-18,2693789,0.034133,126.647059,17,-96.545225,-101.508737,-91.847293,2.856386,1191
++32,exp_name: takeoff-aviary-v0_2023-01-18,2695952,0.031699,120.166667,18,-94.075004,-98.353581,-91.60414,2.031406,1192
++33,exp_name: takeoff-aviary-v0_2023-01-18,2698037,0.034166,122.647059,17,-93.61337,-99.939147,-89.592643,2.615264,1193
++34,exp_name: takeoff-aviary-v0_2023-01-18,2700166,0.035456,125.235294,17,-95.227318,-102.22092,-88.430125,3.760765,1194
++35,exp_name: takeoff-aviary-v0_2023-01-18,2702237,0.033359,129.4375,16,-97.441164,-102.037108,-90.516848,3.24597,1195
++36,exp_name: takeoff-aviary-v0_2023-01-18,2704320,0.031371,122.529412,17,-94.48286,-97.771422,-89.93285,1.999417,1196
++0,exp_name: takeoff-aviary-v0_2023-01-18,2706404,0.035517,130.25,16,-97.115052,-106.275734,-91.023134,4.012023,1197
++1,exp_name: takeoff-aviary-v0_2023-01-18,2708466,0.033544,128.875,16,-96.55062,-100.969509,-89.095743,3.126507,1198
++2,exp_name: takeoff-aviary-v0_2023-01-18,2710590,0.032739,124.941176,17,-94.983331,-98.2885,-92.964781,1.450177,1199
++0,exp_name: takeoff-aviary-v0_2023-01-18,2712673,0.032948,122.529412,17,-92.954881,-98.708902,-88.557192,2.861927,1200
++1,exp_name: takeoff-aviary-v0_2023-01-18,2714790,0.037129,132.3125,16,-96.487361,-104.628202,-90.496372,3.531907,1201
++0,exp_name: takeoff-aviary-v0_2023-01-18,2716929,0.03742,133.6875,16,-96.548222,-100.132668,-93.105767,2.32394,1202
++1,exp_name: takeoff-aviary-v0_2023-01-18,2719029,0.033694,131.25,16,-96.424032,-102.875703,-91.244619,3.672249,1203
++2,exp_name: takeoff-aviary-v0_2023-01-18,2721142,0.036159,140.866667,15,-99.132734,-105.615193,-94.960924,3.187061,1204
++3,exp_name: takeoff-aviary-v0_2023-01-18,2723211,0.042771,137.933333,15,-98.282991,-103.003156,-90.025191,3.249027,1205
++4,exp_name: takeoff-aviary-v0_2023-01-18,2725308,0.033555,131.0625,16,-95.78195,-97.780735,-90.926392,1.791102,1206
++5,exp_name: takeoff-aviary-v0_2023-01-18,2727407,0.033858,131.1875,16,-95.618811,-104.382716,-87.915696,4.068012,1207
++6,exp_name: takeoff-aviary-v0_2023-01-18,2729513,0.033895,123.882353,17,-93.881974,-99.497738,-88.368896,2.744704,1208
++7,exp_name: takeoff-aviary-v0_2023-01-18,2731620,0.036546,131.6875,16,-96.043219,-101.856921,-90.563291,3.208722,1209
++0,exp_name: takeoff-aviary-v0_2023-01-18,2733764,0.036693,134.0,16,-97.580331,-107.892875,-90.549438,3.734263,1210
++1,exp_name: takeoff-aviary-v0_2023-01-18,2735862,0.037947,131.125,16,-95.950757,-100.143922,-91.738208,2.426036,1211
++2,exp_name: takeoff-aviary-v0_2023-01-18,2737955,0.033688,123.117647,17,-92.85092,-97.475548,-87.819532,2.569956,1212
++3,exp_name: takeoff-aviary-v0_2023-01-18,2740112,0.035679,126.882353,17,-94.447246,-99.531111,-88.057697,2.64801,1213
++4,exp_name: takeoff-aviary-v0_2023-01-18,2742208,0.031822,123.294118,17,-92.828222,-100.279021,-88.897853,2.551694,1214
++5,exp_name: takeoff-aviary-v0_2023-01-18,2744284,0.031499,122.117647,17,-92.815438,-98.597659,-85.837807,3.02339,1215
++6,exp_name: takeoff-aviary-v0_2023-01-18,2746342,0.037344,137.2,15,-97.486289,-102.521123,-89.451737,3.473166,1216
++7,exp_name: takeoff-aviary-v0_2023-01-18,2748487,0.034495,134.0625,16,-97.180204,-101.970652,-92.096825,2.748337,1217
++8,exp_name: takeoff-aviary-v0_2023-01-18,2750625,0.034658,133.625,16,-96.28945,-103.243087,-90.246646,3.842663,1218
++9,exp_name: takeoff-aviary-v0_2023-01-18,2752772,0.037969,143.133333,15,-99.158743,-104.135921,-94.338409,2.646015,1219
++10,exp_name: takeoff-aviary-v0_2023-01-18,2755341,0.060571,233.545455,11,-223.234449,-814.169124,-99.382097,258.829416,1220
++11,exp_name: takeoff-aviary-v0_2023-01-18,2757423,0.040875,148.714286,14,-100.056146,-105.045554,-95.602058,3.104611,1221
++12,exp_name: takeoff-aviary-v0_2023-01-18,2759583,0.070899,270.0,8,-253.03355,-693.244906,-100.126717,252.28866,1222
++13,exp_name: takeoff-aviary-v0_2023-01-18,2761999,0.12618,483.2,5,-590.447592,-818.014602,-102.950503,249.790411,1223
++14,exp_name: takeoff-aviary-v0_2023-01-18,2764051,0.109628,410.4,5,-469.883212,-765.944113,-102.789107,297.403825,1224
++15,exp_name: takeoff-aviary-v0_2023-01-18,2766412,0.102255,393.5,6,-448.70186,-731.782036,-102.381306,259.137411,1225
++16,exp_name: takeoff-aviary-v0_2023-01-18,2768460,0.052698,204.8,10,-163.594693,-687.720406,-97.839422,174.809382,1226
++0,exp_name: takeoff-aviary-v0_2023-01-18,2770867,0.093454,343.857143,7,-385.398681,-814.564225,-101.254677,327.959763,1227
++1,exp_name: takeoff-aviary-v0_2023-01-18,2773056,0.055836,199.0,11,-165.987532,-800.111468,-97.425484,200.543755,1228
++2,exp_name: takeoff-aviary-v0_2023-01-18,2775248,0.062982,243.555556,9,-237.624115,-727.060991,-97.428425,254.792026,1229
++3,exp_name: takeoff-aviary-v0_2023-01-18,2777331,0.097187,347.166667,6,-406.241591,-739.597047,-96.599406,308.541824,1230
++4,exp_name: takeoff-aviary-v0_2023-01-18,2779509,0.067119,242.0,9,-240.516659,-753.448785,-92.39003,265.127296,1231
++5,exp_name: takeoff-aviary-v0_2023-01-18,2781604,0.055018,209.5,10,-192.552961,-1016.272111,-96.848639,274.578316,1232
++6,exp_name: takeoff-aviary-v0_2023-01-18,2783699,0.114325,419.0,5,-511.651796,-1028.705994,-101.482357,360.136261,1233
++7,exp_name: takeoff-aviary-v0_2023-01-18,2786284,0.111124,430.833333,6,-531.267121,-805.516928,-99.543038,305.96275,1234
++8,exp_name: takeoff-aviary-v0_2023-01-18,2788361,0.055199,207.7,10,-169.764564,-752.860582,-98.348981,194.471366,1235
++9,exp_name: takeoff-aviary-v0_2023-01-18,2790832,0.138346,494.2,5,-593.125411,-1059.244908,-113.334637,402.176517,1236
++10,exp_name: takeoff-aviary-v0_2023-01-18,2793146,0.151338,578.5,4,-757.977852,-1126.130394,-104.274349,411.88042,1237
++11,exp_name: takeoff-aviary-v0_2023-01-18,2795646,0.12916,500.0,5,-613.250821,-776.915789,-112.511755,251.324406,1238
++12,exp_name: takeoff-aviary-v0_2023-01-18,2797762,0.085979,302.285714,7,-265.650612,-1199.880151,-101.657314,381.446284,1239
++13,exp_name: takeoff-aviary-v0_2023-01-18,2800089,0.086931,332.428571,7,-213.221985,-612.180836,-107.804554,172.914473,1240
++14,exp_name: takeoff-aviary-v0_2023-01-18,2802734,0.115451,440.833333,6,-525.91115,-863.930956,-101.995493,305.994086,1241
++15,exp_name: takeoff-aviary-v0_2023-01-18,2805259,0.098186,360.714286,7,-376.789894,-752.34012,-104.130284,308.405209,1242
++16,exp_name: takeoff-aviary-v0_2023-01-18,2807387,0.109546,425.6,5,-496.291536,-783.207663,-102.967364,316.15419,1243
++17,exp_name: takeoff-aviary-v0_2023-01-18,2809865,0.06481,247.8,10,-221.416231,-695.255962,-99.056585,232.395466,1244
++18,exp_name: takeoff-aviary-v0_2023-01-18,2812051,0.072069,273.25,8,-275.770576,-815.310367,-95.32539,299.268423,1245
++19,exp_name: takeoff-aviary-v0_2023-01-18,2814668,0.112194,436.166667,6,-532.098707,-789.879807,-99.515578,307.503854,1246
++20,exp_name: takeoff-aviary-v0_2023-01-18,2816842,0.075288,271.75,8,-272.867357,-814.045629,-94.634595,297.201824,1247
++21,exp_name: takeoff-aviary-v0_2023-01-18,2818911,0.058737,206.9,10,-187.962537,-978.908171,-94.725954,263.683003,1248
++22,exp_name: takeoff-aviary-v0_2023-01-18,2821284,0.047722,182.538462,13,-149.644646,-752.88785,-96.011331,174.155297,1249
++23,exp_name: takeoff-aviary-v0_2023-01-18,2823457,0.049631,181.083333,12,-150.641165,-705.404435,-96.389016,167.284344,1250
++24,exp_name: takeoff-aviary-v0_2023-01-18,2825567,0.038697,150.714286,14,-100.56725,-103.510511,-95.916292,2.545303,1251
++25,exp_name: takeoff-aviary-v0_2023-01-18,2827943,0.074819,264.0,9,-265.661582,-975.495206,-98.5434,313.509503,1252
++26,exp_name: takeoff-aviary-v0_2023-01-18,2830014,0.052061,188.272727,11,-151.006723,-649.661458,-96.011381,157.729592,1253
++27,exp_name: takeoff-aviary-v0_2023-01-18,2832095,0.059898,231.222222,9,-233.224984,-721.020972,-94.719985,253.631966,1254
++28,exp_name: takeoff-aviary-v0_2023-01-18,2834224,0.039098,152.071429,14,-99.963014,-109.317928,-94.896337,3.456598,1255
++29,exp_name: takeoff-aviary-v0_2023-01-18,2836343,0.037846,141.266667,15,-96.94482,-104.408914,-91.813522,3.184437,1256
++30,exp_name: takeoff-aviary-v0_2023-01-18,2838523,0.035424,136.25,16,-95.949814,-100.206097,-89.602183,2.795649,1257
++31,exp_name: takeoff-aviary-v0_2023-01-18,2840583,0.036528,137.333333,15,-96.702388,-100.115196,-93.371922,2.120985,1258
++32,exp_name: takeoff-aviary-v0_2023-01-18,2842643,0.035521,137.333333,15,-96.460594,-101.977446,-93.766792,2.135171,1259
++33,exp_name: takeoff-aviary-v0_2023-01-18,2844784,0.034336,133.8125,16,-95.322033,-101.724314,-89.351101,3.198374,1260
++34,exp_name: takeoff-aviary-v0_2023-01-18,2846903,0.036244,132.4375,16,-95.765613,-101.903225,-91.751066,3.008827,1261
++35,exp_name: takeoff-aviary-v0_2023-01-18,2849049,0.034883,134.125,16,-96.243928,-101.049643,-91.623928,2.848434,1262
++36,exp_name: takeoff-aviary-v0_2023-01-18,2851127,0.031347,122.235294,17,-92.016226,-99.845483,-86.307648,3.21913,1263
++37,exp_name: takeoff-aviary-v0_2023-01-18,2853293,0.033862,127.411765,17,-94.321757,-100.420298,-89.544127,2.993983,1264
++38,exp_name: takeoff-aviary-v0_2023-01-18,2855457,0.032621,127.294118,17,-94.456392,-97.846075,-90.631187,2.19496,1265
++39,exp_name: takeoff-aviary-v0_2023-01-18,2857522,0.034588,129.0625,16,-94.633186,-101.390129,-88.99158,3.141394,1266
++40,exp_name: takeoff-aviary-v0_2023-01-18,2859686,0.037463,135.25,16,-95.818973,-103.589877,-90.726083,3.794598,1267
++41,exp_name: takeoff-aviary-v0_2023-01-18,2861853,0.032614,127.470588,17,-93.500822,-98.622422,-86.753618,3.176849,1268
++42,exp_name: takeoff-aviary-v0_2023-01-18,2864017,0.037793,127.294118,17,-93.710681,-97.574096,-86.685723,2.943374,1269
++43,exp_name: takeoff-aviary-v0_2023-01-18,2866070,0.034942,128.3125,16,-94.146886,-102.243814,-89.693881,3.400389,1270
++0,exp_name: takeoff-aviary-v0_2023-01-18,2868224,0.035071,134.625,16,-95.312039,-102.271245,-90.477274,3.369887,1271
++1,exp_name: takeoff-aviary-v0_2023-01-18,2870284,0.034773,128.75,16,-94.583302,-98.762661,-89.307244,2.585374,1272
++2,exp_name: takeoff-aviary-v0_2023-01-18,2872365,0.031784,122.411765,17,-92.24488,-98.025518,-88.221715,2.744161,1273
++3,exp_name: takeoff-aviary-v0_2023-01-18,2874454,0.034359,122.882353,17,-91.837386,-96.474415,-87.876296,2.76536,1274
++4,exp_name: takeoff-aviary-v0_2023-01-18,2876576,0.034931,124.823529,17,-92.938706,-99.208304,-87.101973,3.058312,1275
++5,exp_name: takeoff-aviary-v0_2023-01-18,2878721,0.036275,126.176471,17,-93.881303,-100.404803,-87.22712,3.678174,1276
++6,exp_name: takeoff-aviary-v0_2023-01-18,2880794,0.03671,129.5625,16,-95.378879,-101.029174,-87.990125,3.573719,1277
++7,exp_name: takeoff-aviary-v0_2023-01-18,2882880,0.035739,130.375,16,-96.000188,-98.909176,-92.469814,2.061462,1278
++0,exp_name: takeoff-aviary-v0_2023-01-18,2885041,0.039018,135.0625,16,-96.949703,-105.18156,-90.961788,3.40874,1279
++1,exp_name: takeoff-aviary-v0_2023-01-18,2887144,0.035019,131.4375,16,-95.192236,-99.749073,-90.517208,2.400602,1280
++2,exp_name: takeoff-aviary-v0_2023-01-18,2889205,0.034581,128.8125,16,-94.027268,-99.977469,-89.850092,3.030856,1281
++3,exp_name: takeoff-aviary-v0_2023-01-18,2891287,0.033736,122.470588,17,-92.329562,-97.953367,-89.681467,2.105992,1282
++4,exp_name: takeoff-aviary-v0_2023-01-18,2893371,0.031707,122.588235,17,-92.127726,-95.881716,-88.338571,2.022611,1283
++5,exp_name: takeoff-aviary-v0_2023-01-18,2895424,0.031065,120.764706,17,-90.82301,-95.22335,-86.715113,2.38299,1284
++6,exp_name: takeoff-aviary-v0_2023-01-18,2897597,0.049547,181.083333,12,-177.929094,-1118.554646,-87.996295,283.628411,1285
++7,exp_name: takeoff-aviary-v0_2023-01-18,2899755,0.032749,126.941176,17,-93.210003,-96.929072,-88.820975,2.740181,1286
++8,exp_name: takeoff-aviary-v0_2023-01-18,2901854,0.033947,131.1875,16,-94.355438,-100.163302,-87.489741,3.350172,1287
++9,exp_name: takeoff-aviary-v0_2023-01-18,2904022,0.034406,127.529412,17,-93.110452,-98.286212,-87.098203,3.117803,1288
++10,exp_name: takeoff-aviary-v0_2023-01-18,2906141,0.034064,132.4375,16,-94.92058,-102.741598,-91.124674,3.605577,1289
++11,exp_name: takeoff-aviary-v0_2023-01-18,2908221,0.032661,122.352941,17,-92.154624,-100.319686,-86.312575,3.514716,1290
++12,exp_name: takeoff-aviary-v0_2023-01-18,2910340,0.03241,124.647059,17,-92.475238,-98.373238,-86.966321,3.235517,1291
++0,exp_name: takeoff-aviary-v0_2023-01-18,2912509,0.03276,127.588235,17,-93.544336,-101.011375,-89.68638,2.629081,1292
++1,exp_name: takeoff-aviary-v0_2023-01-18,2914608,0.034475,123.470588,17,-92.042992,-96.334083,-88.146373,2.513661,1293
++2,exp_name: takeoff-aviary-v0_2023-01-18,2916763,0.032704,126.764706,17,-92.262305,-97.94982,-86.782801,3.278073,1294
++3,exp_name: takeoff-aviary-v0_2023-01-18,2918857,0.038114,130.875,16,-94.46587,-102.940659,-89.552798,3.347482,1295
++4,exp_name: takeoff-aviary-v0_2023-01-18,2921017,0.037242,135.0,16,-94.983052,-100.249258,-89.43208,3.369583,1296
++5,exp_name: takeoff-aviary-v0_2023-01-18,2923174,0.034664,134.8125,16,-94.768198,-98.428038,-88.84903,2.575226,1297
++6,exp_name: takeoff-aviary-v0_2023-01-18,2925257,0.037142,138.866667,15,-95.903959,-102.28827,-88.971721,3.763699,1298
++7,exp_name: takeoff-aviary-v0_2023-01-18,2927328,0.036443,138.066667,15,-97.207518,-102.996597,-91.484541,3.456134,1299
++8,exp_name: takeoff-aviary-v0_2023-01-18,2929420,0.063697,232.444444,9,-222.301433,-1191.078975,-95.558735,342.532882,1300
++0,exp_name: takeoff-aviary-v0_2023-01-18,2932092,0.059193,205.538462,13,-174.125401,-1042.452222,-94.39082,250.715608,1301
++1,exp_name: takeoff-aviary-v0_2023-01-18,2934297,0.072845,275.625,8,-275.171423,-817.56429,-95.948237,299.253971,1302
++2,exp_name: takeoff-aviary-v0_2023-01-18,2936360,0.067267,257.875,8,-261.303253,-811.657201,-98.780837,281.410947,1303
++0,exp_name: takeoff-aviary-v0_2023-01-18,2938455,0.194035,698.333333,3,-969.381964,-1174.084141,-767.376469,166.048661,1304
++1,exp_name: takeoff-aviary-v0_2023-01-18,2941175,0.06392,247.272727,11,-250.239611,-1171.536553,-97.920864,335.062927,1305
++2,exp_name: takeoff-aviary-v0_2023-01-18,2943721,0.13637,509.2,5,-657.356576,-1219.815516,-94.409198,489.940378,1306
++3,exp_name: takeoff-aviary-v0_2023-01-18,2945957,0.092187,319.428571,7,-328.66301,-1139.998443,-96.949421,355.465984,1307
++4,exp_name: takeoff-aviary-v0_2023-01-18,2948160,0.087963,314.714286,7,-342.890809,-1075.444476,-97.453411,386.074229,1308
++0,exp_name: takeoff-aviary-v0_2023-01-18,2950288,0.088156,304.0,7,-344.033773,-1191.893994,-96.147881,406.116399,1309
++1,exp_name: takeoff-aviary-v0_2023-01-18,2953060,0.09259,346.5,8,-399.420531,-1075.640675,-96.668474,392.294184,1310
++0,exp_name: takeoff-aviary-v0_2023-01-18,2955159,0.109509,419.8,5,-497.312227,-1153.368676,-98.109375,484.404825,1311
++1,exp_name: takeoff-aviary-v0_2023-01-18,2957504,0.209241,781.666667,3,-1094.698332,-1130.915529,-1071.83949,25.901465,1312
++2,exp_name: takeoff-aviary-v0_2023-01-18,2960301,0.125148,466.166667,6,-570.966488,-1184.731755,-98.501504,483.113294,1313
++3,exp_name: takeoff-aviary-v0_2023-01-18,2962558,0.072587,282.125,8,-288.236243,-1130.153577,-98.975445,352.866923,1314
++4,exp_name: takeoff-aviary-v0_2023-01-18,2964687,0.144097,532.25,4,-695.014991,-1118.256223,-101.538706,369.433173,1315
++5,exp_name: takeoff-aviary-v0_2023-01-18,2966900,0.116639,442.6,5,-504.114099,-1104.542776,-98.485043,487.673547,1316
++0,exp_name: takeoff-aviary-v0_2023-01-18,2968950,0.062705,227.777778,9,-215.736741,-1139.03383,-93.007407,326.452061,1317
++0,exp_name: takeoff-aviary-v0_2023-01-18,2971330,0.090888,340.0,7,-392.713778,-1162.060445,-97.638079,462.983634,1318
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+index 0dbcfd2e..c6a6252e 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+@@ -4,6 +4,7 @@ import torch
+ from torch import nn
+ from torch.optim import Adam, SGD
+ from torch.distributions import MultivariateNormal
++from scipy.ndimage.filters import gaussian_filter1d
+ from distutils.util import strtobool
+ import numpy as np
+ from datetime import datetime
+@@ -13,6 +14,7 @@ import argparse
+ from stable_baselines3 import PPO
+ # gym environment
+ import gym
++from gym.envs.registration import register
+ 
+ # video logging
+ from matplotlib import animation
+@@ -166,7 +168,7 @@ class PPO_PolicyGradient:
+                  learning_rate_v=1e-3,
+                  gae_lambda=0.95,
+                  gamma=0.99,
+-                 epsilon=0.22,
++                 epsilon=0.2,
+                  adam_eps=1e-5,
+                  momentum=0.9,
+                  adam=True,
+@@ -622,7 +624,7 @@ class PPO_PolicyGradient:
+         """"""
+         training_steps = 0
+         done_so_far = 0
+-        adv_func = self.advantage_type
++
+         while training_steps < self.total_training_steps:
+             policy_losses, value_losses = [], []
+ 
+@@ -639,7 +641,7 @@ class PPO_PolicyGradient:
+             advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+             
+             # Calculate advantage function
+-            # match adv_func:
++            # match self.advantage_type:
+             #         case 'gae':
+             #             advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(
+             #             ), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+@@ -713,12 +715,15 @@ class PPO_PolicyGradient:
+                     })
+ 
+         # Finalize and plot stats
+-        if self.stats_plotter:
+-            df = self.stats_plotter.read_csv()  # read all files in folder
+-            self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns',
+-                                                 y_min='min episodic returns', y_max='max episodic returns',
+-                                                 title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return',
+-                                                 color='blue', smoothing=6, wandb=wandb, xlim_up=self.total_training_steps)
++        if self.csv_writer and self.stats_plotter:
++            df = self.stats_plotter.read_csv() 
++            if df: # read all files in folder
++                self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns',
++                                                    y_min='min episodic returns', y_max='max episodic returns',
++                                                    title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return',
++                                                    color='blue', smoothing=None, wandb=wandb)
++            else:
++                logging.warn(f'No .*csv file found under {self.exp_dir}')
+         if wandb:
+             # save files in path
+             wandb.save(os.path.join(self.exp_path, "*csv"))
+@@ -742,7 +747,7 @@ class PPO_PolicyGradient:
+         video_path = os.path.join(path, filename)
+         anim.save(video_path, writer='imagemagick', fps=60)
+ 
+-    def log_stats(self, p_losses, v_losses, batch_return, episode_lens, training_steps, time, done_so_far, exp_name='experiment'):
++    def log_stats(self, p_losses, v_losses, batch_return, episode_lens, training_steps, time, done_so_far, exp_name='experiment', smoothing=None):
+         """Calculate stats and log to W&B, CSV, logger """
+         if torch.is_tensor(batch_return):
+             batch_return = batch_return.detach().numpy()
+@@ -755,6 +760,10 @@ class PPO_PolicyGradient:
+         mean_ep_time = round(np.mean(time), 6)
+         mean_ep_len = round(np.mean(episode_lens), 6)
+ 
++        # use gaussian smoothing
++        if smoothing:
++            max_ep_ret = gaussian_filter1d(cum_ret.to_numpy(), sigma=smoothing)
++
+         # statistical values for return
+         mean_ep_ret = round(np.mean(cum_ret), 6)
+         max_ep_ret = round(np.max(cum_ret), 6)
+@@ -789,7 +798,9 @@ class PPO_PolicyGradient:
+ 
+         logging.info('\n')
+         logging.info(f'------------ Episode: {training_steps} --------------')
+-        logging.info(f"Mean return:          {mean_ep_ret}")
++        logging.info(f"Max ep_return:        {max_ep_ret}")
++        logging.info(f"Min ep_return:        {min_ep_ret}")
++        logging.info(f"Mean ep_return:       {mean_ep_ret}")
+         logging.info(f"Mean policy loss:     {mean_p_loss}")
+         logging.info(f"Mean value loss:      {mean_v_loss}")
+         logging.info('--------------------------------------------')
+@@ -855,6 +866,13 @@ def load_model(path, model, device='cpu'):
+     model.load_state_dict(checkpoint['model_state_dict'])
+     return model
+ 
++def register_env(id:str, entry_point:str):
++    # register custom env with openAI gym
++    # allows it to be detected by gym
++    register(
++    id=id,
++    entry_point=entry_point,
++)
+ 
+ ####################
+ ####################
+@@ -871,13 +889,13 @@ class PPOTrainer:
+                 learning_rate_v=1e-3,
+                 gae_lambda=0.95,
+                 gamma=0.99,
+-                epsilon=0.22,
++                epsilon=0.2,
+                 adam_eps=1e-5,
+                 momentum=0.9,
+                 adam=True,
+                 save_model=10,
+                 log_video=False,
+-                log_video_steps=100,
++                log_video_steps=10,
+                 render_steps=10,
+                 render_video=False,
+                 device='cpu',
+@@ -1052,8 +1070,7 @@ class PPOTrainer:
+ 
+     def shutdown(self):
+         # cleanup 
+-        if self.env:
+-            self.env.close()
++        self.env.close()
+         wandb.run.finish() if wandb and wandb.run else None
+ 
+     def get_policy(self):
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py b/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
+index 8afb5cd0..4e1a1357 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
+@@ -51,10 +51,20 @@ class StatsPlotter:
+             Concats all files and returns a pandas dataframe.
+         """
+         # find all csv files in this folder
+-        csv_file = os.path.join(self.csv_folder_path, f"*.csv")
+-        all_files = glob.glob(csv_file)
+-        df = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True)
+-        return df
++        if os.path.exists(self.csv_folder_path):
++            csv_file = os.path.join(self.csv_folder_path, f"*.csv")
++            all_files = glob.glob(csv_file)
++            if len(all_files) > 0:
++                try:
++                    df = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True)
++                    return df
++                except:
++                    print(f'No *csv file under {csv_file}')
++                    return None
++            else:
++                return None
++        else:
++            return None
+ 
+     def plot_box(self, dataframe, x, y, title='title', x_label='Timestep', y_label='Mean Episodic Time', wandb=None):
+         """Create a box plot for time needed to converge per experiment."""     
+@@ -73,13 +83,19 @@ class StatsPlotter:
+         if wandb:
+             wandb.log({'Mean Episodic Time': plt})
+ 
+-    def plot_seaborn_fill(self, dataframe, x, y, y_min, y_max, title='title', x_label='Timestep', y_label='Mean Episodic Return', upper_bound=1.0, lower_bound=-1.0, xlim_up=2_000_000, ylim_low=-1.0, ylim_up=1, color='blue', smoothing=2, wandb=None):
++    def plot_seaborn_fill(self, dataframe, x, y, y_min, y_max, title='title', x_label='Timestep', y_label='Mean Episodic Return', color='blue', smoothing=6, wandb=None):
+         # get values from df
+         # add smoothing
+-        df_min = gaussian_filter1d(dataframe[y_min].to_numpy(), sigma=smoothing)
+-        df_max = gaussian_filter1d(dataframe[y_max].to_numpy(), sigma=smoothing)
++        if smoothing:
++            df_min = gaussian_filter1d(dataframe[y_min].to_numpy(), sigma=smoothing)
++            df_max = gaussian_filter1d(dataframe[y_max].to_numpy(), sigma=smoothing)
++            df_y = gaussian_filter1d(dataframe[y].to_numpy(), sigma=smoothing)
++        else:
++            df_min = dataframe[y_min].to_numpy()
++            df_max = dataframe[y_max].to_numpy()
++            df_y = dataframe[y].to_numpy()
++            
+         df_x = dataframe[x].to_numpy(dtype=int)
+-        df_y = gaussian_filter1d(dataframe[y].to_numpy(), sigma=smoothing)
+         # get exp names
+         df_exp = dataframe['experiment'].values.astype('str')
+         df_exp_unique = list(dict.fromkeys(df_exp))
+@@ -87,18 +103,18 @@ class StatsPlotter:
+         # draw mean line
+         ax = sns.lineplot(x=df_x, y=df_y, lw=2)
+         # fill std
+-        ax.fill_between(x=df_x, y1=df_min, y2=df_max, color=sns.xkcd_rgb[color], alpha=0.2)
+-        # draw upper and lower bounds
+-        ax.axhline(lower_bound, linewidth=1, color='red', label='lower bound')
+-        ax.axhline(upper_bound, linewidth=1, color='red', label='upper bound')        
++        ax.fill_between(x=df_x, y1=df_min, y2=df_max, color=sns.xkcd_rgb[color], alpha=0.2)     
+         # change x-y axis scale
+-        ax.set(title=title, xlabel=x_label, ylabel=y_label, xlim=(0, xlim_up), ylim=(ylim_low, ylim_up))
++        ax.set(title=title, xlabel=x_label, ylabel=y_label)
+         # set legend
+         plt.legend(labels=df_exp_unique, loc='upper right')
+ 
+         # plot the file to given destination
+         ax.figure.savefig(self.file_name_and_path)
+-        plt.show()
++        # show for 3 sec
++        plt.show(block=False)
++        plt.pause(3)
++        plt.close()
+         
+         if wandb:
+             images = wandb.Image(plt)

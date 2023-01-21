@@ -1,0 +1,148 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index 96d2dec..378e107 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -465,7 +465,7 @@ if __name__ == '__main__':
+     unity_file_name = ''            # name of unity environment
+     total_steps = 30000000          # time steps to train agent
+     max_trajectory_size = 1000      # max number of trajectory samples to be sampled per time step. 
+-    trajectory_iterations = 4600    # number of batches of episodes
++    trajectory_iterations = 2408    # number of batches of episodes
+     noptepochs = 5                  # Number of epochs per time step to optimize the neural networks
+     learning_rate_p = 1e-4          # learning rate for policy network
+     learning_rate_v = 1e-3          # learning rate for value network
+diff --git a/PPO/ppo_torch/wandb/debug-internal.log b/PPO/ppo_torch/wandb/debug-internal.log
+index 70efd6f..56e603d 120000
+--- a/PPO/ppo_torch/wandb/debug-internal.log
++++ b/PPO/ppo_torch/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20221220_191738-2vtakhco/logs/debug-internal.log
+\ No newline at end of file
++run-20221221_141856-1pgdfr0l/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/debug.log b/PPO/ppo_torch/wandb/debug.log
+index 55e8af0..10190ef 120000
+--- a/PPO/ppo_torch/wandb/debug.log
++++ b/PPO/ppo_torch/wandb/debug.log
+@@ -1 +1 @@
+-run-20221220_191738-2vtakhco/logs/debug.log
+\ No newline at end of file
++run-20221221_141856-1pgdfr0l/logs/debug.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/latest-run b/PPO/ppo_torch/wandb/latest-run
+index 8585139..422da8f 120000
+--- a/PPO/ppo_torch/wandb/latest-run
++++ b/PPO/ppo_torch/wandb/latest-run
+@@ -1 +1 @@
+-run-20221220_191738-2vtakhco
+\ No newline at end of file
++run-20221221_141856-1pgdfr0l
+\ No newline at end of file
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet
+index d8d92db..1b31220 100644
+Binary files a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet and b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet differ
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet
+index c76720d..7053ee5 100644
+Binary files a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet and b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet differ
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
+index 7ba9770..657a587 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
+@@ -238,7 +238,7 @@ class PPO_PolicyGradient:
+     def finish_episode(self):
+         pass 
+ 
+-    def collect_rollout(self, n_step=1, render=True):
++    def c(self, n_step=1, render=True):
+         """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)"""
+         
+         step, ep_rewards = 0, []
+@@ -264,7 +264,7 @@ class PPO_PolicyGradient:
+             for ep_t in range(0, self.max_trajectory_size):
+                 # render gym envs
+                 if render and ep_t % self.render_steps == 0:
+-                    self.env.render(mode='human')
++                    self.env.render()
+                 
+                 step += 1 
+ 
+@@ -463,20 +463,20 @@ if __name__ == '__main__':
+     args = arg_parser()
+     
+     # Hyperparameter
+-    unity_file_name = ''            # name of unity environment
+-    total_steps = 30000000          # time steps to train agent
+-    max_trajectory_size = 1000      # max number of trajectory samples to be sampled per time step. 
+-    trajectory_iterations = 4600    # number of batches of episodes
+-    noptepochs = 5                  # Number of epochs per time step to optimize the neural networks
+-    learning_rate_p = 1e-4          # learning rate for policy network
+-    learning_rate_v = 1e-3          # learning rate for value network
+-    gae_lambda = 0.95               # trajectory discount for the general advantage estimation (GAE)
+-    gamma = 0.99                    # discount factor
+-    adam_epsilon = 1e-8             # default in the PPO baseline implementation is 1e-5, the pytorch default is 1e-8 - Andrychowicz, et al. (2021)  uses 0.9
+-    epsilon = 0.2                   # clipping factor
+-    env_name = 'takeoff-aviary-v0'  # name of OpenAI gym environment other: 'Pendulum-v1' , 'MountainCarContinuous-v0'
+-    env_number = 8                  # number of actors
+-    seed = 42                       # seed gym, env, torch, numpy 
++    unity_file_name = ''                # name of unity environment
++    total_steps = 30000000              # time steps to train agent
++    max_trajectory_size = 1000          # max number of trajectory samples to be sampled per time step. 
++    trajectory_iterations = 2408        # number of batches of episodes
++    noptepochs = 5                      # Number of epochs per time step to optimize the neural networks
++    learning_rate_p = 1e-4              # learning rate for policy network
++    learning_rate_v = 1e-3              # learning rate for value network
++    gae_lambda = 0.95                   # trajectory discount for the general advantage estimation (GAE)
++    gamma = 0.99                        # discount factor
++    adam_epsilon = 1e-8                 # default in the PPO baseline implementation is 1e-5, the pytorch default is 1e-8 - Andrychowicz, et al. (2021)  uses 0.9
++    epsilon = 0.2                       # clipping factor
++    env_name = 'flythrugate-aviary-v0'  # name of OpenAI gym drone environment other 'takeoff-aviary-v0', 'flythrugate-aviary-v0'
++    env_number = 1                      # number of actors
++    seed = 42                           # seed gym, env, torch, numpy 
+     
+     # setup for torch save models and rendering
+     render_steps = 10
+@@ -504,7 +504,7 @@ if __name__ == '__main__':
+     logging.info(f'env action space: {act_shape}')
+     
+     obs_dim = obs_shape[0] 
+-    act_dim = act_shape[0] # 2 at CartPole
++    act_dim = act_shape[0]
+ 
+     logging.info(f'env observation dim: {obs_dim}')
+     logging.info(f'env action dim: {act_dim}')
+@@ -531,7 +531,12 @@ if __name__ == '__main__':
+             'epsilon (adam optimizer)': adam_epsilon,
+             'gamma (discount)': gamma,
+             'epsilon (clipping)': epsilon,
+-            'seerd': seed
++            'lambda (gae)': gae_lambda,
++            'seed': seed,
++            'observations shape': obs_shape,
++            'actions shape': act_shape,
++            'actions dimensions': act_dim,
++            'observations dimensions': obs_dim,
+         },
+     name=f"{env_name}__{current_time}",
+     monitor_gym=True,
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run b/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run
+index 1caa68c..5b921b2 120000
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run
+@@ -1 +1 @@
+-run-20221220_230356-3necpdg8
+\ No newline at end of file
++run-20221221_091749-3ei2wm95
+\ No newline at end of file
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/run-20221220_230356-3necpdg8/files/config.yaml b/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/run-20221220_230356-3necpdg8/files/config.yaml
+index 9a9242a..7249dc3 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/run-20221220_230356-3necpdg8/files/config.yaml
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/run-20221220_230356-3necpdg8/files/config.yaml
+@@ -25,6 +25,7 @@ _wandb:
+       4: 3.10.8
+       5: 0.13.6
+       8:
++      - 4
+       - 5
+ batches per episode:
+   desc: null
+diff --git a/gym_pybullet_dr

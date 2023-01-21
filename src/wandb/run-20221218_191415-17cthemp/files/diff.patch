@@ -1,0 +1,41 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index 3cde1df..789c6ab 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -399,7 +399,8 @@ def test():
+ 
+ if __name__ == '__main__':
+     
+-    """ Classic control gym environments docu: https://www.gymlibrary.dev/environments/classic_control/
++    """ Classic control gym environments 
++        Find docu: https://www.gymlibrary.dev/environments/classic_control/
+     """
+     if not os.path.exists(MODEL_PATH):
+         os.makedirs(MODEL_PATH)
+diff --git a/PPO/ppo_torch/wandb/debug-internal.log b/PPO/ppo_torch/wandb/debug-internal.log
+index e13c885..cc12f0e 120000
+--- a/PPO/ppo_torch/wandb/debug-internal.log
++++ b/PPO/ppo_torch/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20221218_174135-258hmm1m/logs/debug-internal.log
+\ No newline at end of file
++run-20221218_191415-17cthemp/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/debug.log b/PPO/ppo_torch/wandb/debug.log
+index fab1043..86f5975 120000
+--- a/PPO/ppo_torch/wandb/debug.log
++++ b/PPO/ppo_torch/wandb/debug.log
+@@ -1 +1 @@
+-run-20221218_174135-258hmm1m/logs/debug.log
+\ No newline at end of file
++run-20221218_191415-17cthemp/logs/debug.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/latest-run b/PPO/ppo_torch/wandb/latest-run
+index f0d978e..bce9ea7 120000
+--- a/PPO/ppo_torch/wandb/latest-run
++++ b/PPO/ppo_torch/wandb/latest-run
+@@ -1 +1 @@
+-run-20221218_174135-258hmm1m
+\ No newline at end of file
++run-20221218_191415-17cthemp
+\ No newline at end of file

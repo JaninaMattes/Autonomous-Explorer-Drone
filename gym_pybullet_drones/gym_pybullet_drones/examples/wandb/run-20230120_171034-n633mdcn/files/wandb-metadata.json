@@ -1,0 +1,39 @@
+{
+    "os": "macOS-13.0.1-arm64-arm-64bit",
+    "python": "3.9.15",
+    "heartbeatAt": "2023-01-20T16:10:35.809334",
+    "startedAt": "2023-01-20T16:10:34.858147",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--env_id",
+        "hover",
+        "--train_steps",
+        "1_000_000"
+    ],
+    "state": "running",
+    "program": "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py",
+    "codePath": "gym_pybullet_drones/gym_pybullet_drones/examples/learn.py",
+    "git": {
+        "remote": "git@github.com:bkunters/ml-explorer-drone.git",
+        "commit": "2f8137dc76dba4bee802a2288e191a97b51b8d66"
+    },
+    "email": "janina.alica.mattes@gmail.com",
+    "root": "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone",
+    "host": "Janinas-MacBook-Pro.local",
+    "username": "janinaalicamattes",
+    "executable": "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-pybullet/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "total": 460.4317207336426,
+        "used": 10.886878967285156
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

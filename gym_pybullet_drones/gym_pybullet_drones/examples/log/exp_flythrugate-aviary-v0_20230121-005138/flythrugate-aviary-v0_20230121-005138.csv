@@ -1,0 +1,6 @@
+,experiment,timestep,mean episodic runtime,mean episodic length,eval episodes,mean episodic returns,min episodic returns,max episodic returns,std episodic returns,episodes
+0,exp_name: flythrugate-aviary-v0_2023-01-21,2048,0.001008,1.0,2048,-4.06406,-4.064325,-4.063798,7.7e-05,0
+1,exp_name: flythrugate-aviary-v0_2023-01-21,4096,0.000978,1.0,2048,-4.064055,-4.064297,-4.063761,7.9e-05,1
+2,exp_name: flythrugate-aviary-v0_2023-01-21,6144,0.000974,1.0,2048,-4.06405,-4.064287,-4.063827,7.5e-05,2
+3,exp_name: flythrugate-aviary-v0_2023-01-21,8192,0.001008,1.0,2048,-4.064041,-4.064287,-4.063773,7.7e-05,3
+4,exp_name: flythrugate-aviary-v0_2023-01-21,10240,0.001033,1.0,2048,-4.064027,-4.064296,-4.063735,7.8e-05,4

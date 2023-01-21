@@ -1,0 +1,241 @@
+diff --git a/PPO/ppo_torch/models/Pendulum-v1__policyNet b/PPO/ppo_torch/models/Pendulum-v1__policyNet
+index 3ca1660..b3ea269 100644
+Binary files a/PPO/ppo_torch/models/Pendulum-v1__policyNet and b/PPO/ppo_torch/models/Pendulum-v1__policyNet differ
+diff --git a/PPO/ppo_torch/models/Pendulum-v1__valueNet b/PPO/ppo_torch/models/Pendulum-v1__valueNet
+index 926a596..c36098b 100644
+Binary files a/PPO/ppo_torch/models/Pendulum-v1__valueNet and b/PPO/ppo_torch/models/Pendulum-v1__valueNet differ
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index 96d2dec..90fa022 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -17,11 +17,13 @@ import argparse
+ # logging python
+ import logging
+ import sys
++import csv
+ 
+ # monitoring/logging ML
+ import wandb
+ 
+ MODEL_PATH = './models/'
++CSV_PATH = './csv/'
+ 
+ ####################
+ ####### TODO #######
+@@ -338,7 +340,7 @@ class PPO_PolicyGradient:
+         steps = 0
+ 
+         while steps < self.total_steps:
+-        
++            policy_losses, value_losses = [], []
+             # Collect trajectory
+             # STEP 3-4: simulate and collect trajectories --> the following values are all per batch
+             obs, actions, log_probs, dones, cum_return, batch_lens, mean_reward = self.collect_rollout(n_step=self.trajectory_iterations)
+@@ -355,21 +357,28 @@ class PPO_PolicyGradient:
+                 # STEP 6-7: calculate loss and update weights
+                 values, curr_log_probs, _ = self.get_values(obs, actions)
+                 policy_loss, value_loss = self.train(values, cum_return, advantages, log_probs, curr_log_probs, self.epsilon)
++                
++                policy_losses.append(policy_loss.detach().numpy())
++                value_losses.append(value_loss.detach().numpy())
++
++            # calculate stats
++            mean_policy_loss = np.mean([np.sum(loss) for loss in policy_losses])
++            mean_value_loss = np.mean([np.sum(loss) for loss in value_losses])
+ 
+             logging.info('\n')
+             logging.info('###########################################')
+-            logging.info(f"Mean return: {mean_reward}")
+-            logging.info(f"Policy loss: {policy_loss}")
+-            logging.info(f"Value loss:  {value_loss}")
+-            logging.info(f"Time step:   {steps}")
++            logging.info(f"Mean return:      {mean_reward}")
++            logging.info(f"Mean Policy loss: {mean_policy_loss}")
++            logging.info(f"Mean Value loss:  {mean_value_loss}")
++            logging.info(f"Timestep:         {steps}")
+             logging.info('###########################################')
+             logging.info('\n')
+             
+             # logging for monitoring in W&B
+             wandb.log({
+-                'train/episode': steps,
+-                'train/policy loss': policy_loss,
+-                'train/value loss': value_loss})
++                'train/timesteps': steps,
++                'train/mean policy loss': policy_loss,
++                'train/mean value loss': value_loss})
+             
+             # store model in checkpoints
+             if steps % self.save_model == 0:
+@@ -444,6 +453,10 @@ def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
+     torch.nn.init.constant_(layer.bias, bias_const)
+     return layer
+ 
++def create_path(path: str) -> None:
++    if not os.path.exists(path):
++        os.makedirs(path)
++
+ def train():
+     # TODO Add Checkpoints to load model 
+     pass
+@@ -456,17 +469,20 @@ if __name__ == '__main__':
+     """ Classic control gym environments 
+         Find docu: https://www.gymlibrary.dev/environments/classic_control/
+     """
+-    if not os.path.exists(MODEL_PATH):
+-        os.makedirs(MODEL_PATH)
+ 
++    # check if path exists otherwise create
++    create_path(MODEL_PATH)
++    create_path(CSV_PATH)
++
++    # parse arguments
+     args = arg_parser()
+     
+     # Hyperparameter
+     unity_file_name = ''            # name of unity environment
+     total_steps = 30000000          # time steps to train agent
+     max_trajectory_size = 1000      # max number of trajectory samples to be sampled per time step. 
+-    trajectory_iterations = 4600    # number of batches of episodes
+-    noptepochs = 5                  # Number of epochs per time step to optimize the neural networks
++    trajectory_iterations = 2408    # number of batches of episodes
++    noptepochs = 10                 # Number of epochs per time step to optimize the neural networks
+     learning_rate_p = 1e-4          # learning rate for policy network
+     learning_rate_v = 1e-3          # learning rate for value network
+     gae_lambda = 0.95               # trajectory discount for the general advantage estimation (GAE)
+@@ -512,7 +528,11 @@ if __name__ == '__main__':
+     logging.info(f'upper bound for env observation: {env.observation_space.high}')
+     logging.info(f'lower bound for env observation: {env.observation_space.low}')
+     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+-   
++    
++    # create CSV writer
++    output = csv.writer(open(f"{env_name}_{current_time}_log.csv", 'w'))
++    output.writerow(['mean policy loss', 'mean value loss', 'mean episode length', 'mean episode returns', 'timestep'])
++
+     # Monitoring with W&B
+     wandb.init(
+     project=f'drone-mechanics-ppo-OpenAIGym',
+diff --git a/PPO/ppo_torch/wandb/debug-internal.log b/PPO/ppo_torch/wandb/debug-internal.log
+index 70efd6f..919b0b9 120000
+--- a/PPO/ppo_torch/wandb/debug-internal.log
++++ b/PPO/ppo_torch/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20221220_191738-2vtakhco/logs/debug-internal.log
+\ No newline at end of file
++run-20221221_171452-2po314yf/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/debug.log b/PPO/ppo_torch/wandb/debug.log
+index 55e8af0..0957abb 120000
+--- a/PPO/ppo_torch/wandb/debug.log
++++ b/PPO/ppo_torch/wandb/debug.log
+@@ -1 +1 @@
+-run-20221220_191738-2vtakhco/logs/debug.log
+\ No newline at end of file
++run-20221221_171452-2po314yf/logs/debug.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/latest-run b/PPO/ppo_torch/wandb/latest-run
+index 8585139..e2542e9 120000
+--- a/PPO/ppo_torch/wandb/latest-run
++++ b/PPO/ppo_torch/wandb/latest-run
+@@ -1 +1 @@
+-run-20221220_191738-2vtakhco
+\ No newline at end of file
++run-20221221_171452-2po314yf
+\ No newline at end of file
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet
+index d8d92db..1b31220 100644
+Binary files a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet and b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__policyNet differ
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet
+index c76720d..7053ee5 100644
+Binary files a/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet and b/gym_pybullet_drones/gym_pybullet_drones/examples/models/takeoff-aviary-v0__valueNet differ
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
+index 7ba9770..657a587 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
+@@ -238,7 +238,7 @@ class PPO_PolicyGradient:
+     def finish_episode(self):
+         pass 
+ 
+-    def collect_rollout(self, n_step=1, render=True):
++    def c(self, n_step=1, render=True):
+         """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)"""
+         
+         step, ep_rewards = 0, []
+@@ -264,7 +264,7 @@ class PPO_PolicyGradient:
+             for ep_t in range(0, self.max_trajectory_size):
+                 # render gym envs
+                 if render and ep_t % self.render_steps == 0:
+-                    self.env.render(mode='human')
++                    self.env.render()
+                 
+                 step += 1 
+ 
+@@ -463,20 +463,20 @@ if __name__ == '__main__':
+     args = arg_parser()
+     
+     # Hyperparameter
+-    unity_file_name = ''            # name of unity environment
+-    total_steps = 30000000          # time steps to train agent
+-    max_trajectory_size = 1000      # max number of trajectory samples to be sampled per time step. 
+-    trajectory_iterations = 4600    # number of batches of episodes
+-    noptepochs = 5                  # Number of epochs per time step to optimize the neural networks
+-    learning_rate_p = 1e-4          # learning rate for policy network
+-    learning_rate_v = 1e-3          # learning rate for value network
+-    gae_lambda = 0.95               # trajectory discount for the general advantage estimation (GAE)
+-    gamma = 0.99                    # discount factor
+-    adam_epsilon = 1e-8             # default in the PPO baseline implementation is 1e-5, the pytorch default is 1e-8 - Andrychowicz, et al. (2021)  uses 0.9
+-    epsilon = 0.2                   # clipping factor
+-    env_name = 'takeoff-aviary-v0'  # name of OpenAI gym environment other: 'Pendulum-v1' , 'MountainCarContinuous-v0'
+-    env_number = 8                  # number of actors
+-    seed = 42                       # seed gym, env, torch, numpy 
++    unity_file_name = ''                # name of unity environment
++    total_steps = 30000000              # time steps to train agent
++    max_trajectory_size = 1000          # max number of trajectory samples to be sampled per time step. 
++    trajectory_iterations = 2408        # number of batches of episodes
++    noptepochs = 5                      # Number of epochs per time step to optimize the neural networks
++    learning_rate_p = 1e-4              # learning rate for policy network
++    learning_rate_v = 1e-3              # learning rate for value network
++    gae_lambda = 0.95                   # trajectory discount for the general advantage estimation (GAE)
++    gamma = 0.99                        # discount factor
++    adam_epsilon = 1e-8                 # default in the PPO baseline implementation is 1e-5, the pytorch default is 1e-8 - Andrychowicz, et al. (2021)  uses 0.9
++    epsilon = 0.2                       # clipping factor
++    env_name = 'flythrugate-aviary-v0'  # name of OpenAI gym drone environment other 'takeoff-aviary-v0', 'flythrugate-aviary-v0'
++    env_number = 1                      # number of actors
++    seed = 42                           # seed gym, env, torch, numpy 
+     
+     # setup for torch save models and rendering
+     render_steps = 10
+@@ -504,7 +504,7 @@ if __name__ == '__main__':
+     logging.info(f'env action space: {act_shape}')
+     
+     obs_dim = obs_shape[0] 
+-    act_dim = act_shape[0] # 2 at CartPole
++    act_dim = act_shape[0]
+ 
+     logging.info(f'env observation dim: {obs_dim}')
+     logging.info(f'env action dim: {act_dim}')
+@@ -531,7 +531,12 @@ if __name__ == '__main__':
+             'epsilon (adam optimizer)': adam_epsilon,
+             'gamma (discount)': gamma,
+             'epsilon (clipping)': epsilon,
+-            'seerd': seed
++            'lambda (gae)': gae_lambda,
++            'seed': seed,
++            'observations shape': obs_shape,
++            'actions shape': act_shape,
++            'actions dimensions': act_dim,
++            'observations dimensions': obs_dim,
+         },
+     name=f"{env_name}__{current_time}",
+     monitor_gym=True,
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run b/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run
+index 1caa68c..5b921b2 120000
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/latest-run
+@@ -1 +1 @@
+-run-20221220_230356-3necpdg8
+\ No newline at end of file
++run-20221221_091749-3ei2wm95
+\ No newline at end of file
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/run-20221220_230356-3necpdg8/files/config.yaml b/gym_pybullet_drones/gym_pybullet_drones/examples/wandb/run-20221220_230356-3necpdg8/files/con

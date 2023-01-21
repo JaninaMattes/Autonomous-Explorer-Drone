@@ -1,0 +1,221 @@
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+index f42752bc..3de8200b 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+@@ -686,11 +686,12 @@ class PPO_PolicyGradient:
+                 if self.render_video and done_so_far % self.video_log_steps == 0:
+                     filename='pendulum_v1.gif'
+                     self.save_frames_as_gif(frames, self.exp_path, filename)
+-                    wandb.log({
+-                        "train/video": wandb.Video(os.path.join(self.exp_path, filename), 
+-                        caption='episode: '+str(done_so_far), 
+-                        fps=4, format="gif"), "step": done_so_far
+-                        })
++                    if wandb:
++                        wandb.log({
++                            "train/video": wandb.Video(os.path.join(self.exp_path, filename), 
++                            caption='episode: '+str(done_so_far), 
++                            fps=4, format="gif"), "step": done_so_far
++                            })
+ 
+         # Finalize and plot stats
+         if self.stats_plotter:
+@@ -705,7 +706,7 @@ class PPO_PolicyGradient:
+                                                     smoothing=2, 
+                                                     wandb=wandb)
+             except:
+-                logging.warn('Plotting unsuccessful...')
++                logging.warn('Plotting unsuccessfull...')
+         if wandb:
+             # save files in path
+             wandb.save(os.path.join(self.exp_path, "*csv"))
+@@ -766,18 +767,19 @@ class PPO_PolicyGradient:
+         self.stats_data['timestep'].append(training_steps)
+ 
+         # Monitoring via W&B
+-        wandb.log({
+-            'train/timesteps': training_steps,
+-            'train/mean policy loss': mean_p_loss,
+-            'train/mean value loss': mean_v_loss,
+-            'train/mean episode returns': mean_ep_ret,
+-            'train/min episode returns': min_ep_ret,
+-            'train/max episode returns': max_ep_ret,
+-            'train/std episode returns': std_ep_rew,
+-            'train/mean episode runtime': mean_ep_time,
+-            'train/mean episode length': mean_ep_len,
+-            'train/episodes': done_so_far,
+-        })
++        if wandb:
++            wandb.log({
++                'train/timesteps': training_steps,
++                'train/mean policy loss': mean_p_loss,
++                'train/mean value loss': mean_v_loss,
++                'train/mean episode returns': mean_ep_ret,
++                'train/min episode returns': min_ep_ret,
++                'train/max episode returns': max_ep_ret,
++                'train/std episode returns': std_ep_rew,
++                'train/mean episode runtime': mean_ep_time,
++                'train/mean episode length': mean_ep_len,
++                'train/episodes': done_so_far,
++            })
+ 
+         logging.info('\n')
+         logging.info(f'------------ Episode: {training_steps} --------------')
+@@ -973,41 +975,41 @@ class PPOTrainer:
+         self.stats_plotter = StatsPlotter(self.exp_dir, file_name_and_path=png_file)
+ 
+     def setup_wb(self):
+-
+-        wandb.init(
+-            project=self.project_name,
+-            entity='drone-mechanics',
+-            sync_tensorboard=True,
+-            config={ # stores hyperparams in job
+-                    'env name': self.env_name,
+-                    'env number': 1, # only single env
+-                    'total_training_steps': self.total_training_steps,
+-                    'max sampled trajectories': self.max_trajectory_size,
+-                    'batches per episode': self.n_rollout_steps,
+-                    'number of epochs for update': self.n_optepochs,
+-                    'input layer size': self.obs_dim,
+-                    'output layer size': self.act_dim,
+-                    'observation space': self.obs_shape,
+-                    'action space': self.act_shape,
+-                    'action space upper bound': self.upper_bound,
+-                    'action space lower bound': self.lower_bound,
+-                    'learning rate (policy net)': self.learning_rate_p,
+-                    'learning rate (value net)': self.learning_rate_v,
+-                    'epsilon (adam optimizer)': self.adam_eps,
+-                    'gamma (discount)': self.gamma,
+-                    'epsilon (clip_range)': self.epsilon,
+-                    'gae lambda (GAE)': self.gae_lambda,
+-                    'normalize advantage': self.normalize_advantage,
+-                    'normalize return': self.normalize_return,
+-                    'seed': self.seed,
+-                    'experiment path': self.exp_dir,
+-                    'experiment name': self.exp_name
+-                },
+-                dir=os.getcwd(),
+-                name=self.exp_name,
+-                monitor_gym=True,
+-                save_code=True
+-            )
++        if wandb:
++            wandb.init(
++                project=self.project_name,
++                entity='drone-mechanics',
++                sync_tensorboard=True,
++                config={ # stores hyperparams in job
++                        'env name': self.env_name,
++                        'env number': 1, # only single env
++                        'total_training_steps': self.total_training_steps,
++                        'max sampled trajectories': self.max_trajectory_size,
++                        'batches per episode': self.n_rollout_steps,
++                        'number of epochs for update': self.n_optepochs,
++                        'input layer size': self.obs_dim,
++                        'output layer size': self.act_dim,
++                        'observation space': self.obs_shape,
++                        'action space': self.act_shape,
++                        'action space upper bound': self.upper_bound,
++                        'action space lower bound': self.lower_bound,
++                        'learning rate (policy net)': self.learning_rate_p,
++                        'learning rate (value net)': self.learning_rate_v,
++                        'epsilon (adam optimizer)': self.adam_eps,
++                        'gamma (discount)': self.gamma,
++                        'epsilon (clip_range)': self.epsilon,
++                        'gae lambda (GAE)': self.gae_lambda,
++                        'normalize advantage': self.normalize_advantage,
++                        'normalize return': self.normalize_return,
++                        'seed': self.seed,
++                        'experiment path': self.exp_dir,
++                        'experiment name': self.exp_name
++                    },
++                    dir=os.getcwd(),
++                    name=self.exp_name,
++                    monitor_gym=True,
++                    save_code=True
++                )
+ 
+     def create_ppo(self):
+         agent = PPO_PolicyGradient(
+@@ -1070,3 +1072,4 @@ class PPOTuner:
+                 'number of epochs for update': [8, 16, 32, 64, 128, 256],
+                 'max sampled trajectories': [32, 64, 128, 256, 512, 1024, 2048, 4096]
+         }
++
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py b/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
+index 4c186619..26ee725b 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/stats_logger.py
+@@ -121,6 +121,7 @@ class StatsPlotter:
+ 
+         # plot the file to given destination
+         ax.figure.savefig(self.file_name_and_path)
++        
+         # show for 3 sec
+         plt.show(block=False)
+         plt.pause(3)
+diff --git a/src/ppo/ppo_continuous.py b/src/ppo/ppo_continuous.py
+index a080400f..cb6b7b71 100644
+--- a/src/ppo/ppo_continuous.py
++++ b/src/ppo/ppo_continuous.py
+@@ -47,6 +47,9 @@ from wrapper.stats_logger import CSVWriter
+ import optuna
+ from optuna.integration.wandb import WeightsAndBiasesCallback
+ 
++# constants
++DEFAULT_PROJECT_NAME = 'EXP_OpenAIGym_PPO'
++
+ # Paths and other constants
+ MODEL_PATH = './models/'
+ LOG_PATH = './log/'
+@@ -851,18 +854,18 @@ def arg_parser():
+     parser = argparse.ArgumentParser()
+     # fmt: off
+     parser = argparse.ArgumentParser()
+-    parser.add_argument("--video", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=False, help="if toggled, capture video of run")
+-    parser.add_argument("--train", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="if toggled, run model in training mode")
+-    parser.add_argument("--test", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=False, help="if toggled, run model in testing mode")
+-    parser.add_argument("--hyperparam", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="if toggled, log hyperparameters")
+-    parser.add_argument("--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"), help="the name of this experiment")
+-    parser.add_argument("--project-name", type=str, default='OpenAIGym-PPO', help="the name of this project") 
+-    parser.add_argument("--gym-id", type=str, default="Pendulum-v1", help="the id of the gym environment")
+-    parser.add_argument("--learning-rate", type=float, default=3e-4, help="the learning rate of the optimizer")
+-    parser.add_argument("--seed", type=int, default=1, help="seed of the experiment")
+-    parser.add_argument("--total-timesteps", type=int, default=2000000, help="total timesteps of the experiments")
++    parser.add_argument("--video",          type=lambda x: bool(strtobool(x)),  default=False, nargs="?", const=False, help="if toggled, capture video of run")
++    parser.add_argument("--train",          type=lambda x: bool(strtobool(x)),  default=False, nargs="?", const=True, help="if toggled, run model in training mode")
++    parser.add_argument("--test",           type=lambda x: bool(strtobool(x)),  default=False, nargs="?", const=False, help="if toggled, run model in testing mode")
++    parser.add_argument("--hyperparam",     type=lambda x: bool(strtobool(x)),  default=False, nargs="?", const=True, help="if toggled, log hyperparameters")
++    parser.add_argument("--exp-name",       type=str,                           default=os.path.basename(__file__).rstrip(".py"), help="the name of this experiment")
++    parser.add_argument("--project-name",   type=str,                           default=DEFAULT_PROJECT_NAME, help="the name of this project") 
++    parser.add_argument("--gym-id",         type=str,                           default="Pendulum-v1", help="the id of the gym environment")
++    parser.add_argument("--learning-rate",  type=float,                         default=3e-4, help="the learning rate of the optimizer")
++    parser.add_argument("--seed",           type=int,                           default=42, help="seed of the experiment")
++    parser.add_argument("--total-timesteps", type=int,                          default=2_000_000, help="total timesteps of the experiments")
+     parser.add_argument("--torch-deterministic", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, `torch.backends.cudnn.deterministic=False`")
+-    parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
++    parser.add_argument("--cuda",           type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
+     
+     # Parse arguments if they are given
+     args = parser.parse_args()
+@@ -1044,8 +1047,8 @@ if __name__ == '__main__':
+     
+     # Hyperparameter
+     total_training_steps = 1_200_000     # time steps regarding batches collected and train agent
+-    max_trajectory_size = 1024                    # max number of episode samples to be sampled per time step. 
+-    n_rollout_steps = 2048               # number of batches per episode, or experiences to collect per environment
++    max_trajectory_size = 1024           # max number of episode samples to be sampled per time step. 
++    n_rollout_steps = 2048               # number of experiences to collect per environment
+     n_optepochs = 64                     # Number of epochs per time step to optimize the neural networks
+     learning_rate_p = 1e-4               # learning rate for policy network
+     learning_rate_v = 1e-3               # learning rate for value network
+@@ -1062,7 +1065,7 @@ if __name__ == '__main__':
+     
+     # setup for torch save models and rendering
+     render_video = False
+-    video_log_steps = 1000
++    video_log_steps = 10
+     render_steps = 10
+     save_steps = 100
+ 

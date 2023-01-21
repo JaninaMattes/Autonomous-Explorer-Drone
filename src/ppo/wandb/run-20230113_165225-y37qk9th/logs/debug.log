@@ -1,0 +1,42 @@
+2023-01-13 16:52:25,910 INFO    MainThread:28585 [wandb_setup.py:_flush():68] Configure stats pid to 28585
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_setup.py:_flush():68] Loading settings from /Users/janinaalicamattes/.config/wandb/settings
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_setup.py:_flush():68] Loading settings from /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/settings
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_setup.py:_flush():68] Loading settings from environment variables: {'_require_service': 'True'}
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_setup.py:_flush():68] Inferring run settings from compute environment: {'program_relpath': 'PPO/ppo_torch/ppo_continuous.py', 'program': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py'}
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_init.py:_log_setup():478] Logging user logs to /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230113_165225-y37qk9th/logs/debug.log
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_init.py:_log_setup():479] Logging internal logs to /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230113_165225-y37qk9th/logs/debug-internal.log
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_init.py:init():518] calling init triggers
+2023-01-13 16:52:25,911 INFO    MainThread:28585 [wandb_init.py:init():521] wandb.init called with sweep_config: {}
+config: {'env name': 'Pendulum-v1', 'env number': 1, 'total number of steps': 3000000, 'max sampled trajectories': 512, 'batches per episode': 2048, 'number of epochs for update': 12, 'input layer size': 3, 'output layer size': 1, 'observation space': (3,), 'action space': (1,), 'action space upper bound': 2.0, 'action space lower bound': -2.0, 'learning rate (policy net)': 0.0001, 'learning rate (value net)': 0.001, 'epsilon (adam optimizer)': 1e-08, 'gamma (discount)': 0.99, 'epsilon (clipping)': 0.2, 'gae lambda (GAE)': 0.95, 'normalize advantage': True, 'normalize return': True, 'seed': 42, 'experiment path': './log/exp_Pendulum-v1_20230113-165224', 'experiment name': '(seperate network, actor-critic advantage, normalize ret/adv)'}
+2023-01-13 16:52:25,912 INFO    MainThread:28585 [wandb_init.py:init():571] starting backend
+2023-01-13 16:52:25,912 INFO    MainThread:28585 [wandb_init.py:init():575] setting up manager
+2023-01-13 16:52:25,922 INFO    MainThread:28585 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2023-01-13 16:52:25,926 INFO    MainThread:28585 [wandb_init.py:init():582] backend started and connected
+2023-01-13 16:52:25,932 INFO    MainThread:28585 [wandb_init.py:init():670] updated telemetry
+2023-01-13 16:52:25,944 INFO    MainThread:28585 [wandb_init.py:init():710] communicating run to backend with 60.0 second timeout
+2023-01-13 16:52:26,492 INFO    MainThread:28585 [wandb_run.py:_on_init():2121] communicating current version
+2023-01-13 16:52:26,636 INFO    MainThread:28585 [wandb_run.py:_on_init():2125] got version response upgrade_message: "wandb version 0.13.9 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-01-13 16:52:26,636 INFO    MainThread:28585 [wandb_init.py:init():758] starting run threads in backend
+2023-01-13 16:52:28,754 INFO    MainThread:28585 [wandb_run.py:_console_start():2101] atexit reg
+2023-01-13 16:52:28,754 INFO    MainThread:28585 [wandb_run.py:_redirect():1959] redirect: SettingsConsole.WRAP_RAW
+2023-01-13 16:52:28,754 INFO    MainThread:28585 [wandb_run.py:_redirect():2024] Wrapping output streams.
+2023-01-13 16:52:28,755 INFO    MainThread:28585 [wandb_run.py:_redirect():2046] Redirects installed.
+2023-01-13 16:52:28,755 INFO    MainThread:28585 [wandb_init.py:init():798] run started, returning control to user process
+2023-01-13 17:03:00,281 ERROR   MainThread:28585 [util.py:get_module():376] Error importing optional module plotly.tools
+Traceback (most recent call last):
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/util.py", line 337, in import_module_lazy
+    return sys.modules[name]
+KeyError: 'plotly.tools'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/util.py", line 371, in get_module
+    return import_module_lazy(name)
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/util.py", line 339, in import_module_lazy
+    module_spec = importlib.util.find_spec(name)
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/importlib/util.py", line 94, in find_spec
+    parent = __import__(parent_name, fromlist=['__path__'])
+ModuleNotFoundError: No module named 'plotly'
+2023-01-13 17:03:28,529 WARNING MsgRouterThr:28585 [router.py:message_loop():77] message_loop has been closed

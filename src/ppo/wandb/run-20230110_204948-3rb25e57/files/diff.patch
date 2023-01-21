@@ -1,0 +1,61 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index c22fb37e..00ffad0d 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -436,6 +436,7 @@ class PPO_PolicyGradient_V2:
+                 advantages.insert(0, prev_advantage) # reverse it again
+                 # store current value as V(s_t+1)
+                 last_value = values[i]
++                
+         advantages = torch.tensor(np.array(advantages), dtype=torch.float)
+         returns = torch.tensor(np.array(returns), dtype=torch.float)
+         if normalized:
+@@ -503,19 +504,21 @@ class PPO_PolicyGradient_V2:
+ 
+                 # break out of loop if episode is terminated
+                 if done:
+-                    info_episode = info[0]['episode']
+-                    info_episode_r = info_episode['r']
+-                    info_episode_l = info_episode['l']
+-                    info_episode_t = info_episode['t']
+-                    self.stats_data['info/mean episodic returns'].append(info_episode_r)
+-                    self.stats_data['info/mean episodic length'].append(info_episode_l)
+-                    self.stats_data['info/mean episodic time'].append(info_episode_t)
+-
+-                    wandb.log({
+-                        'info/mean episodic returns': info_episode_r,
+-                        'info/mean episodic length': info_episode_l,
+-                        'info/mean episodic time': info_episode_t
+-                    })
++                    # logging of stats
++                    # info_episode = info[0]['episode']
++                    # info_episode_r = info_episode['r']
++                    # info_episode_l = info_episode['l']
++                    # info_episode_t = info_episode['t']
++                    # self.stats_data['info/mean episodic returns'].append(info_episode_r)
++                    # self.stats_data['info/mean episodic length'].append(info_episode_l)
++                    # self.stats_data['info/mean episodic time'].append(info_episode_t)
++
++                    # wandb.log({
++                    #     'info/mean episodic returns': info_episode_r,
++                    #     'info/mean episodic length': info_episode_l,
++                    #     'info/mean episodic time': info_episode_t
++                    # })
++
+                     break
+ 
+             batch_lens.append(ep_t + 1) # as we started at 0
+@@ -563,10 +566,10 @@ class PPO_PolicyGradient_V2:
+ 
+             # STEP 4-5: Calculate cummulated reward and GAE at timestep t_step
+             values, _ , _ = self.get_values(obs, actions)
+-            cum_returns = self.cummulative_return(rewards)
++            #cum_returns = self.cummulative_return(rewards)
+             # advantages = self.advantage_estimate_(cum_returns, values.detach())
+-            #advantages, cum_returns = self.generalized_advantage_estimate_0(rewards, values.detach())
+-            advantages = self.advantage_estimate(rewards, values)
++            advantages, cum_returns = self.generalized_advantage_estimate_0(rewards, values.detach())
++            #advantages = self.advantage_estimate(rewards, values)
+             # update network params 
+             for _ in range(self.noptepochs):
+                 # STEP 6-7: calculate loss and update weights

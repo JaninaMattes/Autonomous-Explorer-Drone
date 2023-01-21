@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 577, in <module>
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 361, in learn
+    policy_loss.append(policy_loss.detach().numpy())
+AttributeError: 'Tensor' object has no attribute 'append'
+INFO:root:Collecting batch trajectories...
+INFO:root:Updating network parameter...

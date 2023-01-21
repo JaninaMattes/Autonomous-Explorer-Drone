@@ -1,0 +1,92 @@
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+index 2a5dd8d3..c79160db 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+@@ -34,8 +34,8 @@ from gym_pybullet_drones.utils.utils import sync, str2bool
+ # import own modules
+ import ppo
+ 
+-DEFAULT_ENVID = "takeoff-aviary-v0" #'hover-aviary-v0'
+-DEFAULT_ENTRY = 'gym_pybullet_drones.envs.single_agent_rl:TakeoffAviary' #'gym_pybullet_drones.envs.single_agent_rl:HoverAviary'
++DEFAULT_ENVID = 'hover-aviary-v0' #"takeoff-aviary-v0"
++DEFAULT_ENTRY = 'gym_pybullet_drones.envs.single_agent_rl:HoverAviary' #'gym_pybullet_drones.envs.single_agent_rl:TakeoffAviary'
+ DEFAULT_RLLIB = True
+ DEFAULT_PPO = 'PPOv2'
+ DEFAULT_GUI = True
+@@ -64,7 +64,7 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
+     #####################
+     #### Check the environment's spaces ########################
+     #####################
+-    env = make_env(env_id, seed=seed, gym_wrappers=True) #"takeoff-aviary-v0"
++    env = gym.make(env_id) #"takeoff-aviary-v0"
+ 
+     print("[INFO] Action space:", env.action_space)
+     print("[INFO] Observation space:", env.observation_space)
+@@ -89,9 +89,11 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
+     
+     elif select_ppo == 'PPOv2':
+         # our ppo-v2
+-        ppo.register_env(id=env_id, entry_point=entry_point)
++        #ppo.register_env(id=env_id, entry_point=entry_point)
+         # get PPOTrainer
+-        trainer = ppo.PPOTrainer(env, total_training_steps=3_000_000) # 3_000_000, everything shorter just for testing
++        trainer = ppo.PPOTrainer(env, 
++                    total_training_steps=1_000_000, # 1_000_000, shorter just for testing
++                    epsilon=0.22) 
+         # train PPO
+         agent = trainer.create_ppo()
+         agent.learn()
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv b/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv
+index efc3c673..cd394175 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv
+@@ -1391,3 +1391,49 @@
+ 1,exp_name: takeoff-aviary-v0_2023-01-19,2885122,0.01609,48.232558,43,-48.974974,-50.526588,-48.163567,0.73944,1389
+ 2,exp_name: takeoff-aviary-v0_2023-01-19,2887189,0.017147,48.069767,43,-48.843618,-50.439349,-48.142823,0.511788,1390
+ 3,exp_name: takeoff-aviary-v0_2023-01-19,2889260,0.015827,48.162791,43,-48.990171,-50.690587,-48.090971,0.647821,1391
++0,exp_name: takeoff-aviary-v0_2023-01-19,2891328,0.016971,48.093023,43,-48.955245,-50.616344,-48.164671,0.573973,1392
++1,exp_name: takeoff-aviary-v0_2023-01-19,2893395,0.015448,48.069767,43,-48.847862,-50.575379,-48.072843,0.529222,1393
++2,exp_name: takeoff-aviary-v0_2023-01-19,2895464,0.017252,48.116279,43,-48.835578,-50.265241,-48.059031,0.546848,1394
++3,exp_name: takeoff-aviary-v0_2023-01-19,2897531,0.016755,48.069767,43,-48.90342,-50.402238,-48.041796,0.486048,1395
++4,exp_name: takeoff-aviary-v0_2023-01-19,2899597,0.017115,48.046512,43,-48.842836,-50.461388,-47.849483,0.531742,1396
++5,exp_name: takeoff-aviary-v0_2023-01-19,2901661,0.016197,48.0,43,-48.863396,-49.711951,-48.204062,0.367833,1397
++6,exp_name: takeoff-aviary-v0_2023-01-19,2903729,0.017531,48.093023,43,-48.721139,-50.273237,-47.905842,0.545678,1398
++7,exp_name: takeoff-aviary-v0_2023-01-19,2905796,0.0161,48.069767,43,-48.802716,-50.35567,-48.126562,0.462599,1399
++8,exp_name: takeoff-aviary-v0_2023-01-19,2907863,0.016767,48.069767,43,-48.696021,-50.400452,-48.076429,0.504645,1400
++9,exp_name: takeoff-aviary-v0_2023-01-19,2909931,0.017004,48.093023,43,-48.982737,-50.527958,-48.136793,0.543924,1401
++10,exp_name: takeoff-aviary-v0_2023-01-19,2911997,0.016061,48.046512,43,-48.810798,-50.47034,-48.163369,0.43116,1402
++11,exp_name: takeoff-aviary-v0_2023-01-19,2914064,0.017468,48.069767,43,-48.876318,-50.501311,-48.210171,0.493057,1403
++12,exp_name: takeoff-aviary-v0_2023-01-19,2916127,0.016155,47.976744,43,-48.726928,-49.304924,-47.387767,0.330955,1404
++13,exp_name: takeoff-aviary-v0_2023-01-19,2918192,0.017444,48.023256,43,-48.720036,-50.288049,-48.121947,0.342321,1405
++14,exp_name: takeoff-aviary-v0_2023-01-19,2920261,0.015993,48.116279,43,-48.828418,-50.472307,-48.215258,0.614362,1406
++15,exp_name: takeoff-aviary-v0_2023-01-19,2922328,0.016716,48.069767,43,-48.718626,-50.482131,-48.171159,0.502314,1407
++16,exp_name: takeoff-aviary-v0_2023-01-19,2924403,0.015225,48.255814,43,-48.891018,-50.484523,-47.903607,0.795429,1408
++17,exp_name: takeoff-aviary-v0_2023-01-19,2926471,0.016449,48.093023,43,-48.834764,-50.495275,-48.141062,0.571653,1409
++18,exp_name: takeoff-aviary-v0_2023-01-19,2928546,0.015262,48.255814,43,-48.939748,-50.41326,-47.904726,0.748598,1410
++19,exp_name: takeoff-aviary-v0_2023-01-19,2930614,0.016532,48.093023,43,-48.737319,-50.338572,-48.008251,0.541587,1411
++20,exp_name: takeoff-aviary-v0_2023-01-19,2932692,0.015639,48.325581,43,-48.982858,-50.322321,-48.088119,0.810068,1412
++21,exp_name: takeoff-aviary-v0_2023-01-19,2934763,0.017434,48.162791,43,-48.901367,-50.40381,-48.004736,0.639529,1413
++22,exp_name: takeoff-aviary-v0_2023-01-19,2936831,0.015591,48.093023,43,-48.746148,-50.513408,-48.157814,0.541557,1414
++23,exp_name: takeoff-aviary-v0_2023-01-19,2938903,0.016968,48.186047,43,-48.753799,-50.329293,-47.894267,0.722052,1415
++24,exp_name: takeoff-aviary-v0_2023-01-19,2940971,0.015668,48.093023,43,-48.637842,-50.36442,-47.929142,0.535238,1416
++25,exp_name: takeoff-aviary-v0_2023-01-19,2943053,0.016775,48.418605,43,-49.183854,-50.533475,-48.032095,0.861587,1417
++26,exp_name: takeoff-aviary-v0_2023-01-19,2945128,0.015394,48.255814,43,-48.822122,-50.358654,-47.892898,0.73556,1418
++27,exp_name: takeoff-aviary-v0_2023-01-19,2947193,0.016756,48.023256,43,-48.682223,-50.221859,-47.424654,0.50373,1419
++28,exp_name: takeoff-aviary-v0_2023-01-19,2949262,0.016497,48.116279,43,-48.691387,-50.18779,-48.077317,0.558577,1420
++29,exp_name: takeoff-aviary-v0_2023-01-19,2951335,0.019561,48.209302,43,-48.732682,-50.38355,-48.007706,0.776405,1421
++30,exp_name: takeoff-aviary-v0_2023-01-19,2953403,0.016707,48.093023,43,-48.497753,-50.026744,-48.014242,0.506313,1422
++31,exp_name: takeoff-aviary-v0_2023-01-19,2955473,0.015539,48.139535,43,-48.793307,-50.309486,-47.956658,0.62131,1423
++32,exp_name: takeoff-aviary-v0_2023-01-19,2957543,0.016237,48.139535,43,-48.586744,-50.221079,-47.92987,0.61782,1424
++33,exp_name: takeoff-aviary-v0_2023-01-19,2959622,0.016118,48.348837,43,-48.826477,-50.173334,-47.893088,0.815651,1425
++34,exp_name: takeoff-aviary-v0_2023-01-19,2961698,0.016634,48.27907,43,-48.749757,-50.370222,-47.943237,0.828895,1426
++35,exp_name: takeoff-aviary-v0_2023-01-19,2963775,0.016043,48.302326,43,-48.85346,-50.449119,-47.943568,0.815336,1427
++36,exp_name: takeoff-aviary-v0_2023-01-19,2965851,0.017043,48.27907,43,-48.842956,-50.397532,-47.98096,0.798339,1428
++37,exp_name: takeoff-aviary-v0_2023-01-19,2967925,0.015694,48.232558,43,-48.698876,-50.235912,-47.887917,0.769939,1429
++38,exp_name: takeoff-aviary-v0_2023-01-19,2970003,0.016906,48.325581,43,-48.862596,-50.365744,-47.940963,0.785503,1430
++39,exp_name: takeoff-aviary-v0_2023-01-19,2972083,0.015808,48.372093,43,-48.8784,-50.342622,-47.845718,0.832475,1431
++40,exp_name: takeoff-aviary-v0_2023-01-19,2974163,0.016931,48.372093,43,-48.77086,-50.277963,-47.812931,0.894786,1432
++41,exp_name: takeoff-aviary-v0_2023-01-19,2976238,0.015408,48.255814,43,-48.616275,-50.17493,-47.847314,0.774961,1433
++42,exp_name: takeoff-aviary-v0_2023-01-19,2978314,0.016862,48.27907,43,-48.679131,-50.259781,-47.772438,0.74825,1434
++43,exp_name: takeoff-aviary-v0_2023-01-19,2980387,0.016256,48.209302,43,-48.630932,-50.162409,-47.827821,0.734647,1435
++44,exp_name: takeoff-aviary-v0_2023-01-19,2982467,0.017109,48.372093,43,-48.884418,-50.264736,-47.919573,0.840723,1436
++45,exp_name: takeoff-aviary-v0_2023-01-19,2984550,0.016805,48.44186,43,-48.988921,-50.250452,-47.845952,0.863768,1437

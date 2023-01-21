@@ -1,0 +1,26 @@
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_setup.py:_flush():68] Configure stats pid to 39128
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_setup.py:_flush():68] Loading settings from /Users/janinaalicamattes/.config/wandb/settings
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_setup.py:_flush():68] Loading settings from /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/settings
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_setup.py:_flush():68] Loading settings from environment variables: {'_require_service': 'True'}
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_setup.py:_flush():68] Inferring run settings from compute environment: {'program_relpath': 'PPO/ppo_torch/ppo_continuous.py', 'program': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py'}
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_init.py:_log_setup():478] Logging user logs to /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_172419-gayqvbpc/logs/debug.log
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_init.py:_log_setup():479] Logging internal logs to /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_172419-gayqvbpc/logs/debug-internal.log
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_init.py:init():518] calling init triggers
+2023-01-15 17:24:19,817 INFO    MainThread:39128 [wandb_init.py:init():521] wandb.init called with sweep_config: {}
+config: {'env name': 'Pendulum-v1', 'env number': 1, 'total number of steps': 3000000, 'max sampled trajectories': 512, 'batches per episode': 2048, 'number of epochs for update': 32, 'input layer size': 3, 'output layer size': 1, 'observation space': (3,), 'action space': (1,), 'action space upper bound': 2.0, 'action space lower bound': -2.0, 'learning rate (policy net)': 0.0001, 'learning rate (value net)': 0.001, 'epsilon (adam optimizer)': 1e-08, 'gamma (discount)': 0.99, 'epsilon (clipping)': 0.2, 'gae lambda (GAE)': 0.95, 'normalize advantage': False, 'normalize return': True, 'seed': 42, 'experiment path': './log/exp_Pendulum-v1_20230115-172418', 'experiment name': '(seperate network, GAE advantage, normalize ret)'}
+2023-01-15 17:24:19,818 INFO    MainThread:39128 [wandb_init.py:init():571] starting backend
+2023-01-15 17:24:19,818 INFO    MainThread:39128 [wandb_init.py:init():575] setting up manager
+2023-01-15 17:24:19,825 INFO    MainThread:39128 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2023-01-15 17:24:19,828 INFO    MainThread:39128 [wandb_init.py:init():582] backend started and connected
+2023-01-15 17:24:19,832 INFO    MainThread:39128 [wandb_init.py:init():670] updated telemetry
+2023-01-15 17:24:19,845 INFO    MainThread:39128 [wandb_init.py:init():710] communicating run to backend with 60.0 second timeout
+2023-01-15 17:24:20,435 INFO    MainThread:39128 [wandb_run.py:_on_init():2121] communicating current version
+2023-01-15 17:24:20,624 INFO    MainThread:39128 [wandb_run.py:_on_init():2125] got version response upgrade_message: "wandb version 0.13.9 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-01-15 17:24:20,624 INFO    MainThread:39128 [wandb_init.py:init():758] starting run threads in backend
+2023-01-15 17:24:25,390 INFO    MainThread:39128 [wandb_run.py:_console_start():2101] atexit reg
+2023-01-15 17:24:25,391 INFO    MainThread:39128 [wandb_run.py:_redirect():1959] redirect: SettingsConsole.WRAP_RAW
+2023-01-15 17:24:25,391 INFO    MainThread:39128 [wandb_run.py:_redirect():2024] Wrapping output streams.
+2023-01-15 17:24:25,391 INFO    MainThread:39128 [wandb_run.py:_redirect():2046] Redirects installed.
+2023-01-15 17:24:25,391 INFO    MainThread:39128 [wandb_init.py:init():798] run started, returning control to user process
+2023-01-15 17:44:07,734 WARNING MsgRouterThr:39128 [router.py:message_loop():77] message_loop has been closed

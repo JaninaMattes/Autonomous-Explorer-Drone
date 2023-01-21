@@ -1,0 +1,480 @@
+2023-01-15 23:28:16,827 INFO    StreamThr :57976 [internal.py:wandb_internal():87] W&B internal server running at pid: 57976, started at: 2023-01-15 23:28:16.826708
+2023-01-15 23:28:16,827 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status
+2023-01-15 23:28:16,831 INFO    WriterThread:57976 [datastore.py:open_for_write():85] open: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/run-uomx6o26.wandb
+2023-01-15 23:28:16,832 DEBUG   SenderThread:57976 [sender.py:send():334] send: header
+2023-01-15 23:28:16,845 DEBUG   SenderThread:57976 [sender.py:send():334] send: run
+2023-01-15 23:28:17,375 INFO    SenderThread:57976 [dir_watcher.py:__init__():216] watching files in: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files
+2023-01-15 23:28:17,375 INFO    SenderThread:57976 [sender.py:_start_run_threads():1065] run started: uomx6o26 with start time 1673821696.826449
+2023-01-15 23:28:17,376 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:28:17,376 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:28:17,379 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: check_version
+2023-01-15 23:28:17,379 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: check_version
+2023-01-15 23:28:17,526 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: run_start
+2023-01-15 23:28:17,535 DEBUG   HandlerThread:57976 [system_info.py:__init__():31] System info init
+2023-01-15 23:28:17,535 DEBUG   HandlerThread:57976 [system_info.py:__init__():46] System info init done
+2023-01-15 23:28:17,535 INFO    HandlerThread:57976 [system_monitor.py:start():151] Starting system monitor
+2023-01-15 23:28:17,536 INFO    SystemMonitor:57976 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-15 23:28:17,536 INFO    HandlerThread:57976 [system_monitor.py:probe():172] Collecting system info
+2023-01-15 23:28:17,536 DEBUG   HandlerThread:57976 [system_info.py:probe():195] Probing system
+2023-01-15 23:28:17,536 INFO    SystemMonitor:57976 [interfaces.py:start():168] Started cpu
+2023-01-15 23:28:17,537 INFO    SystemMonitor:57976 [interfaces.py:start():168] Started disk
+2023-01-15 23:28:17,537 INFO    SystemMonitor:57976 [interfaces.py:start():168] Started gpuapple
+2023-01-15 23:28:17,538 INFO    SystemMonitor:57976 [interfaces.py:start():168] Started memory
+2023-01-15 23:28:17,539 INFO    SystemMonitor:57976 [interfaces.py:start():168] Started network
+2023-01-15 23:28:17,543 DEBUG   HandlerThread:57976 [system_info.py:_probe_git():180] Probing git
+2023-01-15 23:28:17,557 DEBUG   HandlerThread:57976 [system_info.py:_probe_git():188] Probing git done
+2023-01-15 23:28:17,557 DEBUG   HandlerThread:57976 [system_info.py:probe():241] Probing system done
+2023-01-15 23:28:17,558 DEBUG   HandlerThread:57976 [system_monitor.py:probe():181] {'os': 'macOS-13.0.1-arm64-arm-64bit', 'python': '3.10.8', 'heartbeatAt': '2023-01-15T22:28:17.536427', 'startedAt': '2023-01-15T22:28:16.804745', 'docker': None, 'cuda': None, 'args': ('--exp-name', 'exp_Pendulum-v1_20230115-114431', '--model-path', '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/log/exp_Pendulum-v1_20230115-114431/models/Pendulum-v1_policyNet.pth', '--project-name', 'OpenAIGym-PPO'), 'state': 'running', 'program': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py', 'codePath': 'PPO/ppo_torch/test.py', 'git': {'remote': 'git@github.com:bkunters/ml-explorer-drone.git', 'commit': '6e5d49ff3305f08ea54e278ff40ae335bf146fb2'}, 'email': 'janina.alica.mattes@gmail.com', 'root': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone', 'host': 'Janinas-MacBook-Pro.local', 'username': 'janinaalicamattes', 'executable': '/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/bin/python', 'cpu_count': 8, 'cpu_count_logical': 8, 'disk': {'total': 460.4317207336426, 'used': 10.886878967285156}, 'gpuapple': {'type': 'arm', 'vendor': 'Apple'}, 'memory': {'total': 16.0}}
+2023-01-15 23:28:17,558 INFO    HandlerThread:57976 [system_monitor.py:probe():182] Finished collecting system info
+2023-01-15 23:28:17,558 INFO    HandlerThread:57976 [system_monitor.py:probe():185] Publishing system info
+2023-01-15 23:28:17,558 DEBUG   HandlerThread:57976 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-01-15 23:28:17,558 DEBUG   HandlerThread:57976 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-15 23:28:17,558 DEBUG   HandlerThread:57976 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-01-15 23:28:18,382 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/requirements.txt
+2023-01-15 23:28:18,382 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/conda-environment.yaml
+2023-01-15 23:28:18,382 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:28:22,253 DEBUG   HandlerThread:57976 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-15 23:28:22,253 DEBUG   HandlerThread:57976 [system_info.py:_save_code():89] Saving code
+2023-01-15 23:28:22,259 DEBUG   HandlerThread:57976 [system_info.py:_save_code():110] Saving code done
+2023-01-15 23:28:22,259 DEBUG   HandlerThread:57976 [system_info.py:_save_patches():127] Saving git patches
+2023-01-15 23:28:22,328 DEBUG   HandlerThread:57976 [system_info.py:_save_patches():169] Saving git patches done
+2023-01-15 23:28:22,329 INFO    HandlerThread:57976 [system_monitor.py:probe():187] Finished publishing system info
+2023-01-15 23:28:22,334 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:28:22,334 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-metadata.json with policy now
+2023-01-15 23:28:22,334 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file code/PPO/ppo_torch/test.py with policy now
+2023-01-15 23:28:22,334 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file diff.patch with policy now
+2023-01-15 23:28:22,334 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:28:22,337 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: stop_status
+2023-01-15 23:28:22,337 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: stop_status
+2023-01-15 23:28:22,398 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/conda-environment.yaml
+2023-01-15 23:28:22,398 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/diff.patch
+2023-01-15 23:28:22,399 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/code/PPO/ppo_torch/test.py
+2023-01-15 23:28:22,399 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-metadata.json
+2023-01-15 23:28:22,399 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/code/PPO
+2023-01-15 23:28:22,399 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/code/PPO/ppo_torch
+2023-01-15 23:28:22,399 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/code
+2023-01-15 23:28:22,667 DEBUG   SenderThread:57976 [sender.py:send():334] send: telemetry
+2023-01-15 23:28:22,691 INFO    Thread-17 :57976 [upload_job.py:push():123] Skipped uploading /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/97db5wka-code/PPO/ppo_torch/test.py
+2023-01-15 23:28:23,153 INFO    Thread-16 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/ynl7h80n-wandb-metadata.json
+2023-01-15 23:28:23,360 INFO    Thread-18 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/a4h54fg8-diff.patch
+2023-01-15 23:28:23,403 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:28:25,412 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:28:26,595 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:28:26,596 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:28:26,597 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:28:26,597 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:28:27,422 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:28:27,679 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:28:29,430 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:28:32,781 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:28:37,339 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:28:37,802 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:28:42,357 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:28:42,817 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:28:47,382 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:28:47,839 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:28:48,520 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/config.yaml
+2023-01-15 23:28:48,541 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:28:48,542 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:28:48,542 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/test/video_1_65b042780efc1ab21e4a.gif with policy now
+2023-01-15 23:28:48,542 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:28:48,542 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:28:48,543 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:28:48,582 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:28:48,582 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:28:48,583 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/video.0_2_14d48b89a9a4b9cc4f9e.mp4 with policy now
+2023-01-15 23:28:48,583 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:28:48,583 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:28:48,583 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:28:49,283 INFO    Thread-20 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/sqy9lwpv-media/videos/video.0_2_14d48b89a9a4b9cc4f9e.mp4
+2023-01-15 23:28:49,509 INFO    Thread-19 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/tpiv6iab-media/videos/test/video_1_65b042780efc1ab21e4a.gif
+2023-01-15 23:28:49,525 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:28:49,526 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test/video_1_65b042780efc1ab21e4a.gif
+2023-01-15 23:28:49,526 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/video.0_2_14d48b89a9a4b9cc4f9e.mp4
+2023-01-15 23:28:49,526 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media
+2023-01-15 23:28:49,526 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos
+2023-01-15 23:28:49,526 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test
+2023-01-15 23:28:50,288 INFO    Thread-22 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/fna3z4rl-media/videos/video.0_2_14d48b89a9a4b9cc4f9e.mp4
+2023-01-15 23:28:50,440 INFO    Thread-21 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/y0ewz3ra-media/videos/test/video_1_65b042780efc1ab21e4a.gif
+2023-01-15 23:28:52,031 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:28:52,032 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:28:52,032 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:28:52,033 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:28:52,408 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:28:52,537 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:28:53,543 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:28:54,073 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:28:57,432 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:28:59,096 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:02,457 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:04,117 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:07,470 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:09,139 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:12,497 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:14,164 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:17,519 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:17,541 DEBUG   SystemMonitor:57976 [system_monitor.py:_start():130] Starting system metrics aggregation loop
+2023-01-15 23:29:17,541 DEBUG   SenderThread:57976 [sender.py:send():334] send: telemetry
+2023-01-15 23:29:17,541 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:29:19,555 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:19,663 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:29:20,673 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/config.yaml
+2023-01-15 23:29:22,539 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:24,846 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:27,571 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:29,861 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:32,604 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:34,883 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:37,630 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:38,210 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:29:38,211 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:29:38,212 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/test/video_4_8fc7ce04e9fa08de6e2c.gif with policy now
+2023-01-15 23:29:38,213 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:29:38,214 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:29:38,214 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:29:38,257 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:29:38,257 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:29:38,257 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/video.0_5_57c5fb9e49d3e438173e.mp4 with policy now
+2023-01-15 23:29:38,258 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:29:38,258 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:29:38,258 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:29:38,749 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:29:38,749 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/video.0_5_57c5fb9e49d3e438173e.mp4
+2023-01-15 23:29:38,750 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test/video_4_8fc7ce04e9fa08de6e2c.gif
+2023-01-15 23:29:38,750 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos
+2023-01-15 23:29:38,750 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test
+2023-01-15 23:29:38,805 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:29:38,806 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:29:38,806 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:29:38,807 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:29:38,972 INFO    Thread-24 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/zc1zv94a-media/videos/video.0_5_57c5fb9e49d3e438173e.mp4
+2023-01-15 23:29:39,236 INFO    Thread-23 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/o31c282m-media/videos/test/video_4_8fc7ce04e9fa08de6e2c.gif
+2023-01-15 23:29:39,740 INFO    Thread-25 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/almpqrjc-media/videos/video.0_5_57c5fb9e49d3e438173e.mp4
+2023-01-15 23:29:40,315 INFO    Thread-26 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/x6m3g8cv-media/videos/test/video_4_8fc7ce04e9fa08de6e2c.gif
+2023-01-15 23:29:40,856 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:41,763 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:29:42,652 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:45,880 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:47,543 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:29:47,672 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:51,560 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:52,689 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:29:56,581 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:29:57,714 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:01,603 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:02,734 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:06,620 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:07,754 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:11,641 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:12,776 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:16,667 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:17,547 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:30:17,797 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:22,570 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:22,816 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:27,591 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:27,832 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:32,617 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:32,857 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:37,638 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:37,879 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:42,665 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:42,910 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:47,555 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:30:47,817 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:30:47,818 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/test/video_7_abc5b600314449dd67ea.gif with policy now
+2023-01-15 23:30:47,818 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:30:47,819 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:30:47,819 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:30:47,819 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:47,819 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:30:47,932 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:48,084 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:30:48,084 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test/video_7_abc5b600314449dd67ea.gif
+2023-01-15 23:30:48,084 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test
+2023-01-15 23:30:48,310 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:30:48,311 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:30:48,311 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:30:48,311 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:30:48,971 INFO    Thread-27 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/6tqkw90w-media/videos/test/video_7_abc5b600314449dd67ea.gif
+2023-01-15 23:30:49,090 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:30:50,096 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:30:50,132 INFO    Thread-28 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/64jxlwmi-media/videos/test/video_7_abc5b600314449dd67ea.gif
+2023-01-15 23:30:52,951 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:53,372 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:30:57,978 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:30:58,397 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:02,996 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:03,423 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:08,016 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:08,448 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:13,036 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:13,473 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:17,560 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:31:18,055 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:18,570 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:23,076 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:23,595 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:28,091 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:28,618 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:33,107 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:33,639 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:38,126 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:38,656 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:43,150 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:43,678 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:47,565 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:31:48,172 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:49,576 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:53,205 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:54,600 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:31:58,227 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:31:59,623 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:03,254 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:04,646 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:08,275 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:09,661 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:13,294 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:14,683 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:17,570 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:32:18,315 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:20,585 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:21,105 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:32:21,105 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/test/video_9_dccba5aad3aa7fd9375e.gif with policy now
+2023-01-15 23:32:21,105 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:32:21,106 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:32:21,106 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:32:21,107 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:32:21,510 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:32:21,510 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test/video_9_dccba5aad3aa7fd9375e.gif
+2023-01-15 23:32:21,510 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test
+2023-01-15 23:32:21,628 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:32:21,629 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:32:21,629 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:32:21,630 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:32:22,552 INFO    Thread-29 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/r800mkm4-media/videos/test/video_9_dccba5aad3aa7fd9375e.gif
+2023-01-15 23:32:23,340 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:23,522 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:32:24,088 INFO    Thread-30 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/lddfo3l2-media/videos/test/video_9_dccba5aad3aa7fd9375e.gif
+2023-01-15 23:32:25,688 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:28,373 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:30,713 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:33,398 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:35,735 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:38,417 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:38,417 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:40,759 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:43,443 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:45,781 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:47,572 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:32:48,467 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:51,593 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:53,485 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:32:56,616 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:32:58,510 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:01,636 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:03,524 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:06,656 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:08,545 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:11,674 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:13,562 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:16,690 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:17,579 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:33:18,579 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:22,604 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:23,600 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:27,628 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:28,623 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:32,646 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:33,641 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:37,669 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:38,670 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:42,687 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:43,693 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:47,578 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:33:48,583 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:48,725 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:53,609 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:53,750 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:33:58,623 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:33:58,771 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:03,650 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:03,797 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:08,666 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:08,824 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:13,688 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:13,843 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:17,286 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:34:17,288 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-15 23:34:17,288 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/test/video_11_6204c6099a874aab0af4.gif with policy now
+2023-01-15 23:34:17,288 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:34:17,289 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:34:17,290 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:34:17,582 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:34:17,862 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:34:17,863 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-15 23:34:17,863 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:34:17,868 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:34:18,035 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-15 23:34:18,035 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test/video_11_6204c6099a874aab0af4.gif
+2023-01-15 23:34:18,035 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test
+2023-01-15 23:34:18,660 INFO    Thread-31 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/znz4jcrh-media/videos/test/video_11_6204c6099a874aab0af4.gif
+2023-01-15 23:34:18,866 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:18,903 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:20,045 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-15 23:34:20,288 INFO    Thread-32 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/8vt8c820-media/videos/test/video_11_6204c6099a874aab0af4.gif
+2023-01-15 23:34:23,885 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:23,922 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:28,909 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:28,944 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:33,933 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:33,965 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:38,953 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:38,984 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:43,971 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:44,007 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:47,590 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:34:48,991 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:49,598 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:54,016 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:54,624 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:34:59,041 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:34:59,640 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:35:04,062 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:35:04,666 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:35:09,082 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:35:10,641 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:35:14,057 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:51:55,955 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-15 23:51:56,756 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 12, 'content': ['{"system.network.sent": 27148697.6, "system.network.recv": 13137237.33, "system.cpu": 12.44, "system.cpu.0.cpu_percent": 14.42, "system.cpu.1.cpu_percent": 14.25, "system.cpu.2.cpu_percent": 52.89, "system.cpu.3.cpu_percent": 34.69, "system.cpu.4.cpu_percent": 28.09, "system.cpu.5.cpu_percent": 15.24, "system.cpu.6.cpu_percent": 7.62, "system.cpu.7.cpu_percent": 3.13, "system.proc.cpu.threads": 25, "system.proc.memory.availableMB": 5978.56, "system.memory": 63.51, "system.proc.memory.rssMB": 4302.81, "system.proc.memory.percent": 26.26, "system.disk": 3.2, "system.gpu.0.gpu": 33.0, "system.gpu.0.memoryAllocated": 18.27, "system.gpu.0.temp": 40.33, "system.gpu.0.powerWatts": 5.34, "system.gpu.0.powerPercent": 32.34, "_wandb": true, "_timestamp": 1673823115.952886, "_runtime": 1419.126437}']}}, 'dropped': 0}}
+2023-01-15 23:51:59,987 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 00:09:12,963 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 00:09:13,012 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 00:09:13,590 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 13, 'content': ['{"system.network.sent": 27790404.27, "system.network.recv": 13948518.4, "system.cpu": 11.82, "system.cpu.0.cpu_percent": 18.53, "system.cpu.1.cpu_percent": 17.87, "system.cpu.2.cpu_percent": 56.82, "system.cpu.3.cpu_percent": 26.6, "system.cpu.4.cpu_percent": 22.71, "system.cpu.5.cpu_percent": 31.81, "system.cpu.6.cpu_percent": 6.86, "system.cpu.7.cpu_percent": 3.96, "system.proc.cpu.threads": 23, "system.proc.memory.availableMB": 5213.87, "system.memory": 68.18, "system.proc.memory.rssMB": 5563.82, "system.proc.memory.percent": 33.96, "system.disk": 3.2, "_wandb": true, "_timestamp": 1673824152.957399, "_runtime": 2456.13095}']}}, 'dropped': 0}}
+2023-01-16 00:09:16,040 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 00:09:18,063 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 00:24:23,123 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 00:24:26,146 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 00:41:56,977 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 00:42:01,000 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 00:57:50,029 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 00:57:55,061 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 00:57:55,065 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 01:13:09,110 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 01:13:10,113 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 01:28:52,981 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 01:28:53,611 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 14, 'content': ['{"system.cpu": 10.85, "system.cpu.0.cpu_percent": 49.76, "system.cpu.1.cpu_percent": 46.25, "system.cpu.2.cpu_percent": 65.11, "system.cpu.3.cpu_percent": 31.0, "system.cpu.4.cpu_percent": 16.88, "system.cpu.5.cpu_percent": 8.95, "system.cpu.6.cpu_percent": 4.66, "system.cpu.7.cpu_percent": 3.38, "system.proc.cpu.threads": 21, "system.proc.memory.availableMB": 5391.78, "system.memory": 67.1, "system.proc.memory.rssMB": 5437.2, "system.proc.memory.percent": 33.19, "system.network.sent": 28329028.27, "system.network.recv": 15797179.73, "system.disk": 3.2, "_wandb": true, "_timestamp": 1673828932.978239, "_runtime": 7236.15179}']}}, 'dropped': 0}}
+2023-01-16 01:28:56,167 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 01:28:58,024 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 01:46:39,190 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 01:46:42,036 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 02:03:41,963 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 02:03:42,526 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 15, 'content': ['{"system.gpu.0.gpu": 0.13, "system.gpu.0.memoryAllocated": 1.22, "system.gpu.0.temp": 25.49, "system.gpu.0.powerWatts": 3.23, "system.gpu.0.powerPercent": 19.55, "_wandb": true, "_timestamp": 1673831021.959945, "_runtime": 9325.133496}']}}, 'dropped': 0}}
+2023-01-16 02:03:43,223 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 02:03:47,008 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 02:03:48,267 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 02:03:52,049 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 02:03:53,315 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 02:03:57,080 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 02:21:41,957 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 02:21:41,959 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 02:21:42,396 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 16, 'content': ['{"system.network.sent": 29346816.0, "system.network.recv": 17257062.4, "system.disk": 3.2, "system.cpu": 11.31, "system.cpu.0.cpu_percent": 36.21, "system.cpu.1.cpu_percent": 34.57, "system.cpu.2.cpu_percent": 72.66, "system.cpu.3.cpu_percent": 27.22, "system.cpu.4.cpu_percent": 16.0, "system.cpu.5.cpu_percent": 7.93, "system.cpu.6.cpu_percent": 3.47, "system.cpu.7.cpu_percent": 2.33, "system.proc.cpu.threads": 21, "system.proc.memory.availableMB": 5328.56, "system.memory": 67.48, "system.proc.memory.rssMB": 5613.21, "system.proc.memory.percent": 34.26, "_wandb": true, "_timestamp": 1673832101.947131, "_runtime": 10405.120682}']}}, 'dropped': 0}}
+2023-01-16 02:21:46,989 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 02:21:47,002 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 02:37:06,011 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 02:37:07,035 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 02:54:20,043 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 02:54:22,062 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 03:10:39,134 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 03:10:42,144 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 03:27:39,924 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 03:27:40,443 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 17, 'content': ['{"system.gpu.0.gpu": 0.0, "system.gpu.0.memoryAllocated": 0.85, "system.gpu.0.temp": 20.06, "system.gpu.0.powerWatts": 3.22, "system.gpu.0.powerPercent": 19.53, "_wandb": true, "_timestamp": 1673836059.91333, "_runtime": 14363.086881}']}}, 'dropped': 0}}
+2023-01-16 03:27:41,194 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 03:27:41,953 DEBUG   SenderThread:57976 [sender.py:send():334] send: files
+2023-01-16 03:27:41,954 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file media/videos/test/video_13_db89ccec672591d7eef5.gif with policy now
+2023-01-16 03:27:41,954 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-16 03:27:41,955 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-16 03:27:41,955 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-16 03:27:41,960 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-16 03:27:42,165 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-16 03:27:42,165 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test/video_13_db89ccec672591d7eef5.gif
+2023-01-16 03:27:42,165 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/media/videos/test
+2023-01-16 03:27:42,459 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-16 03:27:42,461 DEBUG   SenderThread:57976 [sender.py:send():334] send: history
+2023-01-16 03:27:42,461 DEBUG   SenderThread:57976 [sender.py:send_request():361] send_request: summary_record
+2023-01-16 03:27:42,462 INFO    SenderThread:57976 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-16 03:27:43,176 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/output.log
+2023-01-16 03:27:43,176 INFO    Thread-13 :57976 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_232816-uomx6o26/files/wandb-summary.json
+2023-01-16 03:27:44,077 INFO    Thread-33 :57976 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpcwsrn4htwandb/20tvn5z4-media/videos/test/video_13_db89ccec672591d7eef5.gif
+2023-01-16 03:43:28,916 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 03:43:28,918 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 03:43:29,284 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-summary.json': {'offset': 0, 'content': ['{"test/timesteps": 6, "test/episode length": 200, "test/episode returns": -127.85138805404877, "_timestamp": 1673836062.4589791, "_runtime": 14365.632530212402, "_step": 14, "test/video": {"_type": "video-file", "sha256": "db89ccec672591d7eef5794411f41974c903545b137358f6f5eaa85e0a193fcb", "size": 3066035, "path": "media/videos/test/video_13_db89ccec672591d7eef5.gif", "caption": "episode: 5"}, "step": 5, "video.0": {"_type": "video-file", "sha256": "57c5fb9e49d3e438173e959fb2424499cb77e8b55660f68adf2fbc295bb90bba", "size": 72750, "path": "media/videos/video.0_5_57c5fb9e49d3e438173e.mp4"}}']}, 'wandb-history.jsonl': {'offset': 13, 'content': ['{"test/video": {"_type": "video-file", "sha256": "db89ccec672591d7eef5794411f41974c903545b137358f6f5eaa85e0a193fcb", "size": 3066035, "path": "media/videos/test/video_13_db89ccec672591d7eef5.gif", "caption": "episode: 5"}, "step": 5, "_timestamp": 1673836061.953703, "_runtime": 14365.127254009247, "_step": 13}', '{"test/timesteps": 6, "test/episode length": 200, "test/episode returns": -127.85138805404877, "_timestamp": 1673836062.4589791, "_runtime": 14365.632530212402, "_step": 14}']}, 'wandb-events.jsonl': {'offset': 18, 'content': ['{"system.cpu": 10.46, "system.cpu.0.cpu_percent": 48.09, "system.cpu.1.cpu_percent": 45.62, "system.cpu.2.cpu_percent": 66.04, "system.cpu.3.cpu_percent": 27.29, "system.cpu.4.cpu_percent": 20.51, "system.cpu.5.cpu_percent": 9.59, "system.cpu.6.cpu_percent": 5.25, "system.cpu.7.cpu_percent": 3.77, "system.proc.cpu.threads": 21, "system.network.sent": 30293674.67, "system.network.recv": 18703155.2, "system.proc.memory.availableMB": 5158.75, "system.memory": 68.52, "system.proc.memory.rssMB": 6140.83, "system.proc.memory.percent": 37.48, "system.disk": 3.2, "_wandb": true, "_timestamp": 1673837008.916894, "_runtime": 15312.090445}']}, 'output.log': {'offset': 448, 'content': ['2023-01-16T02:27:43.139051 INFO:root:\n', '2023-01-16T02:27:43.139051 INFO:root:------------ Episode: 6 --------------\n', '2023-01-16T02:27:43.139051 INFO:root:Episodic Length: 200\n', '2023-01-16T02:27:43.139051 INFO:root:Episodic Return: -127.85138805404877\n', '2023-01-16T02:27:43.139051 INFO:root:--------------------------------------------\n', '2023-01-16T02:27:43.139051 INFO:root:\n', "2023-01-16T02:27:43.139051 DEBUG:matplotlib.animation:ImageMagick unavailable due to: [Errno 2] No such file or directory: 'convert'\n", '2023-01-16T02:27:43.139051 WARNING:matplotlib.animation:MovieWriter imagemagick unavailable; using Pillow instead.\n', "2023-01-16T02:27:43.139051 INFO:matplotlib.animation:Animation.save using <class 'matplotlib.animation.PillowWriter'>\n"]}}, 'dropped': 0}}
+2023-01-16 03:43:29,920 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 03:43:33,959 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 04:00:29,928 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 04:00:34,970 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 04:00:34,971 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 04:16:09,021 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 04:16:10,027 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 04:32:38,052 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 04:32:40,078 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 04:48:10,046 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 04:48:13,108 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 05:03:48,902 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 05:03:49,538 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 19, 'content': ['{"system.cpu": 10.95, "system.cpu.0.cpu_percent": 35.65, "system.cpu.1.cpu_percent": 32.7, "system.cpu.2.cpu_percent": 41.67, "system.cpu.3.cpu_percent": 45.73, "system.cpu.4.cpu_percent": 23.17, "system.cpu.5.cpu_percent": 10.01, "system.cpu.6.cpu_percent": 5.14, "system.cpu.7.cpu_percent": 3.21, "system.proc.cpu.threads": 22, "system.disk": 3.2, "system.proc.memory.availableMB": 6441.89, "system.memory": 60.69, "system.proc.memory.rssMB": 4144.65, "system.proc.memory.percent": 25.3, "system.network.sent": 37353062.4, "system.network.recv": 20767880.53, "_wandb": true, "_timestamp": 1673841828.887101, "_runtime": 20132.060652}']}}, 'dropped': 0}}
+2023-01-16 05:03:49,895 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 05:03:53,928 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 05:20:56,926 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 05:21:01,962 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 05:21:01,966 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 05:38:27,857 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 05:38:28,302 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 20, 'content': ['{"system.gpu.0.gpu": 0.13, "system.gpu.0.memoryAllocated": 1.18, "system.gpu.0.temp": 19.48, "system.gpu.0.powerWatts": 2.98, "system.gpu.0.powerPercent": 18.07, "_wandb": true, "_timestamp": 1673843907.839625, "_runtime": 22211.013176}']}}, 'dropped': 0}}
+2023-01-16 05:38:31,874 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 05:38:32,877 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 05:55:34,917 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 05:55:36,922 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:15,056 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:19,098 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:20,100 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:24,150 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:25,150 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:29,196 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:30,178 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:34,183 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'complete': False, 'failed': False, 'dropped': 0, 'uploaded': []}}
+2023-01-16 06:04:34,245 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:35,228 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:39,283 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:40,267 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:43,850 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 06:04:44,861 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:45,316 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:49,911 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:50,368 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:04:54,957 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:04:55,417 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:20:54,866 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:20:55,548 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:20:55,549 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 06:20:55,642 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 22, 'content': ['{"system.disk": 3.2, "system.cpu": 11.57, "system.cpu.0.cpu_percent": 21.93, "system.cpu.1.cpu_percent": 20.85, "system.cpu.2.cpu_percent": 79.15, "system.cpu.3.cpu_percent": 23.64, "system.cpu.4.cpu_percent": 6.39, "system.cpu.5.cpu_percent": 3.08, "system.cpu.6.cpu_percent": 1.74, "system.cpu.7.cpu_percent": 1.31, "system.proc.cpu.threads": 22, "system.proc.memory.availableMB": 5382.5, "system.memory": 67.14, "system.proc.memory.rssMB": 6081.79, "system.proc.memory.percent": 37.12, "system.network.sent": 39469124.27, "system.network.recv": 23028462.93, "_wandb": true, "_timestamp": 1673846454.867371, "_runtime": 24758.040922}']}}, 'dropped': 0}}
+2023-01-16 06:20:59,931 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:38:52,881 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:38:56,986 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:38:57,902 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 06:56:00,017 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 06:56:01,946 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 07:13:07,859 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 07:13:08,296 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 23, 'content': ['{"system.proc.memory.availableMB": 5331.53, "system.memory": 67.47, "system.proc.memory.rssMB": 6172.56, "system.proc.memory.percent": 37.67, "system.network.sent": 39617058.13, "system.network.recv": 23205751.47, "system.cpu": 11.38, "system.cpu.0.cpu_percent": 16.38, "system.cpu.1.cpu_percent": 14.71, "system.cpu.2.cpu_percent": 71.9, "system.cpu.3.cpu_percent": 26.71, "system.cpu.4.cpu_percent": 7.98, "system.cpu.5.cpu_percent": 2.95, "system.cpu.6.cpu_percent": 1.82, "system.cpu.7.cpu_percent": 1.45, "system.proc.cpu.threads": 22, "system.disk": 3.2, "_wandb": true, "_timestamp": 1673849587.856583, "_runtime": 27891.030134}']}}, 'dropped': 0}}
+2023-01-16 07:13:10,056 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 07:13:12,904 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 07:31:11,093 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 07:31:14,937 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 07:47:15,855 DEBUG   SenderThread:57976 [sender.py:send():334] send: stats
+2023-01-16 07:47:16,139 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 07:47:16,334 WARNING FileStreamThread:57976 [file_stream.py:request_with_retry():667] requests_with_retry encountered retryable exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')). func: <bound method Session.post of <requests.sessions.Session object at 0x107920190>>, args: ('https://api.wandb.ai/files/drone-mechanics/OpenAIGym-PPO/uomx6o26/file_stream',), kwargs: {'json': {'files': {'wandb-events.jsonl': {'offset': 24, 'content': ['{"system.gpu.0.gpu": 0.0, "system.gpu.0.memoryAllocated": 0.91, "system.gpu.0.temp": 19.66, "system.gpu.0.powerWatts": 2.64, "system.gpu.0.powerPercent": 16.03, "_wandb": true, "_timestamp": 1673851635.852811, "_runtime": 29939.026362}']}}, 'dropped': 0}}
+2023-01-16 07:47:20,867 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 08:03:22,859 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 08:03:22,859 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 08:03:27,878 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 08:03:27,907 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report
+2023-01-16 08:18:02,644 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-16 08:18:03,669 DEBUG   HandlerThread:57976 [handler.py:handle_request():144] handle_request: status_report

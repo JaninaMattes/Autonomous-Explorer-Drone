@@ -1,0 +1,6 @@
+,experiment,timestep,mean episodic runtime,mean episodic length,eval episodes,mean episodic returns,min episodic returns,max episodic returns,std episodic returns,episodes
+0,exp_name: takeoff-aviary-v0_2023-01-18,2048,0.000552,1.0,2048,-0.888887,-0.889052,-0.888725,4.8e-05,0
+1,exp_name: takeoff-aviary-v0_2023-01-18,4096,0.000474,1.0,2048,-0.888885,-0.889035,-0.888703,4.9e-05,1
+2,exp_name: takeoff-aviary-v0_2023-01-18,6144,0.000498,1.0,2048,-0.888885,-0.889032,-0.888747,4.6e-05,2
+3,exp_name: takeoff-aviary-v0_2023-01-18,8192,0.000477,1.0,2048,-0.888885,-0.889037,-0.888719,4.8e-05,3
+4,exp_name: takeoff-aviary-v0_2023-01-18,10240,0.000481,1.0,2048,-0.888883,-0.889048,-0.888703,4.8e-05,4

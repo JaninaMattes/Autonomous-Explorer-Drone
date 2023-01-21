@@ -1,0 +1,585 @@
+diff --git a/README.md b/README.md
+index bde03554..d26be3d9 100644
+--- a/README.md
++++ b/README.md
+@@ -2,36 +2,41 @@
+ 
+ ## 1. Unity [ml-explorer-drone environment]
+ Unity Machine Learning Controlled Explorer Drone
++Will be continued in the future...
+ 
+ ## 2. PyBullet Drones [gym-pybullet-drone environment]
+ 
+ [1] Installation
+ 
+ Create conda env
++- ```$ conda create --name ppo_drone_py39 python=3.9```
++- ```$ conda activate ppo_drone_py39```
+ 
+-- ```conda create --name ppo_drone_py39 python=3.9```
+-- ```conda activate ppo_drone_py39```
+-- ```pip install -r requirements_pybullet.txt```
++Installation
++- ```$ pip install -r requirements_pybullet.txt```
++or 
++- ```$ pip install --upgrade numpy Pillow matplotlib cycler```
++- ```$ pip install --upgrade gym pybullet stable_baselines3 'ray[rllib]'```
+ 
+ For video install:
+-- Ubuntu: ```sudo apt install ffmpeg```
++- Ubuntu: ```$ sudo apt install ffmpeg```
+ - Windows: https://github.com/utiasDSL/gym-pybullet-drones/tree/master/assignments#on-windows
+ 
+-Then install packages:
+-- ```cd gym-pybullet-drones/```
+-- ```pip install -e .```
++Then register the custom environemnts:
++- ```$ cd gym-pybullet-drones/```
++- ```$ pip install -e .```
+ 
+ [2] Test if everything runs
+-- ```cd gym_pybullet_drones/gym_pybullet_drones/examples```
++- ```$ cd gym_pybullet_drones/gym_pybullet_drones/examples```
+ - run ```>>> python fly.py```
+ 
+ ## 3. custom implementation [PPOV1, PPV2]
+ 
+ [1] Installation
+ 
+-- ```conda create --name ppo_py310 python=3.10```
+-- ```conda activate ppo_py310```
+-- ```pip install -r requirements.txt```
++- ```$ conda create --name ppo_py310 python=3.10```
++- ```$ conda activate ppo_py310```
++- ```$ pip install -r requirements.txt```
+ 
+ [2] Training
+ 
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/envs/single_agent_rl/TakeoffAviary.py b/gym_pybullet_drones/gym_pybullet_drones/envs/single_agent_rl/TakeoffAviary.py
+index 422a1909..c9d1b3d7 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/envs/single_agent_rl/TakeoffAviary.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/envs/single_agent_rl/TakeoffAviary.py
+@@ -74,6 +74,7 @@ class TakeoffAviary(BaseSingleAgentAviary):
+         state = self._getDroneStateVector(0)
+         # return state[2]/10.  # Alternative reward space, see PR #32
+         if state[2] < 0.02:
++            print(f'### REWARD : {state[2]}')
+             return -5
+         else:
+             return -1 / (10*state[2])
+@@ -130,6 +131,7 @@ class TakeoffAviary(BaseSingleAgentAviary):
+             (20,)-shaped array of floats containing the normalized state of a single drone.
+ 
+         """
++
+         MAX_LIN_VEL_XY = 3 
+         MAX_LIN_VEL_Z = 1
+ 
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+index 2a5dd8d3..e786c1db 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+@@ -32,16 +32,17 @@ from gym_pybullet_drones.envs.single_agent_rl.TakeoffAviary import TakeoffAviary
+ from gym_pybullet_drones.utils.utils import sync, str2bool
+ 
+ # import own modules
+-import ppo
++import gym_pybullet_drones.examples.ppo as ppo
+ 
+-DEFAULT_ENVID = "takeoff-aviary-v0" #'hover-aviary-v0'
+-DEFAULT_ENTRY = 'gym_pybullet_drones.envs.single_agent_rl:TakeoffAviary' #'gym_pybullet_drones.envs.single_agent_rl:HoverAviary'
++DEFAULT_ENV = 'takeoff' #"takeoff", "hover", "flythrugate", "tune-aviary-v0"
+ DEFAULT_RLLIB = True
+-DEFAULT_PPO = 'PPOv2'
++DEFAULT_ALGO = 'PPOv2'
+ DEFAULT_GUI = True
++DEFAULT_USER_DEBUG_GUI = False
+ DEFAULT_RECORD_VIDEO = True
+ DEFAULT_OUTPUT_FOLDER = 'results'
+ DEFAULT_COLAB = False
++DEFAULT_SEED = 0
+ 
+ def make_env(env_id, seed=42, gym_wrappers=False):
+     env = gym.make(env_id)
+@@ -59,22 +60,36 @@ def make_env(env_id, seed=42, gym_wrappers=False):
+     env.observation_space.seed(seed)
+     return env
+ 
+-def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, select_ppo=DEFAULT_PPO, output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI, plot=True, colab=DEFAULT_COLAB, record_video=DEFAULT_RECORD_VIDEO, seed=42):
++def run(env_id=DEFAULT_ENV, 
++        rllib=DEFAULT_RLLIB, 
++        select_ppo=DEFAULT_ALGO, 
++        output_folder=DEFAULT_OUTPUT_FOLDER, 
++        gui=DEFAULT_GUI, 
++        user_debug_gui=DEFAULT_USER_DEBUG_GUI, 
++        plot=True, 
++        colab=DEFAULT_COLAB, 
++        record_video=DEFAULT_RECORD_VIDEO, 
++        seed=DEFAULT_SEED):
+     
+     #####################
+     #### Check the environment's spaces ########################
+     #####################
+-    env = make_env(env_id, seed=seed, gym_wrappers=True) #"takeoff-aviary-v0"
+-
++    if not env_id in ['takeoff', 'hover']: 
++        print("[ERROR] 1D action space is only compatible with Takeoff and HoverAviary")
++        exit()
++    env_id = env_id+"-aviary-v0"
++    env = make_env(env_id, seed=seed)
++    
+     print("[INFO] Action space:", env.action_space)
+     print("[INFO] Observation space:", env.observation_space)
+-
+-    #print(env.action_space.sample())
++    
+     check_env(env,
+               warn=True,
+               skip_render_check=True
+               )
+ 
++    print(env.action_space.sample())
++
+     #####################
+     #### Train the model #######################################
+     #####################
+@@ -88,10 +103,12 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
+         model.learn(total_timesteps=10_000) # Typically not enough
+     
+     elif select_ppo == 'PPOv2':
+-        # our ppo-v2
+-        ppo.register_env(id=env_id, entry_point=entry_point)
++        # custom ppo-v2
+         # get PPOTrainer
+-        trainer = ppo.PPOTrainer(env, total_training_steps=3_000_000) # 3_000_000, everything shorter just for testing
++        trainer = ppo.PPOTrainer(
++                    env, 
++                    total_training_steps=1_000_000, # 1_000_000, shorter just for testing
++                    seed=seed) 
+         # train PPO
+         agent = trainer.create_ppo()
+         agent.learn()
+@@ -144,6 +161,7 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
+             action = policy(obs).detach().numpy()
+         
+         obs, reward, done, info = env.step(action)
++        print(f'reward {reward}')
+         logger.log(drone=0,
+                    timestamp=i/env.SIM_FREQ,
+                    state=np.hstack([obs[0:3], np.zeros(4), obs[3:15],  np.resize(action, (4))]),
+@@ -164,11 +182,11 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
+ if __name__ == "__main__":
+     #### Define and parse (optional) arguments for the script ##
+     parser = argparse.ArgumentParser(description='Single agent reinforcement learning example script using TakeoffAviary')
+-    parser.add_argument('--rllib',              default=DEFAULT_RLLIB,        type=str2bool,       help='Whether to use RLlib PPO in place of stable-baselines A2C (default: False)', metavar='')
+-    parser.add_argument('--gui',                default=DEFAULT_GUI,       type=str2bool,      help='Whether to use PyBullet GUI (default: True)', metavar='')
+-    parser.add_argument('--record_video',       default=DEFAULT_RECORD_VIDEO,      type=str2bool,      help='Whether to record a video (default: False)', metavar='')
+-    parser.add_argument('--output_folder',      default=DEFAULT_OUTPUT_FOLDER, type=str,           help='Folder where to save logs (default: "results")', metavar='')
+-    parser.add_argument('--colab',              default=DEFAULT_COLAB, type=bool,           help='Whether example is being run by a notebook (default: "False")', metavar='')
++    parser.add_argument('--rllib',              default=DEFAULT_RLLIB,          type=str2bool,       help='Whether to use RLlib PPO in place of stable-baselines A2C (default: False)', metavar='')
++    parser.add_argument('--gui',                default=DEFAULT_GUI,            type=str2bool,      help='Whether to use PyBullet GUI (default: True)', metavar='')
++    parser.add_argument('--record_video',       default=DEFAULT_RECORD_VIDEO,   type=str2bool,      help='Whether to record a video (default: False)', metavar='')
++    parser.add_argument('--output_folder',      default=DEFAULT_OUTPUT_FOLDER,  type=str,           help='Folder where to save logs (default: "results")', metavar='')
++    parser.add_argument('--colab',              default=DEFAULT_COLAB,          type=bool,           help='Whether example is being run by a notebook (default: "False")', metavar='')
+     ARGS = parser.parse_args()
+ 
+     run(**vars(ARGS))
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv b/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv
+index efc3c673..cd394175 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/log/exp_takeoff-aviary-v0_20230119-160711/takeoff-aviary-v0_20230119-160711.csv
+@@ -1391,3 +1391,49 @@
+ 1,exp_name: takeoff-aviary-v0_2023-01-19,2885122,0.01609,48.232558,43,-48.974974,-50.526588,-48.163567,0.73944,1389
+ 2,exp_name: takeoff-aviary-v0_2023-01-19,2887189,0.017147,48.069767,43,-48.843618,-50.439349,-48.142823,0.511788,1390
+ 3,exp_name: takeoff-aviary-v0_2023-01-19,2889260,0.015827,48.162791,43,-48.990171,-50.690587,-48.090971,0.647821,1391
++0,exp_name: takeoff-aviary-v0_2023-01-19,2891328,0.016971,48.093023,43,-48.955245,-50.616344,-48.164671,0.573973,1392
++1,exp_name: takeoff-aviary-v0_2023-01-19,2893395,0.015448,48.069767,43,-48.847862,-50.575379,-48.072843,0.529222,1393
++2,exp_name: takeoff-aviary-v0_2023-01-19,2895464,0.017252,48.116279,43,-48.835578,-50.265241,-48.059031,0.546848,1394
++3,exp_name: takeoff-aviary-v0_2023-01-19,2897531,0.016755,48.069767,43,-48.90342,-50.402238,-48.041796,0.486048,1395
++4,exp_name: takeoff-aviary-v0_2023-01-19,2899597,0.017115,48.046512,43,-48.842836,-50.461388,-47.849483,0.531742,1396
++5,exp_name: takeoff-aviary-v0_2023-01-19,2901661,0.016197,48.0,43,-48.863396,-49.711951,-48.204062,0.367833,1397
++6,exp_name: takeoff-aviary-v0_2023-01-19,2903729,0.017531,48.093023,43,-48.721139,-50.273237,-47.905842,0.545678,1398
++7,exp_name: takeoff-aviary-v0_2023-01-19,2905796,0.0161,48.069767,43,-48.802716,-50.35567,-48.126562,0.462599,1399
++8,exp_name: takeoff-aviary-v0_2023-01-19,2907863,0.016767,48.069767,43,-48.696021,-50.400452,-48.076429,0.504645,1400
++9,exp_name: takeoff-aviary-v0_2023-01-19,2909931,0.017004,48.093023,43,-48.982737,-50.527958,-48.136793,0.543924,1401
++10,exp_name: takeoff-aviary-v0_2023-01-19,2911997,0.016061,48.046512,43,-48.810798,-50.47034,-48.163369,0.43116,1402
++11,exp_name: takeoff-aviary-v0_2023-01-19,2914064,0.017468,48.069767,43,-48.876318,-50.501311,-48.210171,0.493057,1403
++12,exp_name: takeoff-aviary-v0_2023-01-19,2916127,0.016155,47.976744,43,-48.726928,-49.304924,-47.387767,0.330955,1404
++13,exp_name: takeoff-aviary-v0_2023-01-19,2918192,0.017444,48.023256,43,-48.720036,-50.288049,-48.121947,0.342321,1405
++14,exp_name: takeoff-aviary-v0_2023-01-19,2920261,0.015993,48.116279,43,-48.828418,-50.472307,-48.215258,0.614362,1406
++15,exp_name: takeoff-aviary-v0_2023-01-19,2922328,0.016716,48.069767,43,-48.718626,-50.482131,-48.171159,0.502314,1407
++16,exp_name: takeoff-aviary-v0_2023-01-19,2924403,0.015225,48.255814,43,-48.891018,-50.484523,-47.903607,0.795429,1408
++17,exp_name: takeoff-aviary-v0_2023-01-19,2926471,0.016449,48.093023,43,-48.834764,-50.495275,-48.141062,0.571653,1409
++18,exp_name: takeoff-aviary-v0_2023-01-19,2928546,0.015262,48.255814,43,-48.939748,-50.41326,-47.904726,0.748598,1410
++19,exp_name: takeoff-aviary-v0_2023-01-19,2930614,0.016532,48.093023,43,-48.737319,-50.338572,-48.008251,0.541587,1411
++20,exp_name: takeoff-aviary-v0_2023-01-19,2932692,0.015639,48.325581,43,-48.982858,-50.322321,-48.088119,0.810068,1412
++21,exp_name: takeoff-aviary-v0_2023-01-19,2934763,0.017434,48.162791,43,-48.901367,-50.40381,-48.004736,0.639529,1413
++22,exp_name: takeoff-aviary-v0_2023-01-19,2936831,0.015591,48.093023,43,-48.746148,-50.513408,-48.157814,0.541557,1414
++23,exp_name: takeoff-aviary-v0_2023-01-19,2938903,0.016968,48.186047,43,-48.753799,-50.329293,-47.894267,0.722052,1415
++24,exp_name: takeoff-aviary-v0_2023-01-19,2940971,0.015668,48.093023,43,-48.637842,-50.36442,-47.929142,0.535238,1416
++25,exp_name: takeoff-aviary-v0_2023-01-19,2943053,0.016775,48.418605,43,-49.183854,-50.533475,-48.032095,0.861587,1417
++26,exp_name: takeoff-aviary-v0_2023-01-19,2945128,0.015394,48.255814,43,-48.822122,-50.358654,-47.892898,0.73556,1418
++27,exp_name: takeoff-aviary-v0_2023-01-19,2947193,0.016756,48.023256,43,-48.682223,-50.221859,-47.424654,0.50373,1419
++28,exp_name: takeoff-aviary-v0_2023-01-19,2949262,0.016497,48.116279,43,-48.691387,-50.18779,-48.077317,0.558577,1420
++29,exp_name: takeoff-aviary-v0_2023-01-19,2951335,0.019561,48.209302,43,-48.732682,-50.38355,-48.007706,0.776405,1421
++30,exp_name: takeoff-aviary-v0_2023-01-19,2953403,0.016707,48.093023,43,-48.497753,-50.026744,-48.014242,0.506313,1422
++31,exp_name: takeoff-aviary-v0_2023-01-19,2955473,0.015539,48.139535,43,-48.793307,-50.309486,-47.956658,0.62131,1423
++32,exp_name: takeoff-aviary-v0_2023-01-19,2957543,0.016237,48.139535,43,-48.586744,-50.221079,-47.92987,0.61782,1424
++33,exp_name: takeoff-aviary-v0_2023-01-19,2959622,0.016118,48.348837,43,-48.826477,-50.173334,-47.893088,0.815651,1425
++34,exp_name: takeoff-aviary-v0_2023-01-19,2961698,0.016634,48.27907,43,-48.749757,-50.370222,-47.943237,0.828895,1426
++35,exp_name: takeoff-aviary-v0_2023-01-19,2963775,0.016043,48.302326,43,-48.85346,-50.449119,-47.943568,0.815336,1427
++36,exp_name: takeoff-aviary-v0_2023-01-19,2965851,0.017043,48.27907,43,-48.842956,-50.397532,-47.98096,0.798339,1428
++37,exp_name: takeoff-aviary-v0_2023-01-19,2967925,0.015694,48.232558,43,-48.698876,-50.235912,-47.887917,0.769939,1429
++38,exp_name: takeoff-aviary-v0_2023-01-19,2970003,0.016906,48.325581,43,-48.862596,-50.365744,-47.940963,0.785503,1430
++39,exp_name: takeoff-aviary-v0_2023-01-19,2972083,0.015808,48.372093,43,-48.8784,-50.342622,-47.845718,0.832475,1431
++40,exp_name: takeoff-aviary-v0_2023-01-19,2974163,0.016931,48.372093,43,-48.77086,-50.277963,-47.812931,0.894786,1432
++41,exp_name: takeoff-aviary-v0_2023-01-19,2976238,0.015408,48.255814,43,-48.616275,-50.17493,-47.847314,0.774961,1433
++42,exp_name: takeoff-aviary-v0_2023-01-19,2978314,0.016862,48.27907,43,-48.679131,-50.259781,-47.772438,0.74825,1434
++43,exp_name: takeoff-aviary-v0_2023-01-19,2980387,0.016256,48.209302,43,-48.630932,-50.162409,-47.827821,0.734647,1435
++44,exp_name: takeoff-aviary-v0_2023-01-19,2982467,0.017109,48.372093,43,-48.884418,-50.264736,-47.919573,0.840723,1436
++45,exp_name: takeoff-aviary-v0_2023-01-19,2984550,0.016805,48.44186,43,-48.988921,-50.250452,-47.845952,0.863768,1437
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+index bd31299e..c452a241 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo.py
+@@ -11,7 +11,7 @@ from datetime import datetime
+ import os
+ import argparse
+ 
+-from stable_baselines3 import PPO
++from stable_baselines3.common.env_checker import check_env
+ # gym environment
+ import gym
+ from gym.envs.registration import register
+@@ -28,12 +28,8 @@ import sys
+ # monitoring/logging ML
+ import wandb
+ 
+-# hyperparameter tuning
+-import optuna
+-from optuna.integration.wandb import WeightsAndBiasesCallback
+-
+ # logging
+-from stats_logger import CSVWriter, StatsPlotter
++from gym_pybullet_drones.examples.stats_logger import CSVWriter, StatsPlotter
+ 
+ # Paths and other constants
+ MODEL_PATH = './models/'
+@@ -184,7 +180,11 @@ class PPO_PolicyGradient:
+                  exp_name='PPO_V2_experiment',
+                  advantage_type='gae',
+                  normalize_adv=False,
+-                 normalize_ret=False) -> None:
++                 normalize_ret=False,
++                 seed=0) -> None:
++
++        # environment
++        self.env = env
+ 
+         # hyperparams
+         self.in_dim = in_dim
+@@ -203,8 +203,7 @@ class PPO_PolicyGradient:
+         self.adam = adam
+         self.advantage_type = advantage_type
+ 
+-        # environment
+-        self.env = env
++        # logging and rendering
+         self.render_steps = render_steps
+         self.render_video = render_video
+         self.save_model = save_model
+@@ -518,7 +517,7 @@ class PPO_PolicyGradient:
+            # TODO: rollout length - 2048 t0 4096
+         """
+ 
+-        t_step, rewards, frames = 0, [], deque(maxlen=24)  # 4 fps - 6 sec
++        t_step, rewards = 0, [] # 4 fps - 6 sec
+ 
+         # log time
+         episode_time = []
+@@ -537,7 +536,7 @@ class PPO_PolicyGradient:
+         while t_step < n_rollout_steps:
+ 
+             # rewards collected
+-            rewards, done, frames = [], False, []
++            rewards, done= [], False
+             obs = self.env.reset()
+ 
+             # measure time elapsed for one episode
+@@ -549,7 +548,7 @@ class PPO_PolicyGradient:
+             for t_batch in range(0, self.max_trajectory_size):
+                 # render gym envs
+                 if self.render_video and t_batch % self.render_steps == 0:
+-                    frames.append(self.env.render(mode="rgb_array"))
++                    self.env.render()
+ 
+                 t_step += 1
+ 
+@@ -600,7 +599,7 @@ class PPO_PolicyGradient:
+         dones = torch.tensor(np.array(episode_dones),
+                              device=self.device, dtype=torch.float)
+ 
+-        return obs, next_obs, actions, action_log_probs, dones, episode_rewards, episode_lens, np.array(episode_time), frames
++        return obs, next_obs, actions, action_log_probs, dones, episode_rewards, episode_lens, np.array(episode_time)
+ 
+     def train(self, values, returns, advantages, batch_log_probs, curr_log_probs, epsilon):
+         """Calculate loss and update weights of both networks."""
+@@ -631,7 +630,7 @@ class PPO_PolicyGradient:
+             # Collect data over one episode
+             # Episode = recording of actions and states that an agent performed from a start state to an end state
+             # STEP 3: simulate and collect trajectories --> the following values are all per batch over one episode
+-            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time, frames = self.collect_rollout(self.n_rollout_steps)
++            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time = self.collect_rollout(self.n_rollout_steps)
+ 
+             # experiences simulated so far
+             training_steps += np.sum(ep_lens)
+@@ -703,24 +702,14 @@ class PPO_PolicyGradient:
+                     for value in self.stats_data.values():
+                         del value[:]
+ 
+-                # Log to video
+-                if self.render_video and done_so_far % self.log_video_steps == 0:
+-                    filename = 'pendulum_v1.gif'
+-                    self.save_frames_as_gif(frames, self.exp_path, filename)
+-                    wandb.log({
+-                        "train/video": wandb.Video(os.path.join(self.exp_path, filename),
+-                                                   caption='episode: ' +
+-                                                   str(done_so_far),
+-                                                   fps=4, format="gif"), "step": done_so_far
+-                    })
+ 
+         # Finalize and plot stats
+-        # if self.csv_writer and self.stats_plotter:
+-        #     df = self.stats_plotter.read_csv() 
+-        #     self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns',
+-        #                                             y_min='min episodic returns', y_max='max episodic returns',
+-        #                                             title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return',
+-        #                                             color='blue', smoothing=None, wandb=wandb)
++        if self.csv_writer and self.stats_plotter:
++            df = self.stats_plotter.read_csv() 
++            self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns',
++                                                    y_min='min episodic returns', y_max='max episodic returns',
++                                                    title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return',
++                                                    color='blue', smoothing=None, wandb=wandb)
+         if wandb:
+             # save files in path
+             wandb.save(os.path.join(self.exp_path, "*csv"))
+@@ -829,9 +818,8 @@ def arg_parser():
+     return args
+ 
+ def make_env(env_id='Pendulum-v1', gym_wrappers=False, seed=42):
+-    # TODO: Needs to be parallized for parallel simulation
++    print(f"##### making GYM with {env_id}")
+     env = gym.make(env_id)
+-
+     # gym wrapper
+     if gym_wrappers:
+         env = gym.wrappers.ClipAction(env)
+@@ -839,11 +827,15 @@ def make_env(env_id='Pendulum-v1', gym_wrappers=False, seed=42):
+         env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
+         env = gym.wrappers.NormalizeReward(env)
+         env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -10, 10))
+-
+-    # seed env for reproducability
++            # seed env for reproducability
+     env.seed(seed)
+     env.action_space.seed(seed)
+     env.observation_space.seed(seed)
++    
++    # check
++    check_env(env,
++              warn=True,
++              skip_render_check=True)
+     return env
+ 
+ def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
+@@ -944,6 +936,31 @@ class PPOTrainer:
+         self.setup_logging()
+         self.setup_wb()
+ 
++    def setup_env(self):
++        # seeding
++        torch.manual_seed(self.seed)
++        np.random.seed(self.seed)
++        torch.backends.cudnn.deterministic = True # self.deterministic
++
++        # get dimensions of obs (what goes in?)
++        # and actions (what goes out?)
++        self.obs_shape = self.env.observation_space.shape
++        self.act_shape = self.env.action_space.shape
++
++        self.upper_bound = self.env.action_space.high[0]
++        self.lower_bound = self.env.action_space.low[0]
++
++        logging.info(f'env observation space: {self.obs_shape}')
++        logging.info(f'env action space: {self.act_shape}')
++        logging.info(f'env action upper bound: {self.upper_bound}')
++        logging.info(f'env action lower bound: {self.lower_bound}')
++
++        self.obs_dim = self.obs_shape[0] 
++        self.act_dim = self.act_shape[0]
++
++        logging.info(f'env observation dim: {self.obs_dim}')
++        logging.info(f'env action dim: {self.act_dim}')
++
+     def setup_logging(self):
+         self.exp_dir = f'{LOG_PATH}exp_{self.env_name}_{CURR_TIME}'
+         self.model_dir = os.path.join(self.exp_dir, 'models')
+@@ -996,33 +1013,9 @@ class PPOTrainer:
+                 save_code=True
+             )
+ 
+-    def setup_env(self):
+-        # seeding
+-        torch.manual_seed(self.seed)
+-        np.random.seed(self.seed)
+-        torch.backends.cudnn.deterministic = True # self.deterministic
+-
+-        # get dimensions of obs (what goes in?)
+-        # and actions (what goes out?)
+-        self.obs_shape = self.env.observation_space.shape
+-        self.act_shape = self.env.action_space.shape
+-
+-        self.upper_bound = self.env.action_space.high[0]
+-        self.lower_bound = self.env.action_space.low[0]
+-
+-        logging.info(f'env observation space: {self.obs_shape}')
+-        logging.info(f'env action space: {self.act_shape}')
+-        logging.info(f'env action upper bound: {self.upper_bound}')
+-        logging.info(f'env action lower bound: {self.lower_bound}')
+-
+-        self.obs_dim = self.obs_shape[0] 
+-        self.act_dim = self.act_shape[0]
+-
+-        logging.info(f'env observation dim: {self.obs_dim}')
+-        logging.info(f'env action dim: {self.act_dim}')
+-
+     def create_ppo(self):
+-        agent = PPO_PolicyGradient(self.env,
++        agent = PPO_PolicyGradient(
++                self.env,
+                 self.obs_dim,
+                 self.act_dim,
+                 total_training_steps=self.total_training_steps,
+@@ -1067,7 +1060,7 @@ class PPOTrainer:
+ 
+     def shutdown(self):
+         # cleanup 
+-        self.env.close()
++        # self.env.close()
+         wandb.run.finish() if wandb and wandb.run else None
+ 
+     def get_policy(self):
+diff --git a/requirements_pybullet.txt b/requirements_pybullet.txt
+index ef5400a7..cb524402 100644
+--- a/requirements_pybullet.txt
++++ b/requirements_pybullet.txt
+@@ -1,84 +1,60 @@
+ absl-py==1.4.0
+ aiosignal==1.3.1
+-alembic==1.9.2
+-appdirs==1.4.4
+ attrs==22.2.0
+-autopage==0.5.1
+ cachetools==5.2.1
+ certifi==2022.12.7
+ charset-normalizer==3.0.1
+ click==8.0.4
+-cliff==4.1.0
+-cloudpickle==2.2.0
+-cmaes==0.9.1
+-cmd2==2.4.2
+-colorlog==6.7.0
+-commonmark==0.9.1
++cloudpickle==2.2.1
+ contourpy==1.0.7
+ cycler==0.10.0
+ distlib==0.3.6
+ dm-tree==0.1.8
+-docker-pycreds==0.4.0
+ filelock==3.9.0
+ fonttools==4.38.0
+ frozenlist==1.3.3
+-gitdb==4.0.10
+-GitPython==3.1.30
+ google-auth==2.16.0
+ google-auth-oauthlib==0.4.6
+ grpcio==1.43.0
++seaborn==0.12.2
+ gym==0.21.0
+--e git+ssh://git@github.com/bkunters/ml-explorer-drone.git@3aa323df11124002a9fd7c84ec98cdbb0eb2addd#egg=gym_pybullet_drones&subdirectory=gym_pybullet_drones
++gym-notices==0.0.8
++-e git+ssh://git@github.com/bkunters/ml-explorer-drone.git@59441058353caba558ff0397532fd2e6fcad1161#egg=gym_pybullet_drones&subdirectory=gym_pybullet_drones
+ idna==3.4
+ imageio==2.24.0
+ importlib-metadata==4.13.0
+ jsonschema==4.17.3
+ kiwisolver==1.4.4
+ lz4==4.3.2
+-Mako==1.2.4
+ Markdown==3.4.1
+-MarkupSafe==2.1.1
++MarkupSafe==2.1.2
+ matplotlib==3.6.3
+ msgpack==1.0.4
+ networkx==3.0
+ numpy==1.24.1
+ oauthlib==3.2.2
+-optuna==3.0.5
+ packaging==23.0
+-pandas==1.5.2
+-pathtools==0.1.2
+-pbr==5.11.1
++pandas==1.5.3
+ Pillow==9.4.0
+ platformdirs==2.6.2
+-prettytable==3.6.0
+ protobuf==3.20.1
+-psutil==5.9.4
+ pyasn1==0.4.8
+ pyasn1-modules==0.2.8
+ pybullet==3.2.5
+-Pygments==2.14.0
+ pyparsing==3.0.9
+-pyperclip==1.8.2
+ pyrsistent==0.19.3
+ python-dateutil==2.8.2
+ pytz==2022.7.1
+ PyWavelets==1.4.1
+ PyYAML==6.0
+-ray==2.2.0
++ray==1.13.0
+ requests==2.28.2
+ requests-oauthlib==1.3.1
+-rich==13.1.0
+ rsa==4.9
+ scikit-image==0.19.3
+-scipy==1.8.1
+-seaborn==0.12.2
+-sentry-sdk==1.13.0
+-setproctitle==1.3.2
++scipy==1.10.0
+ six==1.16.0
+-smmap==5.0.0
+-SQLAlchemy==1.4.46
+-stable-baselines3==1.7.0
+-stevedore==4.1.1
++stable-baselines3==1.5.0
+ tabulate==0.9.0
+ tensorboard==2.11.2
+ tensorboard-data-server==0.6.1
+@@ -86,12 +62,9 @@ tensorboard-plugin-wit==1.8.1
+ tensorboardX==2.5.1
+ tifffile==2022.10.10
+ torch==1.11.0
+-tqdm==4.64.1
+-typer==0.7.0
+ typing_extensions==4.4.0
+ urllib3==1.26.14
+ virtualenv==20.17.1
+-wandb==0.13.9
+-wcwidth==0.2.6
+ Werkzeug==2.2.2
+ zipp==3.11.0
++wandb==0.13.8
+\ No newline at end of file

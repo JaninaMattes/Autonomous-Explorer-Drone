@@ -1,0 +1,104 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.9
+    code_path: code/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.9.15
+    start_time: 1674231034.880963
+    t:
+      1:
+      - 1
+      - 30
+      - 55
+      2:
+      - 1
+      - 30
+      - 55
+      3:
+      - 2
+      - 3
+      - 13
+      - 16
+      - 23
+      - 35
+      4: 3.9.15
+      5: 0.13.9
+      8:
+      - 4
+      - 5
+action space:
+  desc: null
+  value:
+  - 4
+action space lower bound:
+  desc: null
+  value: -1.0
+action space upper bound:
+  desc: null
+  value: 1.0
+batches per episode:
+  desc: null
+  value: 2048
+env name:
+  desc: null
+  value: hover-aviary-v0
+env number:
+  desc: null
+  value: 1
+epsilon (adam optimizer):
+  desc: null
+  value: 1.0e-05
+epsilon (clip_range):
+  desc: null
+  value: 0.22
+experiment name:
+  desc: null
+  value: 'exp_name: hover-aviary-v0_2023-01-20'
+experiment path:
+  desc: null
+  value: ./log/exp_hover-aviary-v0_20230120-171033
+gae lambda (GAE):
+  desc: null
+  value: 0.95
+gamma (discount):
+  desc: null
+  value: 0.99
+input layer size:
+  desc: null
+  value: 12
+learning rate (policy net):
+  desc: null
+  value: 0.0001
+learning rate (value net):
+  desc: null
+  value: 0.001
+max sampled trajectories:
+  desc: null
+  value: 1024
+normalize advantage:
+  desc: null
+  value: false
+normalize return:
+  desc: null
+  value: true
+number of epochs for update:
+  desc: null
+  value: 32
+observation space:
+  desc: null
+  value:
+  - 12
+output layer size:
+  desc: null
+  value: 4
+seed:
+  desc: null
+  value: 42
+total_training_steps:
+  desc: null
+  value: 1000000
