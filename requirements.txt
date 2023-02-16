@@ -108,5 +108,5 @@ urllib3==1.26.13
 virtualenv==20.17.1
 wandb==0.13.8
 wcwidth==0.2.5
-Werkzeug==2.2.2
+Werkzeug==2.2.3
 zipp==3.11.0
