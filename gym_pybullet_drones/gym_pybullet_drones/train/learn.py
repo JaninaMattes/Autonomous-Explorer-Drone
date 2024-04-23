@@ -34,8 +34,8 @@ from gym_pybullet_drones.envs.single_agent_rl.TakeoffAviary import TakeoffAviary
 from gym_pybullet_drones.utils.utils import sync, str2bool
 
 # import own modules
-import gym_pybullet_drones.examples.ppo as ppo
-from gym_pybullet_drones.examples.ppo import PPOTrainer
+import gym_pybullet_drones.ppo.ppo_v2 as ppo
+from gym_pybullet_drones.ppo.ppo_v2 import PPOTrainer
 
 #######################################
 #######################################
