@@ -51,8 +51,8 @@ class StatsPlotter:
         """ Use file path to collect all csv files.
             Concats all files and returns a pandas dataframe.
         """
-        # find all csv files in this folder
-        csv_file = os.path.join(self.csv_folder_path, f"*.csv")
+
+        csv_file = os.path.join(self.csv_folder_path, f"*.csv")         # find all csv files in this folder
         all_files = glob.glob(csv_file)
         df = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True)
         return df
@@ -63,18 +63,14 @@ class StatsPlotter:
 
     def plot_box(self, dataframe, x, y, title='title', x_label='Timestep', y_label='Mean Episodic Time', wandb=None):
         """Create a box plot for time needed to converge per experiment."""     
-        # get exp names
-        df_exp = dataframe['experiment'].values.astype('str')
-        df_exp_unique = list(dict.fromkeys(df_exp))
-        # plot boxes
-        ax = sns.barplot(data=dataframe, x=x, y=y)
+        
+        df_exp = dataframe['experiment'].values.astype('str')           # get exp names
+        df_exp_unique = list(dict.fromkeys(df_exp))                              
+        ax = sns.barplot(data=dataframe, x=x, y=y)                      # plot boxes
         ax.set(title=title, xlabel=x_label, ylabel=y_label)
-        # set legend
-        plt.legend(labels=df_exp_unique, loc='center right')
-        # plot the file to given destination
-        ax.figure.savefig(self.file_name_and_path)
-        # show and close automatically
-        plt.show(block=False)
+        plt.legend(labels=df_exp_unique, loc='center right')            # set legend
+        ax.figure.savefig(self.file_name_and_path)                      # plot the file to given destination
+        plt.show(block=False)                                           # show and close automatically
         plt.pause(3)
         plt.close()
 
@@ -99,22 +95,17 @@ class StatsPlotter:
         else:
             color = sns.xkcd_rgb[color]
 
-        # draw mean line
-        ax = sns.lineplot(x=df_x, y=df_y, lw=2)
-        # fill std
-        ax.fill_between(x=df_x, y1=df_min, y2=df_max, color=color, alpha=0.2)
-        # draw upper and lower bounds
-        ax.axhline(lower_bound, linewidth=1, color='red', label='lower bound')
-        ax.axhline(upper_bound, linewidth=1, color='red', label='upper bound')        
-        # change x-y axis scale
+        
+        ax = sns.lineplot(x=df_x, y=df_y, lw=2)                                 # draw mean line
+        ax.fill_between(x=df_x, y1=df_min, y2=df_max, color=color, alpha=0.2)   # fill std
+        ax.axhline(lower_bound, linewidth=1, color='red', label='lower bound')  # draw upper and lower bounds
+        ax.axhline(upper_bound, linewidth=1, color='red', label='upper bound')  # change x-y axis scale
+        
         ax.set(title=title, xlabel=x_label, ylabel=y_label, xlim=(0, xlim_up), ylim=(ylim_low, ylim_up))
-        # set legend
-        plt.legend(labels=df_exp_unique, loc='upper right')
+        plt.legend(labels=df_exp_unique, loc='upper right')                     # set legend
 
-        # plot the file to given destination
-        ax.figure.savefig(self.file_name_and_path)
-        # show and close automatically
-        plt.show(block=False)
+        ax.figure.savefig(self.file_name_and_path)                              # plot the file to given destination
+        plt.show(block=False)                                                   # show and close automatically
         plt.pause(3)
         plt.close()
         
@@ -137,8 +128,7 @@ class StatsPlotter:
             .set_titles(title)
             .tight_layout(w_pad=0))
 
-        # plot the file to given destination
-        g.figure.savefig(self.file_name_and_path)
+        g.figure.savefig(self.file_name_and_path)                           # plot the file to given destination
         plt.show()
 
         if wandb:
@@ -146,8 +136,8 @@ class StatsPlotter:
     
     def plot_matplot(self, x_values, y_values, y_lower, y_upper, wandb=None):
         """ Create a matplot lineplot with filling between ."""
-        plt.fill_between(x_values, y_lower, y_upper, alpha=0.2) # standard deviation
-        plt.plot(x_values, y_values) # plotted mean 
+        plt.fill_between(x_values, y_lower, y_upper, alpha=0.2)             # standard deviation
+        plt.plot(x_values, y_values)                                        # plotted mean 
         plt.show()
 
         if wandb:
@@ -168,5 +158,5 @@ class CSVWriter:
         df = pd.DataFrame(data)
         if not os.path.isfile(self.filename):
             df.to_csv(self.filename, header='column_names')
-        else: # else it exists so append without writing the header
+        else:                                                               # else it exists so append without writing the header
             df.to_csv(self.filename, mode='a', header=False)

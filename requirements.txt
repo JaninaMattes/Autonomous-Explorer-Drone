@@ -32,7 +32,6 @@ google-auth==2.15.0
 google-auth-oauthlib==0.4.6
 grpcio==1.43.0
 gym @ file:///Users/runner/miniforge3/conda-bld/gym_1644329066247/work
--e git+ssh://git@github.com/bkunters/ml-explorer-drone.git@3aa323df11124002a9fd7c84ec98cdbb0eb2addd#egg=gym_pybullet_drones&subdirectory=gym_pybullet_drones
 idna==3.4
 imageio==2.23.0
 imageio-ffmpeg==0.4.7

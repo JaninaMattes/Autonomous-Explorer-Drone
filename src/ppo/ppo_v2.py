@@ -112,11 +112,11 @@ class PPO_PolicyGradient_V2:
             'std episodic returns': [],
             }
 
-        # add net for actor and critic
-        self.policy_net = PolicyNet(self.in_dim, self.out_dim) # Setup Policy Network (Actor) - (policy-based method) "How the agent behaves"
-        self.value_net = ValueNet(self.in_dim, 1) # Setup Value Network (Critic) -  (value-based method) "How good the action taken is."
+                                                                # add net for actor and critic
+        self.policy_net = PolicyNet(self.in_dim, self.out_dim)  # Setup Policy Network (Actor) - (policy-based method) "How the agent behaves"
+        self.value_net = ValueNet(self.in_dim, 1)               # Setup Value Network (Critic) -  (value-based method) "How good the action taken is."
 
-        # add optimizer for actor and critic
+                                                                # add optimizer for actor and critic
         if self.adam:
             self.policy_net_optim = Adam(self.policy_net.parameters(), lr=self.lr_p, eps=self.adam_eps) # Setup Policy Network (Actor) optimizer
             self.value_net_optim = Adam(self.value_net.parameters(), lr=self.lr_v, eps=self.adam_eps)  # Setup Value Network (Critic) optimizer  
@@ -125,12 +125,13 @@ class PPO_PolicyGradient_V2:
             self.value_net_optim = SGD(self.value_net.parameters(), lr=self.lr_v, momentum=self.momentum)
 
     def get_continuous_policy(self, obs):
-        """Make function to compute action distribution in continuous action space."""
-        # Multivariate Normal Distribution Lecture 15.7 (Andrew Ng) https://www.youtube.com/watch?v=JjB58InuTqM
-        # fixes the detection of outliers, allows to capture correlation between features
-        # https://discuss.pytorch.org/t/understanding-log-prob-for-normal-distribution-in-pytorch/73809
-        # 1) Use Normal distribution for continuous space
-        action_prob = self.policy_net(obs) # query Policy Network (Actor) for mean action
+        """Make function to compute action distribution in continuous action space.
+              - Multivariate Normal Distribution: https://pytorch.org/docs/stable/generated/torch.distributions.MultivariateNormal.html
+                Fixes the detection of outliers, allows to capture correlation between features
+              - Log Prob Normal Distribution https://discuss.pytorch.org/t/understanding-log-prob-for-normal-distribution-in-pytorch/73809
+                (1) We use normal distribution for continuous space
+        """
+        action_prob = self.policy_net(obs)                       # query Policy Network (Actor) for mean action
         cov_matrix = torch.diag(torch.full(size=(self.out_dim,), fill_value=0.5))
         return MultivariateNormal(action_prob, covariance_matrix=cov_matrix)
 
@@ -167,9 +168,9 @@ class PPO_PolicyGradient_V2:
         # Step 4: Calculate returns
         advantages = []
         cum_returns = []
-        for rewards in reversed(episode_rewards):  # reversed order
+        for rewards in reversed(episode_rewards):   # reversed order
             for reward in reversed(rewards):
-                cum_returns.insert(0, reward) # reverse it again
+                cum_returns.insert(0, reward)       # reverse it again
         cum_returns = torch.tensor(np.array(cum_returns), device=self.device, dtype=torch.float)
         if normalized_ret:
             cum_returns = self.normalize_ret(cum_returns)
@@ -463,6 +464,8 @@ class PPO_PolicyGradient_V2:
 
             # STEP 4-5: Calculate cummulated reward and advantage at timestep t_step
             values, _ , _ = self.get_values(obs, actions)
+
+            # Select advantage calculation method
             # advantages, cum_returns = self.advantage_reinforce(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
             # advantages, cum_returns = self.advantage_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
             

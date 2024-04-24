@@ -70,7 +70,7 @@ wandb.init(
 )
 
 # Parallel environments
-env = make_vec_env(env, n_envs=n_envs) # TODO: @Ardian Check stable_baseline3 library 
+env = make_vec_env(env, n_envs=n_envs) 
 
 # Instantiate the agent
 model = PPO(
@@ -99,10 +99,6 @@ while True:
     action, _states = model.predict(obs)
     obs, rewards, dones, info = env.step(action)
     env.render()
-
-    # TODO: Define values to track --> look into PPO
-    # TODO: Track the value in W&B (ppo_tf.py is already implemented) @Ardian
-    # TODO: What is the maximum reward we can reach --> 500 
 
     # Log into tensorboard & Wandb
     wandb.log({

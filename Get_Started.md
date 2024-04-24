@@ -23,6 +23,17 @@ Will be continued in the future...
 
 ## 2. PyBullet Drones [gym-pybullet-drone environment]
 
+### Option 1: Docker
+Build the Docker image:
+
+```$ docker build -t ml-explorer-drone .```
+
+Run the Docker container:
+```$ docker run -it --rm -v $(pwd):/app ml-explorer-drone```
+
+This will mount the current directory to the ```/app``` directory inside the container and start a Bash shell. You can then proceed with the steps below and run a training with the specified parameters.
+
+### Option 2: Manual Installation
 [1] Installation
 
 Create conda env
@@ -53,7 +64,6 @@ Select a training from scratch with optional flags (--algo, --train_steps, --env
 
 - ```$ python learn.py --env_id "takeoff" --algo "ppo_v2" --train_steps 10_000```
 - ```$ python learn.py --env_id "hover" --algo "ppo_v2" --train_steps 10_000```
-
 
 ## 3. Custom implementation [PPO_V1, PPO_V2]
 
