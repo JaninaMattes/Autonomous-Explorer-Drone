@@ -99,7 +99,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-A central question in robotics is how to design a control system for an agile mobile robot in the continuous domain. This project focuses on the setting of autonomous drone flight. Reinforcement learning (RL) is selected since it can directly optimize a task-level objective and can leverage domain randomization to cope with model uncertainty, allowing the discovery of more robust control responses.
+The design of a control system for an agile mobile robot in the continuous domain is a central question in robotics. This project specifically addresses the challenge of autonomous drone flight. Reinforcement learning (RL) is utilized as it can directly optimize a task-level objective and leverage domain randomization to handle model uncertainty, enabling the discovery of more robust control responses.
 
 ### Training Result
 
@@ -115,7 +115,7 @@ The following displays a training result where the model has learned to control 
 
 #### PPO Actor-Critic Architecture
 
-In this project the policy gradient method is used for training with a custom implementation of [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf). PPO is an on-policy learning algorithm that uses an experience replay buffer, which allows for good sample efficiency.
+In this project the policy gradient method is used for training with a custom implementation of [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf).
 
 <div align="center">
   <img src="images/architecture/architecture.png" alt="Logo" width="500">
