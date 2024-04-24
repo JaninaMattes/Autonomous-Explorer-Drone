@@ -19,6 +19,12 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
+<!---
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+-->
+
+
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/issues">
     <img src="https://img.shields.io/github/issues/JaninaMattes/Autonomous-Explorer-Drone.svg?style=for-the-badge" alt="Issues">
@@ -97,7 +103,7 @@ A central question in robotics is how to design a control system for an agile mo
 
 ### Training Result
 
-The following displays a training result where the model has learned to control the four rotors to overcome simulated gravity forces and go into steady flight.
+The following displays a training result where the model has learned to control the four rotors to overcome simulated gravity forces by the physics engine and go into steady flight.
 
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
@@ -112,7 +118,7 @@ The following displays a training result where the model has learned to control 
 In this project the policy gradient method is used for training with a custom implementation of [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf). PPO is an on-policy learning algorithm that uses an experience replay buffer, which allows for good sample efficiency.
 
 <div align="center">
-  <img src="images/architecture/architecture.png" alt="Logo" width="450">
+  <img src="images/architecture/architecture.png" alt="Logo" width="500">
   <br>
   <small>Fig. 2: Overview of the Actor-Critic Proximal Policy Optimisation Algorithm process</small>
 </div>
@@ -145,7 +151,6 @@ The observation space is defined through the quadrotor state, which includes the
 The reward function is defined as follows:
 
 $$
-\small
 \text{Reward} =
 \begin{cases}
 -5, & \text{height} < 0.02 \\
@@ -162,10 +167,14 @@ where $y_{pos}$ is the current height of the drone. The reward function encourag
 
 #### Environment
 
+The environment is a custom OpenAI Gym environment built using PyBullet for multi-agent reinforcement learning with quadrotors.
+
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
     <img src="images/pybullet.png" alt="Logo" width="450" height="">
   </a>
+  </br>
+  <small>Fig. 3: 3D simulation of the drone's orientation in the x, y, and z axes.</small>
 </div>
 
 #### PID Controller
