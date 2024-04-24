@@ -18,6 +18,10 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
@@ -78,45 +82,97 @@
 </details>
 
 
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+
+A central question in robotics is how to design a control system for an agile mobile robot in the continuous domain. This project focuses on the setting of autonomous drone flight. Reinforcement learning (RL) is selected since it can directly optimize a task-level objective and can leverage domain randomization to cope with model uncertainty, allowing the discovery of more robust control responses.
+
+### Training Result
+
+The following displays a training result where the model has learned to control the four rotors to overcome simulated gravity forces and go into steady flight.
 
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
     <img src="images/gifs/drone-flight-takeoff.gif" alt="Logo" width="400" height="320">
   </a>
+  <br>
+<small>Fig. 1: Illustration of the drone's steady flight during inference.</small>
 </div>
 
+#### PPO Actor-Critic Architecture
+
+In this project the policy gradient method is used for training with a custom implementation of [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf). PPO is an on-policy learning algorithm that uses an experience replay buffer, which allows for good sample efficiency.
+
+<div align="center">
+  <img src="images/architecture/architecture.png" alt="Logo" width="450">
+  <br>
+  <small>Fig. 2: Overview of the Actor-Critic Proximal Policy Optimisation Algorithm process</small>
+</div>
+</br>
+
+The architecture consists of two separate neural networks: the actor network and the critic network. The actor network is responsible for selecting actions given the current state of the environment, while the critic network is responsible for evaluating the value of the current state.
+
+The actor network takes the current state $s_t$ as input and outputs a probability distribution over the possible actions $a_t$. The network is trained using the actor loss function, which encourages the network to select actions that have a high advantage while also penalizing actions that deviate too much from the old policy. The loss function is defined as follows:
+
+$$
+L^{actor}(\theta) = \mathbb{E}_{t} \left[ \min\left(r_t(\theta) \hat{A}_t, \text{clip}\left(r_t(\theta), 1-\epsilon, 1+\epsilon\right) \hat{A}_t \right) \right]
+$$
+
+where $r_t(\theta) = \frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$ is the probability ratio of the new and old policies, $\hat{A}_t$ is the estimated advantage function, and $\epsilon$ is a hyperparameter that controls how much the new policy can deviate from the old policy.
+
+The critic network takes the current state $s_t$ as input and outputs an estimate of the value of the state $V_{\theta}(s_t)$. The network is trained using the critic loss function, which encourages the network to accurately estimate the value of the current state, given the observed rewards and the estimated values of future states. The loss function is defined as follows:
+
+$$
+L^{critic}(\theta) = \mathbb{E}_{t} \left[ \left(V_{\theta}(s_t) - R_t\right)^2 \right]
+$$
+
+where $R_t$ is the target value for the current state, given by the sum of the observed rewards and the estimated values of future states.
+
+#### Action and Observation Space
+
+The observation space is defined through the quadrotor state, which includes the position, linear velocity, angular velocity, and orientation of the drone. The action space is defined by the desired thrust in the z direction and the desired torque in the x, y, and z directions.
+
+#### Reward Function
+
+The reward function is defined as follows:
+
+$$
+\small
+\text{Reward} =
+\begin{cases}
+-5, & \text{height} < 0.02 \\
+-\frac{1}{10 \cdot y_{pos}}, & \text{height} \geq 0.02
+\end{cases}
+$$
+
+where $y_{pos}$ is the current height of the drone. The reward function encourages the drone to maintain a certain height while also penalizing excessive movement in the y-axis.
 
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
+### PyBullet Environment & Drone
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+#### Environment
 
-Use the `BLANK_README.md` to get started.
+<div align="center">
+  <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
+    <img src="images/pybullet.png" alt="Logo" width="450" height="">
+  </a>
+</div>
+
+#### PID Controller
+- stabilize drone flight
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+The project was developed using Python and the PyTorch machine learning framework. To simulate the quadrotor's environment, the PyBullet physics engine is leveraged. Further, to streamline the development process and avoid potential issues, the pre-built PyBullet drone implementation provided by the [gym-pybullet-drones library](https://github.com/utiasDSL/gym-pybullet-drones) is utilized.
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+
+Programming Language-Frameworks-Tools<br /><br />
+[![My Skills](https://skillicons.dev/icons?i=py,pytorch,docker,anaconda,unity&theme=light&perline=10)](https://skillicons.dev)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
