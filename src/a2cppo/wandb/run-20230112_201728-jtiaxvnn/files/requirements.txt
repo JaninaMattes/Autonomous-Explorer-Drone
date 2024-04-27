@@ -33,7 +33,7 @@ google-auth==2.15.0
 grpcio==1.43.0
 gym-pybullet-drones==0.0.3
 gym==0.21.0
-idna==3.4
+idna==3.7
 imageio-ffmpeg==0.4.7
 imageio==2.23.0
 importlib-metadata==4.13.0
