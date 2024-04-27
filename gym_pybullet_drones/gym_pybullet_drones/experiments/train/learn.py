@@ -21,8 +21,6 @@ import argparse
 import gym
 
 # import different environments
-#from gym_pybullet_drones.envs.single_agent_rl.FlyThruGateAviary import FlyThruGateAviary
-#from gym_pybullet_drones.envs.single_agent_rl.HoverAviary import HoverAviary
 from gym_pybullet_drones.utils.enums import DroneModel, Physics
 
 import numpy as np

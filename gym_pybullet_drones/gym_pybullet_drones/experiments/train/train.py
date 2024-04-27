@@ -22,16 +22,23 @@ import argparse
 import gymnasium as gym
 import numpy as np
 import torch
+
+# import stable-baselines3
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnRewardThreshold
 from stable_baselines3.common.evaluation import evaluate_policy
 
+# import drone envs
+from gym_pybullet_drones.utils.utils import sync, str2bool
 from gym_pybullet_drones.utils.Logger import Logger
 from gym_pybullet_drones.envs.HoverAviary import HoverAviary
 from gym_pybullet_drones.envs.MultiHoverAviary import MultiHoverAviary
-from gym_pybullet_drones.utils.utils import sync, str2bool
 from gym_pybullet_drones.utils.enums import ObservationType, ActionType
+
+# import own a2c ppo modules
+import gym_pybullet_drones.experiments.ppo.ppo_v2 as ppo
+from gym_pybullet_drones.experiments.ppo.ppo_v2 import A2CPPOTrainer
 
 DEFAULT_GUI = True
 DEFAULT_RECORD_VIDEO = False
