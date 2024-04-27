@@ -99,18 +99,18 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The design of a control system for an agile mobile robot in the continuous domain is a central question in robotics. This project specifically addresses the challenge of autonomous drone flight. Reinforcement learning (RL) is utilized as it can directly optimize a task-level objective and leverage domain randomization to handle model uncertainty, enabling the discovery of more robust control responses.
+The design of a control system for an agile mobile robot in the continuous domain is a central question in robotics. This project specifically addresses the challenge of autonomous drone flight. Model-free reinforcement learning (RL) is utilized as it can directly optimize a task-level objective and leverage domain randomization to handle model uncertainty, enabling the discovery of more robust control responses. The task analyzed in the following is a single agent stabilization task.
 
 ### Training Result
 
-The following displays a training result where the model has learned to control the four rotors to overcome simulated gravity forces by the physics engine and go into steady flight.
+The following shows a training result where the agent has learned to control the four independent rotors to overcome simulated physical forces (e.g. gravity) by the Bullet physics engine, stabilize and go into steady flight.
 
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
     <img src="images/gifs/drone-flight-takeoff.gif" alt="Logo" width="400" height="320">
   </a>
   <br>
-<small>Fig. 1: Illustration of the drone's steady flight during inference.</small>
+<small>Fig. 1: Rendering of a <code>gym-pybullet-drones</code> stable flight with a Crazyflie 2.x during inference.</small>
 </div>
 
 #### PPO Actor-Critic Architecture
@@ -148,7 +148,7 @@ The observation space is defined through the quadrotor state, which includes the
 
 #### Reward Function
 
-The reward function is defined as follows:
+The reward function defines the problem specification as follows:
 
 $$
 \text{Reward} =
@@ -185,7 +185,7 @@ The environment is a custom OpenAI Gym environment built using PyBullet for mult
 
 ### Built With
 
-The project was developed using Python and the PyTorch machine learning framework. To simulate the quadrotor's environment, the PyBullet physics engine is leveraged. Further, to streamline the development process and avoid potential issues, the pre-built PyBullet drone implementation provided by the [gym-pybullet-drones library](https://github.com/utiasDSL/gym-pybullet-drones) is utilized.
+The project was developed using Python and the PyTorch machine learning framework. To simulate the quadrotor's environment, the Bullet physics engine is leveraged. Further, to streamline the development process and avoid potential issues, the pre-built PyBullet drone implementation provided by the [gym-pybullet-drones library](https://github.com/utiasDSL/gym-pybullet-drones) is utilized.
 
 
 Programming Languages-Frameworks-Tools<br /><br />

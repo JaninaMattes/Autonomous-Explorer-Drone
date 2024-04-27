@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 331, in <module>
-    test(args.model_path, env, in_dim=obs_dim, out_dim=act_dim, n_steps=1000, device=device)
-  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 164, in test
-    for ep_num, (ep_lengths, ep_returns, frames) in enumerate(simulate_rollout(policy_net, env, log_video)):
-  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 118, in simulate_rollout
-    t += 1
-UnboundLocalError: local variable 't' referenced before assignment
-INFO:root:Evaluation model...

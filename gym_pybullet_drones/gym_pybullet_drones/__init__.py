@@ -45,6 +45,10 @@ register(
 
 
 
+register(
+    id='multihover-aviary-v0',
+    entry_point='gym_pybullet_drones.envs.multi_agent_rl:MultiHoverAviary',
+)
 
 register(
     id='flock-aviary-v0',

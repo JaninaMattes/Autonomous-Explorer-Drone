@@ -1,0 +1,41 @@
+{
+    "os": "macOS-13.0.1-arm64-arm-64bit",
+    "python": "3.10.8",
+    "heartbeatAt": "2023-01-15T21:40:32.931382",
+    "startedAt": "2023-01-15T21:40:32.231765",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--exp-name",
+        "exp_Pendulum-v1_20230115-195821",
+        "--model-path",
+        "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/log/exp_Pendulum-v1_20230115-195821/models/Pendulum-v1_policyNet.pth",
+        "--project-name",
+        "OpenAIGym-PPO"
+    ],
+    "state": "running",
+    "program": "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py",
+    "codePath": "PPO/ppo_torch/test.py",
+    "git": {
+        "remote": "git@github.com:bkunters/ml-explorer-drone.git",
+        "commit": "6e5d49ff3305f08ea54e278ff40ae335bf146fb2"
+    },
+    "email": "janina.alica.mattes@gmail.com",
+    "root": "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone",
+    "host": "Janinas-MacBook-Pro.local",
+    "username": "janinaalicamattes",
+    "executable": "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "total": 460.4317207336426,
+        "used": 10.886878967285156
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

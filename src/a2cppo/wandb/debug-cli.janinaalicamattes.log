@@ -1,0 +1,70 @@
+2023-01-01 23:21:26 ERROR dropped chunk 404 Client Error: Not Found for url: https://api.wandb.ai/files/drone-mechanics/drone-mechanics-ppo-OpenAIGym/1z37i5dr/file_stream
+NoneType: None
+2023-01-01 23:21:41 ERROR dropped chunk 404 Client Error: Not Found for url: https://api.wandb.ai/files/drone-mechanics/drone-mechanics-ppo-OpenAIGym/1z37i5dr/file_stream
+NoneType: None
+2023-01-03 14:41:03 ERROR dropped chunk 404 Client Error: Not Found for url: https://api.wandb.ai/files/drone-mechanics/drone-mechanics-ppo-OpenAIGym/13kmn3sx/file_stream
+NoneType: None
+2023-01-03 17:35:49 INFO Running runs: []
+2023-01-03 17:35:49 INFO Agent received command: run
+2023-01-03 17:35:49 INFO Agent starting run with config:
+	adam_epsilon: 3.7851429558803138e-06
+	epsilon: 0.19737840176544583
+	gamma: 0.9572515099761858
+	learning_rate_p: 0.05385304196322772
+	learning_rate_v: 0.0924940908036145
+2023-01-03 17:35:49 INFO About to run command: /usr/bin/env python PPO/ppo_torch/ppo_discrete.py --adam_epsilon=3.7851429558803138e-06 --epsilon=0.19737840176544583 --gamma=0.9572515099761858 --learning_rate_p=0.05385304196322772 --learning_rate_v=0.0924940908036145
+2023-01-03 17:35:54 INFO Running runs: ['o6lfjqbx']
+2023-01-03 17:35:54 INFO Cleaning up finished run: o6lfjqbx
+2023-01-03 17:35:55 INFO Agent received command: run
+2023-01-03 17:35:55 INFO Agent starting run with config:
+	adam_epsilon: 3.1010414673804726e-06
+	epsilon: 0.3076535182586456
+	gamma: 0.9698050519469014
+	learning_rate_p: 0.07413387696735188
+	learning_rate_v: 0.0382895597296143
+2023-01-03 17:35:55 INFO About to run command: /usr/bin/env python PPO/ppo_torch/ppo_discrete.py --adam_epsilon=3.1010414673804726e-06 --epsilon=0.3076535182586456 --gamma=0.9698050519469014 --learning_rate_p=0.07413387696735188 --learning_rate_v=0.0382895597296143
+2023-01-03 17:36:00 INFO Running runs: ['nbl8xuab']
+2023-01-03 17:36:00 INFO Cleaning up finished run: nbl8xuab
+2023-01-03 17:36:00 INFO Agent received command: run
+2023-01-03 17:36:00 INFO Agent starting run with config:
+	adam_epsilon: 6.3181912095773585e-06
+	epsilon: 0.30094296500150913
+	gamma: 0.9723199063293037
+	learning_rate_p: 0.009083403673372391
+	learning_rate_v: 0.0774450140117689
+2023-01-03 17:36:00 INFO About to run command: /usr/bin/env python PPO/ppo_torch/ppo_discrete.py --adam_epsilon=6.3181912095773585e-06 --epsilon=0.30094296500150913 --gamma=0.9723199063293037 --learning_rate_p=0.009083403673372391 --learning_rate_v=0.0774450140117689
+2023-01-03 17:36:05 INFO Running runs: ['of4wy1mz']
+2023-01-03 17:36:05 ERROR Detected 3 failed runs in the first 60 seconds, shutting down.
+2023-01-03 17:36:05 INFO To disable this check set WANDB_AGENT_DISABLE_FLAPPING=true
+2023-01-03 17:40:01 INFO Running runs: []
+2023-01-03 17:40:01 INFO Agent received command: run
+2023-01-03 17:40:01 INFO Agent starting run with config:
+	adam_epsilon: 9.38668081175875e-06
+	epsilon: 0.37340729539306894
+	gamma: 0.9644192455817692
+	learning_rate_p: 0.06001969115129052
+	learning_rate_v: 0.08647376042186991
+2023-01-03 17:40:01 INFO About to run command: /usr/bin/env python  --adam_epsilon=9.38668081175875e-06 --epsilon=0.37340729539306894 --gamma=0.9644192455817692 --learning_rate_p=0.06001969115129052 --learning_rate_v=0.08647376042186991
+2023-01-03 17:40:06 INFO Running runs: ['lv07yjan']
+2023-01-03 17:40:06 INFO Cleaning up finished run: lv07yjan
+2023-01-03 17:40:07 INFO Agent received command: run
+2023-01-03 17:40:07 INFO Agent starting run with config:
+	adam_epsilon: 6.610390445466327e-06
+	epsilon: 0.3470250123531488
+	gamma: 0.9596687592762226
+	learning_rate_p: 0.05656387810796428
+	learning_rate_v: 0.0142694664043068
+2023-01-03 17:40:07 INFO About to run command: /usr/bin/env python  --adam_epsilon=6.610390445466327e-06 --epsilon=0.3470250123531488 --gamma=0.9596687592762226 --learning_rate_p=0.05656387810796428 --learning_rate_v=0.0142694664043068
+2023-01-03 17:40:12 INFO Running runs: ['maoyal1z']
+2023-01-03 17:40:12 INFO Cleaning up finished run: maoyal1z
+2023-01-03 17:40:12 INFO Agent received command: run
+2023-01-03 17:40:12 INFO Agent starting run with config:
+	adam_epsilon: 1.777523243403924e-06
+	epsilon: 0.2005429816005053
+	gamma: 0.9834304229069658
+	learning_rate_p: 0.09672140316381636
+	learning_rate_v: 0.015750294335391667
+2023-01-03 17:40:12 INFO About to run command: /usr/bin/env python  --adam_epsilon=1.777523243403924e-06 --epsilon=0.2005429816005053 --gamma=0.9834304229069658 --learning_rate_p=0.09672140316381636 --learning_rate_v=0.015750294335391667
+2023-01-03 17:40:17 INFO Running runs: ['qt9rooxm']
+2023-01-03 17:40:17 ERROR Detected 3 failed runs in the first 60 seconds, shutting down.
+2023-01-03 17:40:17 INFO To disable this check set WANDB_AGENT_DISABLE_FLAPPING=true

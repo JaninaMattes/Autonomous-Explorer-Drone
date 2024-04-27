@@ -1,0 +1,12 @@
+wandb_version: 1
+
+adam_epsilon:
+  value: 6.610390445466327e-06
+epsilon:
+  value: 0.3470250123531488
+gamma:
+  value: 0.9596687592762226
+learning_rate_p:
+  value: 0.05656387810796428
+learning_rate_v:
+  value: 0.0142694664043068

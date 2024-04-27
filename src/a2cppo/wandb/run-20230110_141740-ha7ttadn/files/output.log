@@ -1,0 +1,12 @@
+INFO:root:Training model...
+INFO:root:Collecting batch trajectories...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 942, in <module>
+    train(env,
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 798, in train
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 542, in learn
+    advantages, cum_returns = self.advantage_estimate(rewards, values)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 290, in advantage_estimate
+    advantage = rewards[i] - values[i]
+NameError: name 'i' is not defined

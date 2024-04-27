@@ -10,6 +10,7 @@ class TakeoffAviary(BaseSingleAgentAviary):
 
     def __init__(self,
                  drone_model: DroneModel=DroneModel.CF2X,
+                 target_y_pos: float=2.0,
                  initial_xyzs=None,
                  initial_rpys=None,
                  physics: Physics=Physics.PYB,
@@ -59,8 +60,59 @@ class TakeoffAviary(BaseSingleAgentAviary):
                          obs=obs,
                          act=act
                          )
+        
+        self.target_y_pos = target_y_pos
 
     ################################################################################
+    
+    def _punishCrash(self):
+        """Punishes a drone for crashing.
+
+        Returns
+        -------
+        float
+            The punishment value.
+
+        """
+        return -100
+    
+    def _enforceTakeoff(self, state):
+        """Enforces a takeoff policy.
+
+        Returns
+        -------
+        float
+            The takeoff enforcement value.
+
+        """
+        if not state:
+            state = self._getDroneStateVector(0)
+
+        if state[2] < 0.02:
+            return -5
+        else:
+            return -1 / (10*state[2])
+
+    def _penalizeTargetHightDeviation(self, state):
+        """Penalizes a drone for deviating from the target height.
+
+        Returns
+        -------
+        float
+            The penalty value.
+
+        """
+
+        if not state:
+            state = self._getDroneStateVector(0)
+
+        # Sigmoid function to create an S-shaped curve
+        sigmoid_term = 1 / (1 + np.exp(-5 * (state[2] - self.target_y_pos)))
+
+        # Penalize deviations from the target height
+        height_penalty = -(state[2] - self.target_y_pos)**2
+
+        return sigmoid_term + height_penalty
     
     def _computeReward(self):
         """Computes the current reward value.
@@ -73,10 +125,7 @@ class TakeoffAviary(BaseSingleAgentAviary):
         """
         state = self._getDroneStateVector(0)
         # return state[2]/10.  # Alternative reward space, see PR #32
-        if state[2] < 0.02:
-            return -5
-        else:
-            return -1 / (10*state[2])
+        return self._penalizeTargetHightDeviation(state)
 
     ################################################################################
     

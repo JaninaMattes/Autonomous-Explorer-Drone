@@ -1,0 +1,14 @@
+INFO:root:Training model...
+INFO:root:Collecting batch trajectories...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 935, in <module>
+    train(env,
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 792, in train
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 536, in learn
+    advantages, cum_returns = self.advantage_estimate(rewards, values)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 287, in advantage_estimate
+    advantages = torch.tensor(np.array(advantages), dtype=torch.float)
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/torch/_tensor.py", line 956, in __array__
+    return self.numpy()
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
