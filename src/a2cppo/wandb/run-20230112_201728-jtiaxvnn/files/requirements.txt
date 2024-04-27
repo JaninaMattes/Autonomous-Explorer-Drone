@@ -55,7 +55,7 @@ pandas==1.5.2
 pathtools==0.1.2
 pbr==5.11.0
 pillow==9.3.0
-pip==22.3.1
+pip==23.3
 platformdirs==2.6.0
 prettytable==3.5.0
 promise==2.3
