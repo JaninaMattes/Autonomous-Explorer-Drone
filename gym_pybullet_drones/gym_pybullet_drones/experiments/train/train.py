@@ -6,13 +6,14 @@ Example
 -------
 In a terminal, run as:
 
-    $ python learn.py --multiagent false
-    $ python learn.py --multiagent true
+    $ python train.py --multiagent false
+    $ python train.py --multiagent true
 
 Notes
 -----
-This is a minimal working example integrating `gym-pybullet-drones` with 
-reinforcement learning library `stable-baselines3`.
+This is working example integrates `gym-pybullet-drones` with 
+reinforcement learning library `stable-baselines3` as well as 
+the customly written A2C PPO algorithm.
 
 """
 import os
@@ -32,8 +33,8 @@ from stable_baselines3.common.evaluation import evaluate_policy
 # import drone envs
 from gym_pybullet_drones.utils.utils import sync, str2bool
 from gym_pybullet_drones.utils.Logger import Logger
-from gym_pybullet_drones.envs.HoverAviary import HoverAviary
-from gym_pybullet_drones.envs.MultiHoverAviary import MultiHoverAviary
+from gym_pybullet_drones.envs.single_agent_rl.HoverAviary import HoverAviary
+from gym_pybullet_drones.envs.multi_agent_rl.MultiHoverAviary import MultiHoverAviary
 from gym_pybullet_drones.utils.enums import ObservationType, ActionType
 
 # import own a2c ppo modules
@@ -45,12 +46,14 @@ DEFAULT_RECORD_VIDEO = False
 DEFAULT_OUTPUT_FOLDER = 'results'
 DEFAULT_COLAB = False
 
+DEFAULT_ALGO = 'ppo_sb3' # 'ppo_sb3' or 'ppo_v2'
 DEFAULT_OBS = ObservationType('kin') # 'kin' or 'rgb'
 DEFAULT_ACT = ActionType('one_d_rpm') # 'rpm' or 'pid' or 'vel' or 'one_d_rpm' or 'one_d_pid'
 DEFAULT_AGENTS = 2
 DEFAULT_MA = False
 
-def run(multiagent=DEFAULT_MA, output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI, plot=True, colab=DEFAULT_COLAB, record_video=DEFAULT_RECORD_VIDEO, local=True):
+
+def run(multiagent=DEFAULT_MA, algo=DEFAULT_ALGO, output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI, plot=True, colab=DEFAULT_COLAB, record_video=DEFAULT_RECORD_VIDEO, local=True):
 
     filename = os.path.join(output_folder, 'save-'+datetime.now().strftime("%m.%d.%Y_%H.%M.%S"))
     if not os.path.exists(filename):
@@ -76,10 +79,31 @@ def run(multiagent=DEFAULT_MA, output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_
     print('[INFO] Observation space:', train_env.observation_space)
 
     #### Train the model #######################################
-    model = PPO('MlpPolicy',
-                train_env,
-                # tensorboard_log=filename+'/tb/',
-                verbose=1)
+    if algo == 'ppo_sb3':
+        model = PPO('MlpPolicy',
+                    train_env,
+                    tensorboard_log=filename+'/tb/',
+                    verbose=1)
+
+    elif algo == 'ppo_v2':
+        # custom implementation of ppo-v2
+        # create PPOTrainer
+        trainer = A2CPPOTrainer(
+                    train_env,
+                    total_training_steps=train_steps, # shorter just for testing
+                    n_optepochs=64,
+                    epsilon=0.22,
+                    gae_lambda=0.95,
+                    gamma=0.99,
+                    adam_eps=1e-7,
+                    seed=seed) 
+        # train PPO
+        agent = trainer.create_ppo()
+        agent.learn()
+        # get trained policy
+        policy = trainer.get_policy()
+        # cleanup
+        trainer.shutdown()
 
     #### Target cumulative rewards (problem-dependent) ##########
     if DEFAULT_ACT == ActionType.ONE_D_RPM:
@@ -120,6 +144,7 @@ def run(multiagent=DEFAULT_MA, output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_
 
     # if os.path.isfile(filename+'/final_model.zip'):
     #     path = filename+'/final_model.zip'
+
     if os.path.isfile(filename+'/best_model.zip'):
         path = filename+'/best_model.zip'
     else:
@@ -201,6 +226,7 @@ if __name__ == '__main__':
     parser.add_argument('--gui',                default=DEFAULT_GUI,           type=str2bool,      help='Whether to use PyBullet GUI (default: True)', metavar='')
     parser.add_argument('--record_video',       default=DEFAULT_RECORD_VIDEO,  type=str2bool,      help='Whether to record a video (default: False)', metavar='')
     parser.add_argument('--output_folder',      default=DEFAULT_OUTPUT_FOLDER, type=str,           help='Folder where to save logs (default: "results")', metavar='')
+    parser.add_argument('--algo',               default=DEFAULT_ALGO,          type=str,           help='Select an algorithm to be used, either custom ppo or stable-baseline3 (ppo_v2, ppo_sb3)')
     parser.add_argument('--colab',              default=DEFAULT_COLAB,         type=bool,          help='Whether example is being run by a notebook (default: "False")', metavar='')
     ARGS = parser.parse_args()
 
