@@ -105,6 +105,14 @@ The design of a control system for an agile mobile robot in the continuous domai
 The ```gym-pybullet-drones``` environment is based on the ```Crazyflie 2.x``` nanoquadcopter. It implements the
  ```OpenAI gym``` API for single or multi-agent reinforcement learning (MARL).
 
+ <div align="center">
+  <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
+    <img src="img/drone/drone_config.png" alt="Logo" width="400" height="320">
+  </a>
+  <br>
+<small>Fig. 1: The three types of <code>gym-pybullet-drones</code> models, as well as the forces and torques acting on each vehicle.</small>
+</div>
+
 ### Training Result
 
 The following shows a training result where the agent has learned to control the four independent rotors to overcome simulated physical forces (e.g. gravity) by the Bullet physics engine, stabilize and go into steady flight.
@@ -114,7 +122,7 @@ The following shows a training result where the agent has learned to control the
     <img src="img/gifs/drone-flight-takeoff.gif" alt="Logo" width="400" height="320">
   </a>
   <br>
-<small>Fig. 1: Rendering of a <code>gym-pybullet-drones</code> stable flight with a Crazyflie 2.x during inference.</small>
+<small>Fig. 2: Rendering of a <code>gym-pybullet-drones</code> stable flight with a Crazyflie 2.x during inference.</small>
 </div>
 
 #### PPO Actor-Critic Architecture
@@ -124,7 +132,7 @@ In this project the policy gradient method is used for training with a custom im
 <div align="center">
   <img src="img/architecture/architecture.png" alt="Logo" width="500">
   <br>
-  <small>Fig. 2: Overview of the Actor-Critic Proximal Policy Optimisation Algorithm process</small>
+  <small>Fig. 3: Overview of the Actor-Critic Proximal Policy Optimisation Algorithm process</small>
 </div>
 </br>
 
@@ -178,7 +186,7 @@ The environment is a custom OpenAI Gym environment built using PyBullet for mult
     <img src="img/pybullet.png" alt="Logo" width="450" height="">
   </a>
   </br>
-  <small>Fig. 3: 3D simulation of the drone's orientation in the x, y, and z axes.</small>
+  <small>Fig. 4: 3D simulation of the drone's orientation in the x, y, and z axes.</small>
 </div>
 
 #### PID Controller
