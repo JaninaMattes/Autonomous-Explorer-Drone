@@ -47,9 +47,9 @@ CURR_TIME = datetime.now().strftime("%Y%m%d-%H%M%S")
 # config logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-####################
-####################
 
+########################################
+########################################
 
 class Net(nn.Module):
     def __init__(self) -> None:
@@ -81,7 +81,6 @@ class ValueNet(Net):
         """
         # return 0.5 * ((returns - values)**2).mean() # MSE loss
         return nn.MSELoss()(values, returns)
-
 
 class PolicyNet(Net):
     """Setup Policy Network (Actor)"""
@@ -121,14 +120,14 @@ class PolicyNet(Net):
         return policy_loss.mean()  # return mean
 
 
-####################
-####################
+########################################
+########################################
 
 class PPO_PolicyGradient:
     """ Proximal Policy Optimization algorithm (PPO) (clip version)
 
-        Paper: https://arxiv.org/abs/1707.06347
-        Stable Baseline: https://github.com/hill-a/stable-baselines
+        Paper:              https://arxiv.org/abs/1707.06347
+        Stable Baseline:    https://github.com/hill-a/stable-baselines
 
         Proximal Policy Optimization (PPO) is an online policy gradient method.
         As an online policy method it updates the policy and then discards the experience (no replay buffer).
@@ -795,8 +794,8 @@ class PPO_PolicyGradient:
         logging.info('\n')
 
 
-####################
-####################
+########################################
+########################################
 
 def arg_parser():
     parser = argparse.ArgumentParser()
@@ -864,8 +863,8 @@ def register_env(id:str, entry_point:str):
     entry_point=entry_point,
 )
 
-####################
-####################
+########################################
+########################################
 
 class A2CPPOTrainer:
 
@@ -1058,14 +1057,16 @@ class A2CPPOTrainer:
         return policy_net
 
 
+########################################
+########################################
+
 class PPOTuner:
     """ Class to tune PPO hyperparameter """
-    def __init__(self) -> None:
-        pass
-
-    def hyperparam_tuning(self):
-        # TODO: Open task tune hyperparameters
-        param_dict = {
+    def __init__(self, param_dict=None) -> None:
+        if param_dict:
+            self.param_dict = param_dict
+        else:
+            self.param_dict = {
                 'learning rate (policy net)': [1e-5, 1e-4, 1e-3, 1e-2],
                 'learning rate (value net)': [1e-5, 1e-4, 1e-3, 1e-2],
                 'gamma (discount)': [0.95, 0.96, 0.97, 0.98, 0.99],
@@ -1075,4 +1076,9 @@ class PPOTuner:
                 'number of epochs for update': [8, 16, 32, 64, 128, 256],
                 'max sampled trajectories': [32, 64, 128, 256, 512, 1024, 2048, 4096]
         }
+
+
+    def hyperparam_tuning(self):
+        # TODO: Open task tune hyperparameters
+        pass
 
