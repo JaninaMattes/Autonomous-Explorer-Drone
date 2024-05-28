@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 1128, in <module>
-    train(env,
-TypeError: train() got an unexpected keyword argument 'render_video'
-INFO:root:Training model...

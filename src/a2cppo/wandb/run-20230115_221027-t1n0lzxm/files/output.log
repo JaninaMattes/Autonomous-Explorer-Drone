@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 313, in <module>
-    test(args.model_path, env, in_dim=obs_dim, out_dim=act_dim, steps=10_000, device=device)
-TypeError: test() got an unexpected keyword argument 'steps'
