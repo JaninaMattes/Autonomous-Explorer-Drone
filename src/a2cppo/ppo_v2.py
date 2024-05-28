@@ -1,5 +1,6 @@
 from collections import deque
 import time
+from typing import Tuple
 import torch
 from torch import nn
 from torch.optim import Adam, SGD
@@ -28,13 +29,32 @@ from wrapper.stats_logger import CSVWriter
 
 
 class PPO_PolicyGradient_V2:
-    """ Proximal Policy Optimization (PPO) is an online policy gradient method.
-        As an online policy method it updates the policy and then discards the experience (no replay buffer).
-        Thus the agent does well in environments with dense reward signals.
-        The clipped objective function in PPO allows to keep the policy close to the policy 
-        that was used to sample the data resulting in a more stable training. 
     """
-    # Further reading
+    Proximal Policy Optimization (PPO) is an on-policy, actor-critic reinforcement learning algorithm that
+    uses a clipped objective function to stabilize training and prevent large policy updates.
+    PPO is an online policy gradient method that updates the policy and then discards the experience.
+    This makes PPO well-suited for environments with dense reward signals, where the agent can learn
+    effectively from a single trajectory.
+
+        The clipped objective function in PPO is defined as:
+
+        L_clip(θ) = E[ min(r(θ) * A, clip(r(θ), 1-ε, 1+ε) * A) ]
+
+        where r(θ) is the ratio of the new policy to the old policy, A is the advantage function, and ε is
+        a hyperparameter that controls the amount of clipping.
+
+    The clipped objective function is a compromise between the policy gradient and the trust region method.
+    The trust region method uses a KL divergence to prevent large policy updates, but it can be computationally
+    expensive and difficult to tune. The clipped objective function is a more stable and efficient alternative
+    to the trust region method.
+
+    In this implementation, we use a value function estimator (VFE) to estimate the advantage function, and
+    we use stochastic gradient descent (SGD) to optimize the clipped objective function. We also use a
+    rolling horizon of fixed length to store the most recent trajectories, and we use mini-batches to
+    improve the efficiency of the SGD updates.
+    """
+
+    # Further reading for deeper understanding:
     # PPO experiments: https://nn.labml.ai/rl/ppo/experiment.html
     #                  https://nn.labml.ai/rl/ppo/index.html
     # PPO explained:   https://huggingface.co/blog/deep-rl-ppo
@@ -124,26 +144,56 @@ class PPO_PolicyGradient_V2:
             self.policy_net_optim = SGD(self.policy_net.parameters(), lr=self.lr_p, momentum=self.momentum)
             self.value_net_optim = SGD(self.value_net.parameters(), lr=self.lr_v, momentum=self.momentum)
 
-    def get_continuous_policy(self, obs):
-        """Make function to compute action distribution in continuous action space.
-              - Multivariate Normal Distribution: https://pytorch.org/docs/stable/generated/torch.distributions.MultivariateNormal.html
-                Fixes the detection of outliers, allows to capture correlation between features
-              - Log Prob Normal Distribution https://discuss.pytorch.org/t/understanding-log-prob-for-normal-distribution-in-pytorch/73809
-                (1) We use normal distribution for continuous space
+    def get_continuous_policy(self, obs: torch.Tensor) -> torch.distributions.Distribution:
         """
-        action_prob = self.policy_net(obs)                       # query Policy Network (Actor) for mean action
-        cov_matrix = torch.diag(torch.full(size=(self.out_dim,), fill_value=0.5))
-        return MultivariateNormal(action_prob, covariance_matrix=cov_matrix)
+        Compute the action distribution in a continuous action space.
 
-    def get_action(self, dist):
-        """Make action selection function (outputs actions, sampled from policy)."""
-        action = dist.sample()
-        log_prob = dist.log_prob(action)
-        entropy = dist.entropy()
+        This method uses a multivariate normal distribution to model the action distribution,
+        with the mean action predicted by the policy network (actor) and a fixed diagonal covariance
+        matrix. The use of a multivariate normal distribution allows us to capture correlations
+        between features and to detect outliers more effectively.
+
+        Args:
+            obs (torch.Tensor): The observation tensor, with shape (batch_size, num_features).
+
+        Returns:
+            torch.distributions.Distribution: The action distribution, with shape (batch_size, num_actions).
+        """
+        action_mean = self.policy_net(obs)  # query the policy network (actor) for the mean action
+        action_stddev = torch.full(size=(self.out_dim,), fill_value=0.5)  # fixed standard deviation for each action
+        cov_matrix = torch.diag(action_stddev)  # fixed diagonal covariance matrix
+        return torch.distributions.MultivariateNormal(loc=action_mean, covariance_matrix=cov_matrix)
+
+    def get_action(self, dist: torch.distributions.Distribution) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """
+        Sample an action from the action distribution and compute its log probability and entropy.
+
+        This method uses the action distribution computed by the `get_continuous_policy` method to
+        sample an action and to compute its log probability and entropy. The log probability and entropy
+        are used to compute the policy gradient and the entropy bonus, respectively.
+
+        Args:
+            dist (torch.distributions.Distribution): The action distribution, with shape (batch_size, num_actions).
+
+        Returns:
+            Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: A tuple of three tensors, containing the sampled action,
+            its log probability, and its entropy, respectively.
+        """
+        action = dist.sample()  # sample an action from the action distribution
+        log_prob = dist.log_prob(action)  # compute the log probability of the sampled action
+        entropy = dist.entropy()  # compute the entropy of the action distribution
         return action, log_prob, entropy
     
     def get_values(self, obs, actions):
-        """Make value selection function (outputs values for obs in a batch)."""
+        """Make value selection function (outputs values for obs in a batch).
+            - obs: observation
+            - actions: actions
+
+            Returns:
+                - values: value estimates
+                - log_prob: log probability of action
+                - entropy: entropy of action
+        """
         values = self.value_net(obs).squeeze()
         dist = self.get_continuous_policy(obs)
         log_prob = dist.log_prob(actions)
@@ -151,19 +201,46 @@ class PPO_PolicyGradient_V2:
         return values, log_prob, entropy
 
     def get_value(self, obs):
+        """Get value estimate for observation.
+            - obs: observation
+
+            Returns:
+                - value estimate
+        """
         return self.value_net(obs).squeeze()
 
     def step(self, obs):
-        """ Given an observation, get action and probabilities from policy network (actor)"""
+        """ Given an observation, get action and probabilities from policy network (actor)
+            - obs: observation
+
+            Returns:
+                - action: action
+                - log_prob: log probability of action
+                - entropy: entropy of action
+        """
         action_dist = self.get_continuous_policy(obs) 
         action, log_prob, entropy = self.get_action(action_dist)
         return action.detach().numpy(), log_prob.detach().numpy(), entropy.detach().numpy()
 
+    ################################################################################
+    
     def advantage_estimate(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
         """ Calculating advantage estimate using TD error (Temporal Difference Error).
             TD Error can be used as an estimator for Advantage function,
             - bias-variance: TD has low variance, but IS biased
             - dones: only get reward at end of episode, not disounted next state value
+
+            A(s,a) = r + (gamma * V(s_t+1)) - V(s_t)
+
+            Args:
+            - episode_rewards: rewards per episode
+            - values: value estimates
+            - normalized_adv: normalize advantage
+            - normalized_ret: normalize returns
+
+            Returns:
+                - advantages: advantage estimates
+                - returns: cummulative rewards
         """
         # Step 4: Calculate returns
         advantages = []
@@ -181,8 +258,24 @@ class PPO_PolicyGradient_V2:
             advantages = self.normalize_adv(advantages)
         return advantages, cum_returns
 
+    ################################################################################
+
     def advantage_reinforce(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
         """ Advantage Reinforce A(s_t, a_t) = G(t)
+            The advantage function can be estimated by the total discounted reward G(t).
+            The total discounted reward G(t) is the sum of all rewards from time step t to the end of the episode.
+            The advantage function is the total discounted reward G(t) at time step t.
+            The advantage function can be estimated by the total discounted reward G(t).
+
+            Args:
+            - episode_rewards: rewards per episode
+            - values: value estimates
+            - normalized_adv: normalize advantage
+            - normalized_ret: normalize returns
+
+            Returns:
+                - advantages: advantage estimates
+                - returns: cummulative rewards
         """
         # Returns: https://gongybable.medium.com/reinforcement-learning-introduction-609040c8be36
         # Example Reinforce: https://github.com/pytorch/examples/blob/main/reinforcement_learning/reinforce.py
@@ -208,9 +301,27 @@ class PPO_PolicyGradient_V2:
             advantages = self.normalize_adv(advantages)
         return advantages, cum_returns
 
-    def advantage_actor_critic(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
-        """Advantage Actor-Critic by calculating delta = G(t) - V(s_t)
+    ################################################################################
+
+    def advantage_a2c(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
+        """ Advantage Actor-Critic by calculating delta [G(t) - V(s_t)].
+            The advantage function can be estimated by the TD error.
+
+            A(s,a) = G(t) - V(s_t)
+                    - G(t) is the total disounted reward
+                    - V(s_t) is the value estimate
+
+            Args:
+            - episode_rewards: rewards per episode
+            - values: value estimates
+            - normalized_adv: normalize advantage
+            - normalized_ret: normalize returns
+
+            Returns:
+                - advantages: advantage estimates
+                - returns: cummulative rewards
         """
+
         # Cumulative rewards: https://gongybable.medium.com/reinforcement-learning-introduction-609040c8be36
         # Step 4: Calculate returns
         # G(t) is the total disounted reward
@@ -234,9 +345,24 @@ class PPO_PolicyGradient_V2:
             advantages = self.normalize_adv(advantages)
         return advantages, cum_returns
 
-    def advantage_TD_actor_critic(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
-        """ Advantage TD Actor-Critic A(s,a) = r + (gamma * V(s_t+1)) - V(s_t)
-            TD Error can be used as an estimator for Advantage function
+    ################################################################################
+
+    def advantage_td_a2c(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
+        """ Advantage TD Actor-Critic 
+            The TD Error can be used as an estimator for Advantage function
+
+            A(s,a) = r + (gamma * V(s_t+1)) - V(s_t)
+                    - TD error: A(s,a) = r + (gamma * V(s_t+1)) - V(s_t)
+
+            Args:
+            - episode_rewards: rewards per episode
+            - values: value estimates
+            - normalized_adv: normalize advantage
+            - normalized_ret: normalize returns
+
+            Returns:
+                - advantages: advantage estimates
+                - returns: cummulative rewards
         """
         # Step 4: Calculate returns
         # G(t) is the total disounted reward
@@ -263,12 +389,25 @@ class PPO_PolicyGradient_V2:
             advantages = self.normalize_adv(advantages)
         return advantages, cum_returns
 
-    def generalized_advantage_estimate(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
-        """ The Generalized Advanatage Estimate
-            δ_t = r_t + γ * V(s_t+1) − V(s_t)
-            A_t = δ_t + γ * λ * A(t+1)
+    ################################################################################
+
+    def compute_gae(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
+        """ The Generalized Advanatage Estimate (GAE) is a method to estimate the advantage function.
                 - GAE allows to balance bias and variance through a weighted average of A_t
                 - gamma (dicount factor): allows reduce variance by downweighting rewards that correspond to delayed effects
+
+            GAE: A_t = δ_t + γ * λ * A(t+1)
+                 δ_t = r_t + γ * V(s_t+1) − V(s_t)
+
+            Args:
+            - episode_rewards: rewards per episode
+            - values: value estimates
+            - normalized_adv: normalize advantage
+            - normalized_ret: normalize returns
+
+            Returns:
+                - advantages: advantage estimates
+                - returns: cummulative rewards
         """
         advantages = []
         cum_returns = []#
@@ -302,11 +441,22 @@ class PPO_PolicyGradient_V2:
         return advantages, cum_returns
 
 
-    def generalized_advantage_estimate_2(self, obs, next_obs, episode_rewards, dones, normalized_adv=False, normalized_ret=False):
-        """ Generalized Advantage Estimate calculation
-            - GAE defines advantage as a weighted average of A_t
-            - advantage measures if an action is better or worse than the policy's default behavior
-            - want to find the maximum Advantage representing the benefit of choosing a specific action
+    def compute_gae2(self, obs, next_obs, episode_rewards, dones, normalized_adv=False, normalized_ret=False):
+        """ The Generalized Advantage Estimate calculation. GAE defines advantage as a weighted average of A_t.
+            The advantage measures if an action is better or worse than the policy's default behavior.
+            Goal is to find the maximum Advantage representing the benefit of choosing a specific action.
+
+            Args:
+            - obs: observations
+            - next_obs: next observations
+            - episode_rewards: rewards per episode
+            - dones: done flag
+            - normalized_adv: normalize advantage
+            - normalized_ret: normalize returns
+
+            Returns:
+                - advantages: advantage estimates
+                - returns: cummulative rewards
         """
         # general advantage estimage paper: https://arxiv.org/pdf/1506.02438.pdf
         # general advantage estimage other: https://nn.labml.ai/rl/ppo/gae.html
@@ -341,18 +491,47 @@ class PPO_PolicyGradient_V2:
         returns = torch.tensor(np.array(returns), device=self.device, dtype=torch.float)
         return advantages, returns
 
+    ################################################################################
+
     def normalize_adv(self, advantages):
+        """Normalize advantages to stabilize training
+           - advantages: advantage values
+
+              Returns:
+                - normalized advantages
+        """
         return (advantages - advantages.mean()) / (advantages.std() + 1e-8)
     
     def normalize_ret(self, returns):
+        """Normalize returns to reduce variance and stabilize training
+           - returns: cumulative rewards
+
+                Returns:
+                    - normalized returns  
+        """
         eps = np.finfo(np.float32).eps.item()
         return (returns - returns.mean()) / (returns.std() + eps)
 
     def finish_episode(self):
         pass 
 
+    ################################################################################
+    
     def collect_rollout(self, n_steps=1, render=False):
-        """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)"""
+        """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)
+              - n_steps: number of timesteps to simulate per batch
+              - render: render the gym environment
+
+            Returns:
+                - obs: observations
+                - next_obs: next observations
+                - actions: actions
+                - action_log_probs: log probabilities of actions
+                - dones: done flag
+                - episode_rewards: rewards per episode
+                - episode_lens: length of episodes
+                - episode_time: time elapsed per episode
+        """
         
         t_step, rewards = 0, []
 
@@ -434,44 +613,50 @@ class PPO_PolicyGradient_V2:
     def train(self, values, returns, advantages, batch_log_probs, curr_log_probs, epsilon):
         """Calculate loss and update weights of both networks."""
         logging.info("Updating network parameter...")
-        # loss of the policy network
-        self.policy_net_optim.zero_grad() # reset optimizer
+                                                                # loss of the policy network
+        self.policy_net_optim.zero_grad()                       # reset optimizer
         policy_loss = self.policy_net.loss(advantages, batch_log_probs, curr_log_probs, epsilon)
-        policy_loss.backward() # backpropagation
-        self.policy_net_optim.step() # single optimization step (updates parameter)
-
-        # loss of the value network
-        self.value_net_optim.zero_grad() # reset optimizer
+        policy_loss.backward()                                  # backpropagation
+        self.policy_net_optim.step()                            # single optimization step (updates parameter)
+                                                                # loss of the value network
+        self.value_net_optim.zero_grad()                        # reset optimizer
         value_loss = self.value_net.loss(values, returns)
         value_loss.backward()
         self.value_net_optim.step()
 
         return policy_loss, value_loss
 
-    def learn(self):
+    def learn(self, adv_estimation='td_actor_critic'):
         """"""
+        adv_config = {
+            'reinforce': self.advantage_reinforce,
+            'actor_critic': self.advantage_a2c,
+            'td_actor_critic': self.advantage_td_a2c,
+            'gae': self.compute_gae,
+            'gae2': self.compute_gae2
+        }
+
         training_steps = 0
-        
+        adv_func = adv_config[adv_estimation]                       # select advantage estimation method
+
         while training_steps < self.total_training_steps:
             policy_losses, value_losses = [], []
+                                                                    # Collect data over one episode
+                                                                    # STEP 3: simulate and collect trajectories: the following values are all per batch over one episode
+            obs, next_obs, actions, batch_log_probs, dones, rewards,\
+                ep_lens, ep_time = self.collect_rollout(n_steps=self.n_rollout_steps)                         
+            training_steps += np.sum(ep_lens)                        # timesteps simulated so far for batch collection
 
-            # Collect data over one episode
-            # STEP 3: simulate and collect trajectories --> the following values are all per batch over one episode
-            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time = self.collect_rollout(n_steps=self.n_rollout_steps)
-
-            # timesteps simulated so far for batch collection
-            training_steps += np.sum(ep_lens)
-
-            # STEP 4-5: Calculate cummulated reward and advantage at timestep t_step
-            values, _ , _ = self.get_values(obs, actions)
+                                                                    # STEP 4-5: 
+            values, _ , _ = self.get_values(obs, actions)           # Calculate cummulated rewarde and advantage at timestep t_step
 
             # Select advantage calculation method
+            advantages, cum_returns = adv_func(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+
             # advantages, cum_returns = self.advantage_reinforce(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            # advantages, cum_returns = self.advantage_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            
-            advantages, cum_returns = self.advantage_TD_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            
-            # advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+            # advantages, cum_returns = self.advantage_a2c(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+            # advantages, cum_returns = self.advantage_td_a2c(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+            # advantages, cum_returns = self.compute_gae(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
             
             # update network params 
             for _ in range(self.noptepochs):
@@ -517,13 +702,17 @@ class PPO_PolicyGradient_V2:
         # Finalize and plot stats
         if self.stats_plotter:
             df = self.stats_plotter.read_csv() # read all files in folder
-            self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns', 
-                                                y_min='min episodic returns', y_max='max episodic returns',  
-                                                title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return', 
-                                                color='blue', smoothing=6, wandb=wandb, xlim_up=self.total_training_steps)
-
-            # self.stats_plotter.plot_box(df, x='timestep', y='mean episodic runtime', 
-            #                             title='title', x_label='Timestep', y_label='Mean Episodic Time', wandb=wandb)
+            self.stats_plotter.plot_seaborn_fill(df, x='timestep', 
+                                                 y='mean episodic returns', 
+                                                y_min='min episodic returns', 
+                                                y_max='max episodic returns',  
+                                                title=f'{env_name}', 
+                                                x_label='Timestep', 
+                                                y_label='Mean Episodic Return', 
+                                                color='blue', 
+                                                smoothing=6, 
+                                                wandb=wandb, 
+                                                xlim_up=self.total_training_steps)
 
         # save files in path
         wandb.save(os.path.join(self.exp_path, "*csv"))
