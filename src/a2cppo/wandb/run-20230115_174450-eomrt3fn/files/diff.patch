@@ -1,0 +1,1871 @@
+diff --git a/Dockerfile b/Dockerfile
+index e4f78280..7b49231c 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,16 +1,20 @@
+-FROM python:3.10.8
++FROM python:3.9
+ 
+ RUN apt-get -y update && apt-get -y install ffmpeg
+-# RUN apt-get -y update && apt-get -y install git wget python-dev python3-dev libopenmpi-dev python-pip zlib1g-dev cmake python-opencv
++RUN apt-get -y update && apt-get -y install git wget python-dev python3-dev python-pip zlib1g-dev cmake python-opencv
+ 
+-ENV CODE_DIR /root/code
+-
+-COPY . $CODE_DIR/PPO
+-WORKDIR $CODE_DIR/PPO
++RUN mkdir -p /usr/src/ppo
++WORKDIR /usr/src/ppo
++COPY ./gym_pybullet_drones /usr/src/ppo
+ 
+ # Clean up pycache and pyc files
+ RUN rm -rf __pycache__ && \
+     find . -name "*.pyc" -delete && \
++    pip install --upgrade pip && \
+     pip install torch
+ 
++RUN cd gym-pybullet-drones/  && \
++    pip install -e .
++RUN cd gym-pybullet-drones/gym_pybullet_drones/examples/
++RUN 
+ CMD /bin/bash
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/log/exp_Pendulum-v1_20230115-124033/Pendulum-v1_20230115-124033.csv b/PPO/ppo_torch/log/exp_Pendulum-v1_20230115-124033/Pendulum-v1_20230115-124033.csv
+index 58e8d48e..dfea8f41 100644
+--- a/PPO/ppo_torch/log/exp_Pendulum-v1_20230115-124033/Pendulum-v1_20230115-124033.csv
++++ b/PPO/ppo_torch/log/exp_Pendulum-v1_20230115-124033/Pendulum-v1_20230115-124033.csv
+@@ -918,3 +918,448 @@
+ 0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2017400,0.035959,200.0,11,-1464.43332,-1516.676311,-1322.532755,60.92215
+ 0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2019600,0.038353,200.0,11,-1479.019541,-1539.623282,-1393.305584,42.929881
+ 0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2021800,0.035652,200.0,11,-1489.559875,-1536.869497,-1323.738433,57.643486
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2024000,0.035064,200.0,11,-1482.784876,-1558.012699,-1385.633833,51.860533
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2026200,0.035512,200.0,11,-1485.393206,-1545.532877,-1376.860311,50.769763
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2028400,0.03596,200.0,11,-1456.697216,-1565.188839,-1358.588726,64.310317
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2030600,0.038586,200.0,11,-1479.210441,-1532.915763,-1419.278882,42.569323
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2032800,0.037029,200.0,11,-1483.304073,-1532.608339,-1438.50289,27.135461
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2035000,0.036497,200.0,11,-1452.84425,-1544.737925,-1332.266672,65.598949
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2037200,0.035302,200.0,11,-1468.920164,-1552.367058,-1350.325477,53.778665
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2039400,0.035899,200.0,11,-1478.727482,-1531.102813,-1374.331664,40.414496
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2041600,0.037384,200.0,11,-1480.244599,-1596.833728,-1390.61893,58.550211
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2043800,0.037787,200.0,11,-1474.667139,-1537.557977,-1222.835476,84.320863
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2046000,0.03523,200.0,11,-1475.190036,-1515.481081,-1343.764436,51.460165
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2048200,0.035625,200.0,11,-1485.088483,-1558.948831,-1402.209309,48.600921
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2050400,0.036337,200.0,11,-1433.898791,-1509.854659,-1304.755686,72.220449
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2052600,0.035491,200.0,11,-1495.424756,-1514.786646,-1443.985543,18.480854
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2054800,0.038557,200.0,11,-1447.109354,-1530.31954,-1385.108214,50.032117
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2057000,0.035172,200.0,11,-1459.059822,-1526.067588,-1306.602371,60.796109
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2059200,0.035526,200.0,11,-1457.012116,-1567.169266,-1285.531049,81.789532
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2061400,0.035394,200.0,11,-1453.890596,-1530.354678,-1341.205145,58.823001
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2063600,0.035666,200.0,11,-1470.558789,-1561.158191,-1380.274111,54.006022
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2065800,0.038166,200.0,11,-1448.003759,-1516.460956,-1345.185764,57.776147
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2068000,0.036872,200.0,11,-1488.448461,-1531.073017,-1326.871102,54.1269
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2070200,0.035049,200.0,11,-1470.003578,-1543.482926,-1388.83757,50.734988
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2072400,0.034962,200.0,11,-1438.743694,-1518.828759,-1340.15538,55.477189
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2074600,0.035011,200.0,11,-1467.933184,-1542.203861,-1322.81092,57.783976
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2076800,0.036396,200.0,11,-1451.042504,-1542.242952,-1279.793657,82.766414
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2079000,0.038368,200.0,11,-1459.179089,-1530.798484,-1308.178496,69.663504
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2081200,0.036911,200.0,11,-1474.536953,-1546.255244,-1394.364706,47.340586
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2083400,0.035012,200.0,11,-1455.032927,-1521.001881,-1374.869089,43.885421
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2085600,0.036454,200.0,11,-1475.92011,-1533.720109,-1366.951589,52.186402
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2087800,0.035349,200.0,11,-1448.942667,-1531.96415,-1362.558553,57.750331
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2090000,0.038335,200.0,11,-1477.177988,-1513.474954,-1368.915947,47.133179
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2092200,0.036738,200.0,11,-1456.198026,-1554.50871,-1402.179012,47.260178
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2094400,0.035483,200.0,11,-1446.695485,-1530.574853,-1174.38173,96.761037
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2096600,0.036523,200.0,11,-1427.305382,-1501.087286,-1159.39056,93.782591
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2098800,0.035489,200.0,11,-1458.519733,-1545.942982,-1172.492615,97.940343
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2101000,0.038087,200.0,11,-1474.613172,-1556.291511,-1381.343027,53.410298
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2103200,0.037213,200.0,11,-1474.680043,-1526.387669,-1364.813169,44.992236
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2105400,0.036833,200.0,11,-1475.905645,-1533.936513,-1422.390616,36.153615
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2107600,0.035604,200.0,11,-1449.879639,-1525.370189,-1322.970271,55.295182
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2109800,0.035293,200.0,11,-1483.133461,-1524.113764,-1423.280201,39.963852
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2112000,0.038042,200.0,11,-1447.883436,-1523.158521,-1307.477394,64.854039
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2114200,0.038302,200.0,11,-1442.708164,-1524.983583,-1313.448267,68.276826
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2116400,0.03585,200.0,11,-1469.541051,-1511.507553,-1401.991689,40.35473
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2118600,0.035076,200.0,11,-1481.245519,-1556.622094,-1420.930699,39.795059
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2120800,0.035148,200.0,11,-1478.889139,-1507.373061,-1450.470832,22.713677
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2123000,0.036992,200.0,11,-1464.351395,-1515.170393,-1398.468139,36.711957
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2125200,0.039015,200.0,11,-1460.251098,-1525.645038,-1319.706001,56.86678
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2127400,0.035273,200.0,11,-1472.047117,-1545.658657,-1331.599339,61.828127
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2129600,0.036667,200.0,11,-1468.731061,-1541.330541,-1377.954562,46.901079
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2131800,0.037353,200.0,11,-1441.700832,-1536.105867,-1294.184444,74.354678
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2134000,0.042374,200.0,11,-1448.129998,-1528.042825,-1334.920542,57.755507
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2136200,0.039276,200.0,11,-1489.991452,-1586.776698,-1418.054579,51.092902
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2138400,0.037548,200.0,11,-1476.907375,-1541.113574,-1372.123812,52.848057
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2140600,0.036508,200.0,11,-1459.849552,-1513.405583,-1314.061399,57.001169
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2142800,0.035841,200.0,11,-1480.161235,-1549.86854,-1424.799624,38.826178
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2145000,0.036564,200.0,11,-1465.4041,-1506.474637,-1399.539673,36.720961
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2147200,0.038861,200.0,11,-1457.825053,-1581.309902,-1391.440779,59.675445
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2149400,0.035635,200.0,11,-1468.477758,-1512.793115,-1399.453795,31.518419
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2151600,0.036965,200.0,11,-1463.621526,-1524.004092,-1386.624147,45.203147
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2153800,0.03555,200.0,11,-1494.681701,-1552.897968,-1399.744876,43.720242
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2156000,0.036225,200.0,11,-1462.958896,-1514.457488,-1342.073042,54.060962
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2158200,0.038177,200.0,11,-1442.816139,-1543.234796,-1350.318928,58.085661
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2160400,0.037928,200.0,11,-1473.681908,-1523.66248,-1349.008356,51.199465
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2162600,0.035591,200.0,11,-1467.448952,-1529.028672,-1375.804223,48.489136
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2164800,0.037515,200.0,11,-1462.05933,-1528.81464,-1370.293003,53.877008
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2167000,0.037517,200.0,11,-1477.646834,-1565.053721,-1326.234513,64.917344
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2169200,0.038456,200.0,11,-1474.831442,-1516.480883,-1406.857412,37.795837
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2171400,0.039291,200.0,11,-1478.703512,-1545.064617,-1346.976758,51.68214
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2173600,0.035682,200.0,11,-1473.467902,-1527.641494,-1421.909488,35.857004
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2175800,0.038102,200.0,11,-1459.242714,-1531.425732,-1255.955193,75.963256
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2178000,0.035558,200.0,11,-1453.495127,-1513.952389,-1387.600875,42.616877
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2180200,0.035956,200.0,11,-1486.148845,-1526.410682,-1419.79856,36.539941
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2182400,0.038064,200.0,11,-1460.359155,-1538.751699,-1330.3417,58.848499
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2184600,0.034867,200.0,11,-1478.887644,-1575.283487,-1422.916099,45.649743
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2186800,0.035132,200.0,11,-1465.992984,-1511.453153,-1392.589961,37.111842
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2189000,0.034891,200.0,11,-1455.556145,-1509.1337,-1377.951218,43.814526
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2191200,0.035174,200.0,11,-1456.482502,-1538.572329,-1388.48153,43.660661
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2193400,0.037777,200.0,11,-1462.305484,-1532.996479,-1420.238805,34.558458
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2195600,0.035525,200.0,11,-1451.221683,-1510.524936,-1391.63623,41.71891
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2197800,0.035137,200.0,11,-1455.796268,-1522.746432,-1386.091266,40.181421
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2200000,0.036741,200.0,11,-1473.859081,-1524.147168,-1413.889613,36.289756
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2202200,0.036691,200.0,11,-1453.860902,-1521.971728,-1300.246168,64.421421
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2204400,0.038866,200.0,11,-1460.167973,-1523.789296,-1332.890257,59.873491
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2206600,0.039032,200.0,11,-1467.145182,-1509.106912,-1393.704824,39.860079
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2208800,0.036918,200.0,11,-1441.62136,-1529.677811,-1289.632179,74.925033
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2211000,0.037029,200.0,11,-1449.055174,-1552.939134,-1383.297327,47.185088
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2213200,0.036454,200.0,11,-1448.357204,-1503.821082,-1347.686562,47.584803
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2215400,0.03665,200.0,11,-1467.137256,-1522.271472,-1415.565376,33.390686
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2217600,0.038517,200.0,11,-1464.656474,-1515.517291,-1366.298109,49.113811
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2219800,0.035298,200.0,11,-1468.641333,-1526.901616,-1411.973672,40.767341
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2222000,0.037924,200.0,11,-1463.45968,-1496.653719,-1413.60429,32.582293
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2224200,0.036745,200.0,11,-1444.60057,-1549.842674,-1366.806627,53.341695
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2226400,0.035188,200.0,11,-1476.168039,-1588.934332,-1358.291761,62.273423
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2228600,0.038698,200.0,11,-1454.441668,-1515.760332,-1317.967926,61.232244
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2230800,0.035909,200.0,11,-1448.468404,-1540.769496,-1338.201835,63.653065
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2233000,0.038039,200.0,11,-1442.91628,-1500.892288,-1340.50127,47.918134
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2235200,0.04099,200.0,11,-1463.344583,-1524.855931,-1394.239915,43.458355
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2237400,0.03712,200.0,11,-1435.259046,-1489.661988,-1352.490974,34.870929
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2239600,0.040165,200.0,11,-1455.605088,-1524.518746,-1325.792329,52.831612
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2241800,0.038238,200.0,11,-1467.406129,-1519.493681,-1327.326686,54.249585
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2244000,0.038097,200.0,11,-1456.155722,-1540.298607,-1309.758765,67.138249
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2246200,0.036832,200.0,11,-1471.040803,-1529.329407,-1348.521247,52.325012
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2248400,0.035466,200.0,11,-1446.62502,-1509.337051,-1389.21512,44.396334
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2250600,0.038692,200.0,11,-1473.981587,-1529.566565,-1348.914013,58.693388
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2252800,0.036584,200.0,11,-1474.62475,-1521.416875,-1384.95842,44.943228
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2255000,0.035524,200.0,11,-1442.040706,-1531.346114,-1264.937872,78.953393
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2257200,0.037321,200.0,11,-1419.743212,-1507.540072,-1297.236492,74.272678
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2259400,0.036691,200.0,11,-1477.40248,-1592.579474,-1388.416568,54.1591
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2261600,0.037992,200.0,11,-1466.120065,-1525.795313,-1377.029377,50.028078
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2263800,0.038952,200.0,11,-1456.067972,-1538.407383,-1391.246023,43.755999
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2266000,0.035891,200.0,11,-1466.024052,-1535.291511,-1383.320236,44.232073
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2268200,0.036438,200.0,11,-1472.08012,-1521.678509,-1345.302545,54.945577
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2270400,0.036233,200.0,11,-1435.476919,-1535.993413,-1322.575364,67.371989
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2272600,0.036585,200.0,11,-1449.246853,-1503.337361,-1340.198513,54.540771
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2274800,0.037865,200.0,11,-1436.405407,-1543.881669,-1314.926705,66.425341
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2277000,0.036266,200.0,11,-1447.666709,-1539.393757,-1337.384073,61.805299
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2279200,0.035429,200.0,11,-1466.669949,-1546.390451,-1391.677765,47.980924
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2281400,0.037164,200.0,11,-1481.240416,-1534.354457,-1403.598206,37.081865
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2283600,0.035989,200.0,11,-1453.391754,-1530.916749,-1263.223079,80.86209
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2285800,0.039102,200.0,11,-1456.28758,-1539.113714,-1257.357349,80.080352
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2288000,0.036879,200.0,11,-1464.31108,-1523.122333,-1363.765807,43.30679
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2290200,0.038571,200.0,11,-1470.825531,-1538.28712,-1284.934086,70.655256
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2292400,0.036126,200.0,11,-1461.681115,-1524.428645,-1386.077481,55.99929
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2294600,0.036385,200.0,11,-1491.835336,-1543.432937,-1420.164025,37.560686
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2296800,0.039828,200.0,11,-1455.075329,-1519.105939,-1356.107511,55.779716
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2299000,0.037135,200.0,11,-1461.473532,-1508.825465,-1395.882184,39.563425
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2301200,0.036647,200.0,11,-1478.5373,-1582.143176,-1415.65551,46.548053
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2303400,0.036229,200.0,11,-1470.744919,-1514.44766,-1354.547658,46.440577
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2305600,0.036218,200.0,11,-1441.477755,-1515.624328,-1384.681709,41.021199
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2307800,0.038946,200.0,11,-1470.90223,-1534.22335,-1419.985415,41.773741
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2310000,0.037207,200.0,11,-1477.444791,-1555.549933,-1381.74866,53.958269
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2312200,0.040514,200.0,11,-1454.338038,-1555.827938,-1342.55715,66.546868
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2314400,0.03765,200.0,11,-1438.785553,-1503.043211,-1401.45927,31.873033
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2316600,0.035656,200.0,11,-1486.622753,-1507.686742,-1435.395458,23.271086
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2318800,0.038201,200.0,11,-1454.096458,-1510.027557,-1347.556049,60.324021
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2321000,0.038239,200.0,11,-1459.798814,-1529.168875,-1380.231413,53.067367
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2323200,0.035154,200.0,11,-1471.117037,-1514.798112,-1386.124419,40.853412
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2325400,0.037771,200.0,11,-1458.141447,-1516.13373,-1358.936048,48.398473
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2327600,0.036858,200.0,11,-1458.374781,-1546.05355,-1275.585646,73.983895
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2329800,0.038933,200.0,11,-1464.398402,-1570.398518,-1376.930742,52.167012
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2332000,0.037467,200.0,11,-1439.963083,-1536.665081,-1278.605567,67.098205
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2334200,0.036655,200.0,11,-1449.503521,-1527.107426,-1380.708209,57.449873
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2336400,0.035858,200.0,11,-1475.622814,-1555.541393,-1402.261715,54.272977
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2338600,0.035788,200.0,11,-1453.882188,-1538.57344,-1335.63649,62.583133
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2340800,0.03567,200.0,11,-1467.723292,-1525.403015,-1374.075307,49.487338
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2343000,0.0386,200.0,11,-1482.047592,-1538.849373,-1405.273853,43.999377
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2345200,0.035573,200.0,11,-1466.011162,-1544.338129,-1413.743587,40.774062
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2347400,0.035296,200.0,11,-1453.991091,-1511.458266,-1334.435998,60.811773
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2349600,0.036608,200.0,11,-1471.101409,-1551.375148,-1382.840274,56.860329
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2351800,0.036288,200.0,11,-1449.732863,-1575.933121,-1292.311002,82.088732
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2354000,0.038924,200.0,11,-1472.183596,-1521.583654,-1400.936918,36.778678
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2356200,0.036229,200.0,11,-1458.569935,-1521.606797,-1325.972856,68.733028
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2358400,0.036094,200.0,11,-1460.918253,-1534.315864,-1355.13922,65.414306
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2360600,0.035605,200.0,11,-1439.403621,-1510.794804,-1368.599036,43.383074
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2362800,0.037971,200.0,11,-1473.181169,-1526.303877,-1406.901426,41.28645
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2365000,0.039049,200.0,11,-1454.532147,-1533.16027,-1336.017309,53.5782
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2367200,0.039167,200.0,11,-1453.694547,-1508.056297,-1378.159367,44.505309
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2369400,0.036736,200.0,11,-1479.164995,-1589.947226,-1385.90813,58.865297
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2371600,0.035644,200.0,11,-1446.876461,-1516.857228,-1372.43146,42.334311
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2373800,0.040717,200.0,11,-1465.686595,-1535.914936,-1391.802517,45.459431
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2376000,0.037692,200.0,11,-1427.617826,-1549.418921,-1322.539681,63.581
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2378200,0.03882,200.0,11,-1422.799257,-1511.596052,-1354.616882,45.808941
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2380400,0.036301,200.0,11,-1470.276664,-1529.067967,-1384.282614,46.9977
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2382600,0.035935,200.0,11,-1457.421724,-1615.589216,-1389.124656,68.586154
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2384800,0.036388,200.0,11,-1443.55401,-1522.872541,-1351.973703,53.53033
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2387000,0.036093,200.0,11,-1462.553168,-1529.802174,-1393.142658,37.436558
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2389200,0.038562,200.0,11,-1479.283272,-1518.761007,-1411.171856,39.786192
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2391400,0.035323,200.0,11,-1457.043278,-1530.282777,-1350.6762,50.504053
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2393600,0.035129,200.0,11,-1460.561955,-1514.33854,-1299.004823,63.733161
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2395800,0.035215,200.0,11,-1462.869477,-1535.834239,-1309.477515,63.484051
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2398000,0.035386,200.0,11,-1466.460161,-1512.563739,-1319.26108,60.134092
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2400200,0.038065,200.0,11,-1436.874224,-1539.755994,-1353.582103,60.65931
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2402400,0.036305,200.0,11,-1459.183541,-1548.549102,-1360.131149,62.563325
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2404600,0.035206,200.0,11,-1462.690815,-1546.442952,-1391.764368,53.53439
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2406800,0.035282,200.0,11,-1431.416048,-1493.055194,-1338.163618,48.927082
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2409000,0.035343,200.0,11,-1468.889606,-1517.527945,-1314.087091,57.87791
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2411200,0.036018,200.0,11,-1448.969525,-1503.397565,-1314.53769,58.584136
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2413400,0.03807,200.0,11,-1483.86535,-1516.918737,-1433.125613,27.843525
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2415600,0.035135,200.0,11,-1473.947824,-1526.796997,-1368.684449,44.976164
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2417800,0.035316,200.0,11,-1452.129045,-1510.368758,-1390.579129,44.673754
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2420000,0.035486,200.0,11,-1488.078737,-1574.172114,-1375.190861,50.351923
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2422200,0.037131,200.0,11,-1476.643381,-1580.274154,-1330.184377,65.904481
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2424400,0.043276,200.0,11,-1483.05948,-1534.551332,-1418.671017,35.228081
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2426600,0.038575,200.0,11,-1466.118717,-1541.283052,-1359.497184,53.040844
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2428800,0.0369,200.0,11,-1409.863051,-1513.494313,-1274.043473,72.037774
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2431000,0.037212,200.0,11,-1459.084282,-1536.65106,-1378.66792,51.567893
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2433200,0.036362,200.0,11,-1465.939907,-1549.607472,-1390.774488,48.782361
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2435400,0.038668,200.0,11,-1448.937851,-1550.35524,-1315.4162,67.310128
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2437600,0.036528,200.0,11,-1443.944755,-1508.25856,-1334.497959,53.130222
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2439800,0.036204,200.0,11,-1455.057489,-1512.736747,-1312.339052,54.988104
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2442000,0.03642,200.0,11,-1448.134951,-1545.330688,-1197.461601,87.733864
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2444200,0.036355,200.0,11,-1421.760813,-1505.62311,-1319.011806,55.459018
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2446400,0.038645,200.0,11,-1452.371695,-1522.791656,-1334.240167,61.411079
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2448600,0.037021,200.0,11,-1437.894999,-1512.054844,-1341.560381,46.754482
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2450800,0.035673,200.0,11,-1464.480219,-1529.225811,-1373.075556,47.592692
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2453000,0.036286,200.0,11,-1496.444143,-1524.040584,-1418.906464,27.65732
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2455200,0.036141,200.0,11,-1431.983044,-1528.454657,-1352.983432,47.654698
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2457400,0.037536,200.0,11,-1487.078405,-1514.44256,-1443.61948,24.021549
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2459600,0.038432,200.0,11,-1453.642776,-1514.135384,-1323.056136,53.841642
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2461800,0.03683,200.0,11,-1453.599992,-1518.08495,-1374.389809,50.698409
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2464000,0.03658,200.0,11,-1421.489985,-1515.661473,-1320.488766,58.638282
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2466200,0.03643,200.0,11,-1413.58459,-1495.166379,-1319.144843,54.200648
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2468400,0.037188,200.0,11,-1401.751108,-1500.587354,-1307.08648,52.507346
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2470600,0.038322,200.0,11,-1428.443066,-1503.286765,-1258.203062,72.95366
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2472800,0.035259,200.0,11,-1442.081659,-1501.418264,-1344.284419,57.762847
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2475000,0.036946,200.0,11,-1435.744126,-1502.982436,-1265.107414,78.062302
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2477200,0.036628,200.0,11,-1442.823163,-1539.61732,-1372.058073,45.384871
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2479400,0.036892,200.0,11,-1392.717416,-1510.840374,-1286.844864,72.558331
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2481600,0.039229,200.0,11,-1475.681595,-1586.281121,-1406.016938,52.978747
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2483800,0.038221,200.0,11,-1444.666379,-1509.286472,-1358.742438,42.952799
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2486000,0.036488,200.0,11,-1459.614795,-1525.292856,-1303.243556,63.753812
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2488200,0.036906,200.0,11,-1424.541914,-1502.785168,-1314.372371,72.941999
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2490400,0.036155,200.0,11,-1448.741303,-1544.880409,-1359.608368,56.771833
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2492600,0.039084,200.0,11,-1433.741942,-1551.298147,-1244.562017,80.070685
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2494800,0.037001,200.0,11,-1468.597254,-1521.19664,-1322.711964,55.888861
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2497000,0.035905,200.0,11,-1439.040427,-1502.13864,-1303.852057,58.841611
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2499200,0.037939,200.0,11,-1446.55308,-1557.623009,-1273.81806,85.956414
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2501400,0.037031,200.0,11,-1447.720189,-1529.615471,-1316.438674,59.98047
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2503600,0.038564,200.0,11,-1424.284085,-1516.321682,-1303.54276,69.091487
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2505800,0.038313,200.0,11,-1444.628646,-1513.188696,-1344.308646,50.833683
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2508000,0.036558,200.0,11,-1450.797133,-1520.155289,-1308.732255,70.084561
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2510200,0.036653,200.0,11,-1438.226395,-1534.800677,-1307.826785,70.067942
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2512400,0.036026,200.0,11,-1465.484462,-1530.402203,-1336.53292,57.361735
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2514600,0.03761,200.0,11,-1462.147315,-1516.720439,-1325.725592,60.5845
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2516800,0.037726,200.0,11,-1480.86007,-1508.703492,-1403.81665,35.585804
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2519000,0.035467,200.0,11,-1394.770965,-1507.394342,-1188.175482,97.606553
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2521200,0.036607,200.0,11,-1400.929558,-1496.094294,-1247.364434,79.9546
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2523400,0.036186,200.0,11,-1435.977079,-1500.951521,-1319.778233,71.484655
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2525600,0.035705,200.0,11,-1469.764508,-1523.94905,-1385.264908,47.162692
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2527800,0.038181,200.0,11,-1430.511252,-1509.408378,-1246.591415,81.623661
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2530000,0.036881,200.0,11,-1431.761841,-1501.466078,-1305.161756,67.166243
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2532200,0.037165,200.0,11,-1431.508765,-1505.917528,-1252.014557,82.892661
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2534400,0.037406,200.0,11,-1453.248647,-1512.864927,-1346.434156,64.381193
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2536600,0.037045,200.0,11,-1433.972335,-1513.879452,-1302.655255,69.834276
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2538800,0.038293,200.0,11,-1448.081342,-1534.687876,-1402.298431,39.163211
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2541000,0.035676,200.0,11,-1461.684225,-1514.521671,-1365.763219,52.483218
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2543200,0.034911,200.0,11,-1464.057915,-1519.225144,-1353.784857,58.528938
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2545400,0.035074,200.0,11,-1437.702317,-1514.193538,-1225.531641,82.420799
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2547600,0.034957,200.0,11,-1448.889673,-1510.770312,-1284.61937,65.924378
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2549800,0.036969,200.0,11,-1427.153797,-1571.26055,-1271.703181,72.713706
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2552000,0.038753,200.0,11,-1472.982873,-1516.223604,-1399.672963,36.27792
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2554200,0.036377,200.0,11,-1444.208258,-1534.572121,-1386.53254,44.375748
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2556400,0.036098,200.0,11,-1465.07131,-1536.681049,-1338.243517,55.391623
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2558600,0.035977,200.0,11,-1435.089164,-1539.664776,-1329.360279,64.219331
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2560800,0.037461,200.0,11,-1437.026539,-1499.341393,-1347.878807,52.46154
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2563000,0.038673,200.0,11,-1448.133767,-1504.423671,-1273.53866,67.177629
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2565200,0.036309,200.0,11,-1469.333419,-1509.949726,-1361.552236,42.152954
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2567400,0.03491,200.0,11,-1473.523718,-1546.555852,-1360.9395,50.592599
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2569600,0.034995,200.0,11,-1480.965112,-1528.940366,-1411.956424,35.771308
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2571800,0.034738,200.0,11,-1461.647274,-1545.322702,-1244.746115,77.461354
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2574000,0.03762,200.0,11,-1461.47848,-1516.874033,-1324.794793,61.550544
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2576200,0.037462,200.0,11,-1466.667037,-1527.801298,-1388.401614,47.798323
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2578400,0.034936,200.0,11,-1468.14507,-1543.257241,-1395.021637,42.463371
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2580600,0.035212,200.0,11,-1433.022789,-1545.487045,-1290.525572,69.77641
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2582800,0.035351,200.0,11,-1436.356641,-1497.715014,-1326.132242,43.909575
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2585000,0.037239,200.0,11,-1474.524482,-1532.675445,-1392.059089,45.447002
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2587200,0.037726,200.0,11,-1464.199505,-1516.010654,-1393.955472,45.604761
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2589400,0.035782,200.0,11,-1482.077548,-1527.668528,-1421.29414,29.193421
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2591600,0.035167,200.0,11,-1485.731158,-1521.730472,-1400.16578,32.426358
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2593800,0.035508,200.0,11,-1444.006711,-1504.763096,-1335.09588,55.286028
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2596000,0.036137,200.0,11,-1422.426831,-1522.403327,-1325.260375,47.761468
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2598200,0.03876,200.0,11,-1451.893839,-1504.757753,-1392.629225,41.396218
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2600400,0.036488,200.0,11,-1466.865707,-1537.716336,-1412.428419,42.485697
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2602600,0.03718,200.0,11,-1442.626515,-1531.883139,-1385.179331,46.434722
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2604800,0.036169,200.0,11,-1466.423386,-1513.271743,-1401.310774,42.485818
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2607000,0.036472,200.0,11,-1468.487932,-1519.38948,-1387.734953,43.345779
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2609200,0.038633,200.0,11,-1464.092561,-1510.764304,-1393.819456,42.390988
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2611400,0.036395,200.0,11,-1466.399415,-1531.365473,-1365.632477,54.401431
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2613600,0.035371,200.0,11,-1471.217442,-1500.18416,-1332.995439,49.551122
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2615800,0.036014,200.0,11,-1465.668239,-1518.526437,-1388.883513,43.565847
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2618000,0.037152,200.0,11,-1458.74729,-1519.126326,-1334.173891,54.444222
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2620200,0.03788,200.0,11,-1444.232626,-1506.528526,-1318.776402,51.643375
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2622400,0.037095,200.0,11,-1459.56374,-1515.564004,-1334.86219,55.278676
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2624600,0.036581,200.0,11,-1467.805644,-1507.279467,-1418.575527,34.179547
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2626800,0.036838,200.0,11,-1460.657374,-1496.590146,-1403.030968,34.308077
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2629000,0.037312,200.0,11,-1443.726673,-1528.634131,-1268.16289,71.79756
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2631200,0.038512,200.0,11,-1445.623932,-1499.268385,-1326.52479,50.249552
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2633400,0.036702,200.0,11,-1438.735319,-1508.015293,-1266.743758,81.81144
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2635600,0.036309,200.0,11,-1436.688034,-1509.95267,-1344.034898,54.630452
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2637800,0.035172,200.0,11,-1436.172628,-1520.880074,-1217.02646,90.403105
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2640000,0.036388,200.0,11,-1450.090326,-1513.46017,-1378.383664,45.893673
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2642200,0.03644,200.0,11,-1443.821548,-1522.929835,-1350.627144,62.031772
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2644400,0.038807,200.0,11,-1441.043132,-1510.695657,-1371.472309,48.568118
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2646600,0.036191,200.0,11,-1486.147813,-1547.507961,-1417.862689,37.970739
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2648800,0.03722,200.0,11,-1468.028181,-1531.406859,-1386.197223,48.79266
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2651000,0.035524,200.0,11,-1458.568644,-1516.775339,-1386.92108,44.202962
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2653200,0.036463,200.0,11,-1443.487354,-1512.164937,-1339.427296,53.119161
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2655400,0.03857,200.0,11,-1465.313922,-1550.994382,-1357.343723,52.272547
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2657600,0.036341,200.0,11,-1431.985747,-1535.849558,-1274.755791,76.810621
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2659800,0.036887,200.0,11,-1431.401281,-1499.574356,-1360.579346,50.312887
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2662000,0.036437,200.0,11,-1442.821163,-1500.604217,-1371.126416,38.627172
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2664200,0.037251,200.0,11,-1444.74839,-1547.315355,-1258.710197,81.375966
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2666400,0.039194,200.0,11,-1449.174061,-1513.607464,-1309.678509,69.533385
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2668600,0.036395,200.0,11,-1447.917712,-1506.239121,-1293.790294,66.552811
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2670800,0.035684,200.0,11,-1440.214522,-1493.744734,-1334.785136,48.367745
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2673000,0.036031,200.0,11,-1443.774817,-1534.039615,-1322.052762,74.528643
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2675200,0.036241,200.0,11,-1460.873008,-1508.549115,-1369.356484,47.855348
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2677400,0.037667,200.0,11,-1469.642359,-1513.584309,-1407.42999,36.850416
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2679600,0.036995,200.0,11,-1463.093976,-1520.111543,-1351.040918,48.128835
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2681800,0.035985,200.0,11,-1456.703018,-1509.178173,-1344.344519,50.448452
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2684000,0.036314,200.0,11,-1437.077284,-1551.837712,-1293.216223,73.809132
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2686200,0.035438,200.0,11,-1451.246229,-1511.916613,-1308.570103,59.873717
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2688400,0.036934,200.0,11,-1446.494474,-1508.54933,-1329.89306,52.223219
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2690600,0.03876,200.0,11,-1446.994468,-1525.945587,-1362.697483,53.161898
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2692800,0.035942,200.0,11,-1456.370758,-1504.739982,-1276.66122,68.210926
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2695000,0.036003,200.0,11,-1465.180619,-1510.463216,-1384.469094,37.593429
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2697200,0.036245,200.0,11,-1446.768501,-1525.709518,-1345.606886,54.025774
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2699400,0.036616,200.0,11,-1473.512334,-1510.301053,-1374.021135,41.234702
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2701600,0.038736,200.0,11,-1440.619556,-1501.454452,-1364.465093,49.108798
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2703800,0.036312,200.0,11,-1454.105902,-1516.40871,-1379.905631,47.192682
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2706000,0.035279,200.0,11,-1439.513369,-1506.682209,-1339.786013,54.591388
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2708200,0.036011,200.0,11,-1465.266532,-1521.217658,-1331.240335,54.447423
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2710400,0.03617,200.0,11,-1493.277025,-1531.510435,-1437.863906,27.952405
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2712600,0.039005,200.0,11,-1439.715859,-1531.223809,-1230.01084,80.147983
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2714800,0.037117,200.0,11,-1459.19169,-1523.180191,-1356.64048,55.222828
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2717000,0.036363,200.0,11,-1445.772696,-1500.62884,-1365.281619,54.037793
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2719200,0.036335,200.0,11,-1427.452808,-1498.76218,-1293.704889,57.884581
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2721400,0.035805,200.0,11,-1413.294862,-1529.344222,-1245.392166,91.163533
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2723600,0.037033,200.0,11,-1439.217974,-1500.835844,-1355.832422,52.128868
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2725800,0.037116,200.0,11,-1415.035094,-1521.445309,-1308.713328,62.329089
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2728000,0.035445,200.0,11,-1423.504353,-1510.210608,-1303.762537,66.228027
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2730200,0.03709,200.0,11,-1440.183143,-1516.54731,-1323.737191,69.263235
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2732400,0.035963,200.0,11,-1480.499684,-1513.981721,-1421.274748,27.124808
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2734600,0.036624,200.0,11,-1462.783089,-1518.809116,-1405.146023,42.772998
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2736800,0.040083,200.0,11,-1420.923428,-1556.082732,-1247.899526,98.94726
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2739000,0.037894,200.0,11,-1445.231485,-1533.73711,-1271.463542,67.569051
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2741200,0.037635,200.0,11,-1420.393864,-1498.559328,-1242.498206,73.196612
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2743400,0.03675,200.0,11,-1478.221801,-1513.092256,-1419.918525,29.679625
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2745600,0.037915,200.0,11,-1461.450519,-1523.460497,-1357.544337,46.010906
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2747800,0.039531,200.0,11,-1503.337153,-1534.166299,-1427.695363,27.747969
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2750000,0.036881,200.0,11,-1404.92651,-1523.105575,-1233.698547,87.658482
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2752200,0.035055,200.0,11,-1440.787177,-1517.507745,-1332.510125,55.917532
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2754400,0.035091,200.0,11,-1412.935554,-1515.615591,-1264.423253,87.971293
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2756600,0.035041,200.0,11,-1462.670039,-1514.922228,-1345.006762,44.450847
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2758800,0.037969,200.0,11,-1410.410927,-1511.252634,-1237.249473,96.591909
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2761000,0.036405,200.0,11,-1443.003762,-1506.989474,-1318.451656,65.834471
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2763200,0.035564,200.0,11,-1449.131771,-1512.234888,-1372.718599,45.164213
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2765400,0.037582,200.0,11,-1419.790382,-1502.622019,-1283.4239,80.307538
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2767600,0.03573,200.0,11,-1448.098995,-1521.385167,-1332.456266,56.731442
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2769800,0.038734,200.0,11,-1437.336069,-1510.107959,-1360.323709,45.080261
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2772000,0.037956,200.0,11,-1454.096473,-1523.998131,-1308.408719,61.292254
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2774200,0.035657,200.0,11,-1459.594414,-1552.150615,-1250.13743,80.700927
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2776400,0.03718,200.0,11,-1442.395839,-1496.141571,-1297.166957,62.131162
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2778600,0.035921,200.0,11,-1431.793109,-1509.30741,-1274.879321,76.185429
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2780800,0.036276,200.0,11,-1448.897257,-1520.308084,-1282.416657,71.343494
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2783000,0.039231,200.0,11,-1458.241944,-1503.52398,-1404.598142,43.32213
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2785200,0.035411,200.0,11,-1462.832593,-1535.878391,-1361.01531,57.358846
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2787400,0.035469,200.0,11,-1443.416826,-1553.145932,-1347.156041,61.967235
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2789600,0.03559,200.0,11,-1447.153095,-1539.223143,-1361.964759,54.444884
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2791800,0.035208,200.0,11,-1432.506273,-1523.985641,-1171.457238,96.476671
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2794000,0.038574,200.0,11,-1451.224982,-1529.726355,-1397.580404,42.96149
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2796200,0.037223,200.0,11,-1477.427711,-1518.715153,-1379.985406,34.351601
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2798400,0.036604,200.0,11,-1413.772531,-1495.511234,-1317.845483,53.949405
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2800600,0.036849,200.0,11,-1450.770098,-1512.497845,-1351.25754,56.172296
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2802800,0.035154,200.0,11,-1452.353242,-1496.674926,-1402.322415,33.92451
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2805000,0.037389,200.0,11,-1463.379557,-1549.859552,-1368.384559,52.992824
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2807200,0.036819,200.0,11,-1463.849,-1509.93651,-1323.422695,54.719069
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2809400,0.035367,200.0,11,-1480.836464,-1527.049076,-1415.850728,33.031938
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2811600,0.037196,200.0,11,-1458.166306,-1534.640118,-1325.268565,53.728025
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2813800,0.035262,200.0,11,-1448.811431,-1533.192724,-1274.823585,78.812259
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2816000,0.036755,200.0,11,-1452.218983,-1519.739354,-1364.648517,56.668174
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2818200,0.038146,200.0,11,-1469.132597,-1560.251075,-1348.484805,63.961573
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2820400,0.03496,200.0,11,-1456.620509,-1511.39418,-1340.361234,54.93097
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2822600,0.034876,200.0,11,-1454.852634,-1508.64188,-1348.777529,57.340546
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2824800,0.034925,200.0,11,-1472.26523,-1510.366842,-1324.375301,54.854923
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2827000,0.035307,200.0,11,-1436.848264,-1523.591835,-1327.516589,68.843793
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2829200,0.038859,200.0,11,-1438.023458,-1511.368495,-1227.717036,94.109441
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2831400,0.035515,200.0,11,-1494.104983,-1529.182395,-1411.836314,29.446288
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2833600,0.035147,200.0,11,-1440.577535,-1561.981097,-1238.263902,102.737465
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2835800,0.03679,200.0,11,-1433.324337,-1504.564344,-1322.709866,54.754622
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2838000,0.036349,200.0,11,-1479.586413,-1526.753626,-1356.630998,46.137235
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2840200,0.038119,200.0,11,-1471.115822,-1530.403285,-1379.808096,47.701857
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2842400,0.037737,200.0,11,-1458.720685,-1533.97943,-1326.173342,71.389231
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2844600,0.03656,200.0,11,-1426.960939,-1511.659935,-1321.307421,62.803722
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2846800,0.036302,200.0,11,-1476.413551,-1515.796523,-1387.000621,40.293024
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2849000,0.036108,200.0,11,-1449.449141,-1511.727856,-1387.007976,41.009986
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2851200,0.037522,200.0,11,-1438.01195,-1522.294365,-1249.645406,83.122276
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2853400,0.037759,200.0,11,-1432.990683,-1509.47016,-1300.922312,65.703099
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2855600,0.037217,200.0,11,-1466.342605,-1519.909467,-1357.149641,45.883803
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2857800,0.036578,200.0,11,-1461.65984,-1518.58712,-1296.897782,61.865718
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2860000,0.035511,200.0,11,-1438.819421,-1502.415535,-1378.601396,40.194468
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2862200,0.037506,200.0,11,-1444.456196,-1495.078229,-1334.596129,42.962557
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2864400,0.038626,200.0,11,-1475.239984,-1533.276664,-1357.944887,46.973369
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2866600,0.0369,200.0,11,-1472.505862,-1519.392155,-1396.332699,38.332439
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2868800,0.037016,200.0,11,-1428.607584,-1522.718412,-1316.646026,61.195426
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2871000,0.035898,200.0,11,-1447.533154,-1563.784708,-1357.186505,63.972868
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2873200,0.036522,200.0,11,-1449.562938,-1501.396586,-1337.55258,50.293242
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2875400,0.03975,200.0,11,-1483.9623,-1510.065616,-1402.217124,32.789614
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2877600,0.035794,200.0,11,-1430.276014,-1521.401688,-1300.809646,71.003612
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2879800,0.036443,200.0,11,-1449.510098,-1504.258241,-1327.271151,51.999554
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2882000,0.036227,200.0,11,-1457.009646,-1515.747727,-1194.044395,88.869774
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2884200,0.036299,200.0,11,-1473.876407,-1512.127715,-1357.563455,49.950118
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2886400,0.038629,200.0,11,-1487.818142,-1538.273062,-1385.660038,44.676873
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2888600,0.037683,200.0,11,-1439.391068,-1534.693276,-1318.775154,67.976418
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2890800,0.03765,200.0,11,-1421.749504,-1490.78393,-1361.606699,40.24789
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2893000,0.037355,200.0,11,-1463.991242,-1528.557523,-1366.159209,54.508045
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2895200,0.035775,200.0,11,-1456.076326,-1504.068064,-1299.191061,55.895462
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2897400,0.037919,200.0,11,-1448.776013,-1519.257356,-1248.820156,73.912453
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2899600,0.036968,200.0,11,-1463.402765,-1534.615625,-1296.947513,68.781049
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2901800,0.036468,200.0,11,-1469.580315,-1518.226198,-1367.264364,48.079979
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2904000,0.03844,200.0,11,-1463.333172,-1501.066087,-1384.656177,39.941455
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2906200,0.036804,200.0,11,-1434.418653,-1535.496708,-1343.051946,60.156647
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2908400,0.03915,200.0,11,-1475.879151,-1507.760192,-1416.399072,32.240256
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2910600,0.038255,200.0,11,-1436.016611,-1500.756714,-1317.481638,55.649
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2912800,0.03677,200.0,11,-1439.126036,-1519.608028,-1341.6438,58.210816
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2915000,0.036498,200.0,11,-1446.378655,-1548.64516,-1314.773947,74.597344
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2917200,0.03635,200.0,11,-1468.826946,-1515.004064,-1404.641081,34.624313
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2919400,0.038008,200.0,11,-1476.861603,-1505.972044,-1367.630694,36.692523
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2921600,0.038881,200.0,11,-1420.78245,-1481.541799,-1273.961093,60.747505
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2923800,0.036731,200.0,11,-1422.860067,-1523.09918,-1313.284273,57.055043
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2926000,0.035905,200.0,11,-1442.753664,-1523.408534,-1292.792939,76.818536
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2928200,0.03513,200.0,11,-1451.878979,-1509.147034,-1240.411743,78.928961
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2930400,0.0356,200.0,11,-1444.31158,-1503.559727,-1366.817931,57.771498
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2932600,0.03926,200.0,11,-1460.785119,-1610.334093,-1403.21234,54.911377
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2934800,0.035724,200.0,11,-1471.96179,-1518.991949,-1383.786593,40.487106
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2937000,0.034993,200.0,11,-1461.098913,-1523.308556,-1352.365517,57.717769
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2939200,0.035045,200.0,11,-1449.774708,-1503.988392,-1364.701941,40.533488
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2941400,0.036535,200.0,11,-1450.555579,-1511.093674,-1244.560549,73.296371
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2943600,0.038671,200.0,11,-1428.495956,-1509.308552,-1275.195519,74.343448
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2945800,0.036504,200.0,11,-1466.448593,-1516.481243,-1328.183186,51.295869
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2948000,0.035303,200.0,11,-1421.638734,-1518.11011,-1282.269013,82.559299
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2950200,0.036734,200.0,11,-1458.985631,-1529.801799,-1328.7777,63.453286
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2952400,0.037961,200.0,11,-1423.027183,-1498.191003,-1164.415305,92.098775
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2954600,0.037944,200.0,11,-1464.309646,-1513.070149,-1406.281284,36.61424
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2956800,0.036834,200.0,11,-1480.924171,-1529.416706,-1408.609222,35.413508
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2959000,0.034936,200.0,11,-1494.190137,-1528.089754,-1438.782068,22.822228
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2961200,0.034983,200.0,11,-1424.399011,-1537.72156,-1309.581708,67.493304
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2963400,0.035247,200.0,11,-1475.306822,-1503.862571,-1390.906654,35.976164
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2965600,0.03593,200.0,11,-1440.636646,-1524.39791,-1295.326425,69.223596
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2967800,0.037516,200.0,11,-1464.263576,-1532.170301,-1359.336345,52.175326
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2970000,0.037534,200.0,11,-1448.562305,-1497.894365,-1367.762273,40.347074
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2972200,0.03676,200.0,11,-1452.935045,-1515.169048,-1319.710952,67.116705
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2974400,0.037927,200.0,11,-1480.044873,-1564.333336,-1344.719559,54.642722
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2976600,0.037069,200.0,11,-1467.434351,-1501.267,-1323.005755,52.411254
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2978800,0.039863,200.0,11,-1457.262587,-1513.306552,-1275.915529,71.415849
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2981000,0.035771,200.0,11,-1483.776193,-1529.363122,-1440.798553,26.358049
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2983200,0.035225,200.0,11,-1465.922505,-1522.814178,-1413.517796,32.951073
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2985400,0.03564,200.0,11,-1406.647731,-1498.247294,-1231.483844,86.546148
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2987600,0.035053,200.0,11,-1405.952264,-1503.584652,-1301.411399,58.249917
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2989800,0.037566,200.0,11,-1476.975355,-1505.620794,-1411.932775,29.050118
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2992000,0.036749,200.0,11,-1428.922006,-1520.072651,-1294.366554,79.650409
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2994200,0.035627,200.0,11,-1446.355768,-1498.73622,-1322.389041,50.653967
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2996400,0.036954,200.0,11,-1460.017909,-1508.051942,-1375.386906,41.092844
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",2998600,0.036679,200.0,11,-1450.782059,-1529.768035,-1305.694352,72.843753
++0,"exp_name: Pendulum-v1_2023-01-15 (seperate network, TD actor-critic advantage, normalize ret)",3000800,0.037561,200.0,11,-1455.635894,-1499.546241,-1309.68621,52.755847
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index 5fb8c4f7..d16dfedc 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -221,7 +221,8 @@ class PPO_PolicyGradient_V2:
+         adam_eps=1e-5,
+         momentum=0.9,
+         adam=True,
+-        render=10,
++        render_steps=10,
++        render=False,
+         save_model=10,
+         csv_writer=None,
+         stats_plotter=None,
+@@ -250,7 +251,8 @@ class PPO_PolicyGradient_V2:
+ 
+         # environment
+         self.env = env
+-        self.render_steps = render
++        self.render_steps = render_steps
++        self.render = render
+         self.save_model = save_model
+         self.device = device
+         self.normalize_advantage = normalize_adv
+@@ -621,20 +623,20 @@ class PPO_PolicyGradient_V2:
+             policy_losses, value_losses = [], []
+ 
+             # Collect data over one episode
++            # Episode = recording of actions and states that an agent performed from a start state to an end state
+             # STEP 3: simulate and collect trajectories --> the following values are all per batch over one episode
+-            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time = self.collect_rollout(n_steps=self.n_rollout_steps)
++            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time = self.collect_rollout(n_steps=self.n_rollout_steps, render=self.render)
+ 
+-            # timesteps simulated so far for batch collection
++            # experiences simulated so far
+             training_steps += np.sum(ep_lens)
+ 
+             # STEP 4-5: Calculate cummulated reward and advantage at timestep t_step
+             values, _ , _ = self.get_values(obs, actions)
+             # advantages, cum_returns = self.advantage_reinforce(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+             # advantages, cum_returns = self.advantage_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
++            #advantages, cum_returns = self.advantage_TD_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+             
+-            advantages, cum_returns = self.advantage_TD_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+-            
+-            # advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
++            advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+             
+             # update network params 
+             for _ in range(self.noptepochs):
+@@ -860,9 +862,9 @@ def _log_summary(ep_len, ep_ret, ep_num):
+ 
+ def train(env, in_dim, out_dim, total_training_steps, max_batch_size, n_rollout_steps,
+           noptepochs, learning_rate_p, learning_rate_v, gae_lambda, gamma, epsilon,
+-          adam_epsilon, render_steps, save_steps, csv_writer, stats_plotter,
+-          normalize_adv=False, normalize_ret=False,
+-          log_video=False, ppo_version='v2', device='cpu', exp_path='./log/', exp_name='PPO-experiment'):
++          adam_epsilon, render_steps, render, save_steps, csv_writer, stats_plotter,
++          normalize_adv=False, normalize_ret=False, log_video=False, ppo_version='v2', 
++          device='cpu', exp_path='./log/', exp_name='PPO-experiment'):
+     """Train the policy network (actor) and the value network (critic) with PPO"""
+     agent = None
+     if ppo_version == 'v2':
+@@ -882,7 +884,8 @@ def train(env, in_dim, out_dim, total_training_steps, max_batch_size, n_rollout_
+                     adam_eps=adam_epsilon,
+                     normalize_adv=normalize_adv,
+                     normalize_ret=normalize_ret,
+-                    render=render_steps,
++                    render_steps=render_steps,
++                    render=render,
+                     save_model=save_steps,
+                     csv_writer=csv_writer,
+                     stats_plotter=stats_plotter,
+@@ -973,8 +976,8 @@ if __name__ == '__main__':
+     gamma = 0.99                         # discount factor
+     adam_epsilon = 1e-8                  # default in the PPO baseline implementation is 1e-5, the pytorch default is 1e-8 - Andrychowicz, et al. (2021)  uses 0.9
+     epsilon = 0.2                        # clipping factor
+-    clip_range_vf = 0.2                  # clipping factor for the value function. Depends on reward scaling.
+-    env_name = 'Pendulum-v1'             # name of OpenAI gym environment other: 'Pendulum-v1' , 'MountainCarContinuous-v0'
++    clip_range_vf = 0.2                  # clipping factor for the value loss function. Depends on reward scaling.
++    env_name = 'Pendulum-v1'             # name of OpenAI gym environment other: 'Pendulum-v1' , 'MountainCarContinuous-v0', 'takeoff-aviary-v0'
+     env_number = 1                       # number of actors
+     seed = 42                            # seed gym, env, torch, numpy 
+     normalize_adv = False                # wether to normalize the advantage estimate
+@@ -1088,6 +1091,7 @@ if __name__ == '__main__':
+             normalize_adv=normalize_adv,
+             normalize_ret=normalize_ret,
+             render_steps=render_steps,
++            render=args.video,
+             save_steps=save_steps,
+             csv_writer=csv_writer,
+             stats_plotter=stats_plotter,
+diff --git a/PPO/ppo_torch/ppo_v2.py b/PPO/ppo_torch/ppo_v2.py
+index 5facbee5..a8f87d35 100644
+--- a/PPO/ppo_torch/ppo_v2.py
++++ b/PPO/ppo_torch/ppo_v2.py
+@@ -1,9 +1,14 @@
+ from collections import deque
+-import datetime
++import time
+ import torch
+-from torch.optim import Adam
++from torch import nn
++from torch.optim import Adam, SGD
+ from torch.distributions import MultivariateNormal
+ import numpy as np
++import os
++
++# gym environment
++import gym
+ 
+ # logging python
+ import logging
+@@ -12,16 +17,14 @@ import sys
+ # monitoring/logging ML
+ import wandb
+ 
+-from collections import deque
+-from PPO.ppo_torch.ppo_continuous import PolicyNet, ValueNet
+-
+-# Paths and other constants
+-MODEL_PATH = './models/'
+-LOG_PATH = './log/'
+-VIDEO_PATH = './video/'
+-RESULTS_PATH = './results/'
++# hyperparameter tuning
++import optuna
++from optuna.integration.wandb import WeightsAndBiasesCallback
+ 
+-CURR_DATE = datetime.today().strftime('%Y-%m-%d')
++# own implementations
++from ppo_torch.network import PolicyNet, ValueNet
++from wrapper.stats_logger import StatsPlotter
++from wrapper.stats_logger import CSVWriter
+ 
+ 
+ class PPO_PolicyGradient_V2:
+@@ -40,9 +43,9 @@ class PPO_PolicyGradient_V2:
+         env, 
+         in_dim, 
+         out_dim,
+-        total_steps,
+-        max_trajectory_size,
+-        trajectory_iterations,
++        total_training_steps,
++        max_batch_size,
++        n_rollout_steps,
+         noptepochs=5,
+         lr_p=1e-3,
+         lr_v=1e-3,
+@@ -50,18 +53,25 @@ class PPO_PolicyGradient_V2:
+         gamma=0.99,
+         epsilon=0.22,
+         adam_eps=1e-5,
++        momentum=0.9,
++        adam=True,
+         render=10,
+         save_model=10,
+         csv_writer=None,
+         stats_plotter=None,
+-        log_video=False) -> None:
++        log_video=False,
++        device='cpu',
++        exp_path='./log/',
++        exp_name='PPO_V2_experiment',
++        normalize_adv=False,
++        normalize_ret=False) -> None:
+         
+         # hyperparams
+         self.in_dim = in_dim
+         self.out_dim = out_dim
+-        self.total_steps = total_steps
+-        self.max_trajectory_size = max_trajectory_size
+-        self.trajectory_iterations = trajectory_iterations
++        self.total_training_steps = total_training_steps
++        self.max_batch_size = max_batch_size
++        self.n_rollout_steps = n_rollout_steps
+         self.noptepochs = noptepochs
+         self.lr_p = lr_p
+         self.lr_v = lr_v
+@@ -69,28 +79,50 @@ class PPO_PolicyGradient_V2:
+         self.epsilon = epsilon
+         self.adam_eps = adam_eps
+         self.gae_lambda = gae_lambda
++        self.momentum = momentum
++        self.adam = adam
+ 
+         # environment
+         self.env = env
+         self.render_steps = render
+         self.save_model = save_model
++        self.device = device
++        self.normalize_advantage = normalize_adv
++        self.normalize_return = normalize_ret
+ 
++        # keep track of information
++        self.exp_path = exp_path
++        self.exp_name = exp_name
+         # track video of gym
+         self.log_video = log_video
+ 
+         # keep track of rewards per episode
+-        self.ep_returns = deque(maxlen=max_trajectory_size)
++        self.ep_returns = deque(maxlen=max_batch_size)
+         self.csv_writer = csv_writer
+         self.stats_plotter = stats_plotter
+-        self.stats_data = {'mean episodic length': [], 'mean episodic rewards': [], 'timestep': []}
++        self.stats_data = {
++            'experiment': [], 
++            'timestep': [],
++            'mean episodic runtime': [],
++            'mean episodic length': [],
++            'eval episodes': [],
++            'mean episodic returns': [],
++            'min episodic returns': [],
++            'max episodic returns': [],
++            'std episodic returns': [],
++            }
+ 
+         # add net for actor and critic
+         self.policy_net = PolicyNet(self.in_dim, self.out_dim) # Setup Policy Network (Actor) - (policy-based method) "How the agent behaves"
+         self.value_net = ValueNet(self.in_dim, 1) # Setup Value Network (Critic) -  (value-based method) "How good the action taken is."
+ 
+         # add optimizer for actor and critic
+-        self.policy_net_optim = Adam(self.policy_net.parameters(), lr=self.lr_p, eps=self.adam_eps) # Setup Policy Network (Actor) optimizer
+-        self.value_net_optim = Adam(self.value_net.parameters(), lr=self.lr_v, eps=self.adam_eps)  # Setup Value Network (Critic) optimizer
++        if self.adam:
++            self.policy_net_optim = Adam(self.policy_net.parameters(), lr=self.lr_p, eps=self.adam_eps) # Setup Policy Network (Actor) optimizer
++            self.value_net_optim = Adam(self.value_net.parameters(), lr=self.lr_v, eps=self.adam_eps)  # Setup Value Network (Critic) optimizer  
++        else:
++            self.policy_net_optim = SGD(self.policy_net.parameters(), lr=self.lr_p, momentum=self.momentum)
++            self.value_net_optim = SGD(self.value_net.parameters(), lr=self.lr_v, momentum=self.momentum)
+ 
+     def get_continuous_policy(self, obs):
+         """Make function to compute action distribution in continuous action space."""
+@@ -126,58 +158,150 @@ class PPO_PolicyGradient_V2:
+         action, log_prob, entropy = self.get_action(action_dist)
+         return action.detach().numpy(), log_prob.detach().numpy(), entropy.detach().numpy()
+ 
+-    def generalized_advantage_estimate_0(self, batch_rewards, values, normalized=True):
+-        """ Generalized Advantage Estimate calculation
+-            Calculate delta, which is defined by delta = r - v 
++    def advantage_estimate(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
++        """ Calculating advantage estimate using TD error (Temporal Difference Error).
++            TD Error can be used as an estimator for Advantage function,
++            - bias-variance: TD has low variance, but IS biased
++            - dones: only get reward at end of episode, not disounted next state value
++        """
++        # Step 4: Calculate returns
++        advantages = []
++        cum_returns = []
++        for rewards in reversed(episode_rewards):  # reversed order
++            for reward in reversed(rewards):
++                cum_returns.insert(0, reward) # reverse it again
++        cum_returns = torch.tensor(np.array(cum_returns), device=self.device, dtype=torch.float)
++        if normalized_ret:
++            cum_returns = self.normalize_ret(cum_returns)
++        # Step 5: Calculate advantage
++        #  A(s,a) = r - V(s_t)
++        advantages = cum_returns - values
++        if normalized_adv:
++            advantages = self.normalize_adv(advantages)
++        return advantages, cum_returns
++
++    def advantage_reinforce(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
++        """ Advantage Reinforce A(s_t, a_t) = G(t)
++        """
++        # Returns: https://gongybable.medium.com/reinforcement-learning-introduction-609040c8be36
++        # Example Reinforce: https://github.com/pytorch/examples/blob/main/reinforcement_learning/reinforce.py
++        
++        # Step 4: Calculate returns
++        # G(t) is the total disounted reward
++        # return value: G(t) = R(t) + gamma * R(t-1)
++        cum_returns = []
++        for rewards in reversed(episode_rewards): # reversed order
++            discounted_reward = 0
++            for reward in reversed(rewards):
++                # R + discount * estimated return from the next step taking action a'
++                discounted_reward = reward + (self.gamma * discounted_reward)
++                cum_returns.insert(0, discounted_reward) # reverse it again
++        cum_returns = torch.tensor(np.array(cum_returns), device=self.device, dtype=torch.float)
++        if normalized_ret:
++            cum_returns = self.normalize_ret(cum_returns)
++        # Step 5: Calculate advantage
++        # A(s,a) = G(t)
++        advantages = torch.tensor(np.array(cum_returns), device=self.device, dtype=torch.float)
++        # normalize for more stability
++        if normalized_adv:
++            advantages = self.normalize_adv(advantages)
++        return advantages, cum_returns
++
++    def advantage_actor_critic(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
++        """Advantage Actor-Critic by calculating delta = G(t) - V(s_t)
+         """
+         # Cumulative rewards: https://gongybable.medium.com/reinforcement-learning-introduction-609040c8be36
++        # Step 4: Calculate returns
++        # G(t) is the total disounted reward
+         # return value: G(t) = R(t) + gamma * R(t-1)
+         cum_returns = []
+-        for rewards in reversed(batch_rewards): # reversed order
++        for rewards in reversed(episode_rewards): # reversed order
+             discounted_reward = 0
+             for reward in reversed(rewards):
++                # R + discount * estimated return from the next step taking action a'
+                 discounted_reward = reward + (self.gamma * discounted_reward)
+                 cum_returns.insert(0, discounted_reward) # reverse it again
+-        advantages = cum_returns - values # delta = r - v
+-        if normalized:
++        cum_returns = torch.tensor(np.array(cum_returns), device=self.device, dtype=torch.float)
++        # normalize returns
++        if normalized_ret:
++            cum_returns = self.normalize_ret(cum_returns)
++        # Step 5: Calculate advantage
++        # delta = G(t) - V(s_t)
++        advantages = cum_returns - values 
++        # normalize advantage for more stability
++        if normalized_adv:
+             advantages = self.normalize_adv(advantages)
+-        return advantages
++        return advantages, cum_returns
+ 
+-    def generalized_advantage_estimate_1(self, batch_rewards, values, normalized=True):
+-        """ Generalized Advantage Estimate calculation
+-            - GAE defines advantage as a weighted average of A_t
+-            - advantage measures if an action is better or worse than the policy's default behavior
+-            - want to find the maximum Advantage representing the benefit of choosing a specific action
++    def advantage_TD_actor_critic(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
++        """ Advantage TD Actor-Critic A(s,a) = r + (gamma * V(s_t+1)) - V(s_t)
++            TD Error can be used as an estimator for Advantage function
+         """
+-        # check if tensor and convert to numpy
+-        if torch.is_tensor(batch_rewards):
+-            batch_rewards = batch_rewards.detach().numpy()
+-        if torch.is_tensor(values):
+-            values = values.detach().numpy()
+-
+-        # STEP 4: compute returns as G(t) = R(t) + gamma * R(t-1)
+-        # STEP 5: compute advantage estimates δ_t = − V(s_t) + r_t
++        # Step 4: Calculate returns
++        # G(t) is the total disounted reward
++        # return value: G(t) = R(t) + gamma * R(t-1)
++        advantages = []
+         cum_returns = []
++        for rewards in reversed(episode_rewards):  # reversed order
++            for reward in reversed(rewards):
++                cum_returns.insert(0, reward) # reverse it again
++        cum_returns = torch.tensor(np.array(cum_returns), device=self.device, dtype=torch.float)
++        if normalized_ret:
++            cum_returns = self.normalize_ret(cum_returns)
++        # Step 5: Calculate advantage
++        # TD error: A(s,a) = r + (gamma * V(s_t+1)) - V(s_t)
++        last_values = values[-1]
++        for i in reversed(range(len(cum_returns))):
++            # TD residual of V with discount gamma
++            # δ_t = r_t + γ * V(s_t+1) − V(s_t)
++            delta = cum_returns[i] + (self.gamma * last_values) - values[i]
++            advantages.insert(0, delta) # reverse it again
++            last_values = values[i]
++        advantages = torch.tensor(np.array(advantages), device=self.device, dtype=torch.float)
++        if normalized_adv:
++            advantages = self.normalize_adv(advantages)
++        return advantages, cum_returns
++
++    def generalized_advantage_estimate(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
++        """ The Generalized Advanatage Estimate
++            δ_t = r_t + γ * V(s_t+1) − V(s_t)
++            A_t = δ_t + γ * λ * A(t+1)
++                - GAE allows to balance bias and variance through a weighted average of A_t
++                - gamma (dicount factor): allows reduce variance by downweighting rewards that correspond to delayed effects
++        """
+         advantages = []
+-        for rewards in reversed(batch_rewards): # reversed order
++        cum_returns = []#
++        # Step 4: Calculate returns
++        for rewards in reversed(episode_rewards):  # reversed order
+             discounted_reward = 0
+-            for i in reversed(range(len(rewards))):
+-                discounted_reward = rewards[i] + (self.gamma * discounted_reward)
+-                # Hinweis @Thomy Delta Könnte als advantage ausreichen
+-                # δ_t = − V(s_t) + r_t
+-                delta = discounted_reward - values[i] # delta = r - v
+-                advantages.insert(0, delta)
++            for reward in reversed(rewards):
++                # R + discount * estimated return from the next step taking action a'
++                discounted_reward = reward + (self.gamma * discounted_reward)
+                 cum_returns.insert(0, discounted_reward) # reverse it again
+-
+-        # convert numpy to torch tensor
+-        cum_returns = torch.tensor(np.array(cum_returns), dtype=torch.float)
+-        advantages = torch.tensor(np.array(advantages), dtype=torch.float)
+-        if normalized:
++        cum_returns = torch.tensor(np.array(cum_returns), device=self.device, dtype=torch.float)
++        if normalized_ret:
++            cum_returns = self.normalize_ret(cum_returns)
++        # Step 5: Calculate advantage
++        # δ_t = r_t + γ * V(s_t+1) − V(s_t)
++        # A_t = δ_t + γ * λ * A(t+1)
++        prev_advantage = 0
++        last_values = values[-1]
++        for i in reversed(range(len(cum_returns))):
++            # TD residual of V with discount gamma
++            # δ_t = r_t + γ * V(s_t+1) − V(s_t)
++            delta = cum_returns[i] + (self.gamma * last_values) - values[i]
++            # discounted sum of Bellman residual term
++            # A_t = δ_t + γ * λ * A(t+1)
++            prev_advantage = delta + (self.gamma * self.gae_lambda * prev_advantage)
++            advantages.insert(0, prev_advantage) # reverse it again
++            last_values = values[i]
++        advantages = torch.tensor(np.array(advantages), device=self.device, dtype=torch.float)
++        if normalized_adv:
+             advantages = self.normalize_adv(advantages)
+         return advantages, cum_returns
+ 
+ 
+-    def generalized_advantage_estimate_2(self, obs, next_obs, batch_rewards, dones, normalized=True):
++    def generalized_advantage_estimate_2(self, obs, next_obs, episode_rewards, dones, normalized_adv=False, normalized_ret=False):
+         """ Generalized Advantage Estimate calculation
+             - GAE defines advantage as a weighted average of A_t
+             - advantage measures if an action is better or worse than the policy's default behavior
+@@ -192,14 +316,15 @@ class PPO_PolicyGradient_V2:
+         returns = []
+ 
+         # STEP 4: Calculate cummulated reward
+-        for rewards in reversed(batch_rewards):
++        for rewards in reversed(episode_rewards):
+             prev_advantage = 0
+             returns_current = ns_values[-1]  # V(s_t+1)
+             for i in reversed(range(len(rewards))):
+                 # STEP 5: compute advantage estimates A_t at step t
+                 mask = (1.0 - dones[i])
+                 gamma = self.gamma * mask
+-                td_error = rewards[i] + gamma * ns_values[i] - s_values[i]
++                td_target = rewards[i] + (gamma * ns_values[i])
++                td_error = td_target - s_values[i]
+                 # A_t = δ_t + γ * λ * A(t+1)
+                 prev_advantage = td_error + gamma * self.gae_lambda * prev_advantage
+                 returns_current = rewards[i] + gamma * returns_current
+@@ -207,95 +332,61 @@ class PPO_PolicyGradient_V2:
+                 returns.insert(0, returns_current)
+                 advantages.insert(0, prev_advantage)
+         advantages = np.array(advantages)
+-        if normalized:
+-            advantages = self.normalize_adv(advantages)
+-        return torch.tensor(np.array(advantages), dtype=torch.float), torch.tensor(np.array(returns), dtype=torch.float)
+-
+-
+-    def generalized_advantage_estimate_3(self, batch_rewards, values, dones, normalized=True):
+-        """ Calculate advantage as a weighted average of A_t
+-                - advantage measures if an action is better or worse than the policy's default behavior
+-                - GAE allows to balance bias and variance through a weighted average of A_t
+-
+-                - gamma (dicount factor): allows reduce variance by downweighting rewards that correspond to delayed effects
+-                - done (Tensor): boolean flag for end of episode. TODO: Q&A
+-        """
+-        # general advantage estimage paper: https://arxiv.org/pdf/1506.02438.pdf
+-        # general advantage estimage other: https://nn.labml.ai/rl/ppo/gae.html
+-
+-        advantages = []
+-        returns = []
+-        values = values.detach().numpy()
+-        for rewards in reversed(batch_rewards): # reversed order
+-            prev_advantage = 0
+-            discounted_reward = 0
+-            last_value = values[-1] # V(s_t+1)
+-            for i in reversed(range(len(rewards))):
+-                # TODO: Q&A handling of special cases GAE(γ, 0) and GAE(γ, 1)
+-                # bei Vetorisierung, bei kurzen Episoden (done flag)
+-                # mask if episode completed after step i 
+-                mask = 1.0 - dones[i] 
+-                last_value = last_value * mask
+-                prev_advantage = prev_advantage * mask
+-
+-                # TD residual of V with discount gamma
+-                # δ_t = − V(s_t) + r_t + γ * V(s_t+1)
+-                # TODO: Delta Könnte als advantage ausreichen, r - v könnte ausreichen
+-                delta = - values[i] + rewards[i] + (self.gamma * last_value)
+-                # discounted sum of Bellman residual term
+-                # A_t = δ_t + γ * λ * A(t+1)
+-                prev_advantage = delta + self.gamma * self.gae_lambda * prev_advantage
+-                discounted_reward = rewards[i] + (self.gamma * discounted_reward)
+-                returns.insert(0, discounted_reward) # reverse it again
+-                advantages.insert(0, prev_advantage) # reverse it again
+-                # store current value as V(s_t+1)
+-                last_value = values[i]
+-        advantages = torch.tensor(np.array(advantages), dtype=torch.float)
+-        returns = torch.tensor(np.array(returns), dtype=torch.float)
+-        if normalized:
++        if normalized_adv:
+             advantages = self.normalize_adv(advantages)
++        if normalized_ret:
++            cum_returns = self.normalize_ret(cum_returns)
++        advantages = torch.tensor(np.array(advantages), device=self.device, dtype=torch.float)
++        returns = torch.tensor(np.array(returns), device=self.device, dtype=torch.float)
+         return advantages, returns
+ 
+-
+     def normalize_adv(self, advantages):
+         return (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+     
+     def normalize_ret(self, returns):
+-        return (returns - returns.mean()) / returns.std()
++        eps = np.finfo(np.float32).eps.item()
++        return (returns - returns.mean()) / (returns.std() + eps)
+ 
+     def finish_episode(self):
+         pass 
+ 
+-    def collect_rollout(self, n_step=1, render=True):
++    def collect_rollout(self, n_steps=1, render=False):
+         """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)"""
+         
+-        step, trajectory_rewards = 0, []
++        t_step, rewards = 0, []
++
++        # log time
++        episode_time = []
+ 
+         # collect trajectories
+-        trajectory_obs = []
+-        trajectory_nextobs = []
+-        trajectory_actions = []
+-        trajectory_action_probs = []
+-        trajectory_dones = []
+-        batch_rewards = []
+-        batch_lens = []
++        episode_obs = []
++        episode_nextobs = []
++        episode_actions = []
++        episode_action_probs = []
++        episode_dones = []
++        episode_rewards = []
++        episode_lens = []
+ 
+         # Run Monte Carlo simulation for n timesteps per batch
+         logging.info("Collecting batch trajectories...")
+-        while step < n_step:
++        while t_step < n_steps:
+             
+-            # rewards collected per episode
+-            trajectory_rewards, done = [], False 
++            # rewards collected
++            rewards, done = [], False 
+             obs = self.env.reset()
+ 
++            # measure time elapsed for one episode
++            # torch.cuda.synchronize()
++            start_epoch = time.time()
++
+             # Run episode for a fixed amount of timesteps
+             # to keep rollout size fixed and episodes independent
+-            for ep_t in range(0, self.max_trajectory_size):
++            for t_episode in range(0, self.max_batch_size):
+                 # render gym envs
+-                if render and ep_t % self.render_steps == 0:
++                if render and t_episode % self.render_steps == 0:
+                     self.env.render()
+                 
+-                step += 1 
++                t_step += 1 
+ 
+                 # action logic 
+                 # sampled via policy which defines behavioral strategy of an agent
+@@ -303,33 +394,40 @@ class PPO_PolicyGradient_V2:
+                         
+                 # STEP 3: collecting set of trajectories D_k by running action 
+                 # that was sampled from policy in environment
+-                __obs, reward, done, info = self.env.step(action)
++                __obs, reward, done, truncated = self.env.step(action)
+ 
+                 # collection of trajectories in batches
+-                trajectory_obs.append(obs)
+-                trajectory_nextobs.append(__obs)
+-                trajectory_actions.append(action)
+-                trajectory_action_probs.append(log_probability)
+-                trajectory_rewards.append(reward)
+-                trajectory_dones.append(done)
++                episode_obs.append(obs)
++                episode_nextobs.append(__obs)
++                episode_actions.append(action)
++                episode_action_probs.append(log_probability)
++                rewards.append(reward)
++                episode_dones.append(done)
+                     
+                 obs = __obs
+ 
+                 # break out of loop if episode is terminated
+-                if done:
++                if done or truncated:
+                     break
+             
+-            batch_lens.append(ep_t + 1) # as we started at 0
+-            batch_rewards.append(trajectory_rewards)
++            # stop time per episode
++            # Waits for everything to finish running
++            # torch.cuda.synchronize()
++            end_epoch = time.time()
++            time_elapsed = end_epoch - start_epoch
++            episode_time.append(time_elapsed)
++
++            episode_lens.append(t_episode + 1) # as we started at 0
++            episode_rewards.append(rewards)
+ 
+         # convert trajectories to torch tensors
+-        obs = torch.tensor(np.array(trajectory_obs), dtype=torch.float)
+-        next_obs = torch.tensor(np.array(trajectory_nextobs), dtype=torch.float)
+-        actions = torch.tensor(np.array(trajectory_actions), dtype=torch.float)
+-        action_log_probs = torch.tensor(np.array(trajectory_action_probs), dtype=torch.float)
+-        dones = torch.tensor(np.array(trajectory_dones), dtype=torch.float)
++        obs = torch.tensor(np.array(episode_obs), device=self.device, dtype=torch.float)
++        next_obs = torch.tensor(np.array(episode_nextobs), device=self.device, dtype=torch.float)
++        actions = torch.tensor(np.array(episode_actions), device=self.device, dtype=torch.float)
++        action_log_probs = torch.tensor(np.array(episode_action_probs), device=self.device, dtype=torch.float)
++        dones = torch.tensor(np.array(episode_dones), device=self.device, dtype=torch.float)
+ 
+-        return obs, next_obs, actions, action_log_probs, dones, batch_rewards, batch_lens
++        return obs, next_obs, actions, action_log_probs, dones, episode_rewards, episode_lens, np.array(episode_time)
+                 
+ 
+     def train(self, values, returns, advantages, batch_log_probs, curr_log_probs, epsilon):
+@@ -351,23 +449,27 @@ class PPO_PolicyGradient_V2:
+ 
+     def learn(self):
+         """"""
+-        steps = 0
+-
+-        while steps < self.total_steps:
++        training_steps = 0
++        
++        while training_steps < self.total_training_steps:
+             policy_losses, value_losses = [], []
+-            # Collect trajectory
+-            # STEP 3: simulate and collect trajectories --> the following values are all per batch
+-            obs, next_obs, actions, batch_log_probs, dones, rewards, batch_lens = self.collect_rollout(n_step=self.trajectory_iterations)
++
++            # Collect data over one episode
++            # STEP 3: simulate and collect trajectories --> the following values are all per batch over one episode
++            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time = self.collect_rollout(n_steps=self.n_rollout_steps)
+ 
+             # timesteps simulated so far for batch collection
+-            steps += np.sum(batch_lens)
++            training_steps += np.sum(ep_lens)
+ 
+-            # STEP 4-5: Calculate cummulated reward and GAE at timestep t_step
++            # STEP 4-5: Calculate cummulated reward and advantage at timestep t_step
+             values, _ , _ = self.get_values(obs, actions)
+-            # cum_returns = self.cummulative_return(rewards)
+-            # advantages = self.advantage_estimate_(cum_returns, values.detach())
+-            advantages, cum_returns = self.generalized_advantage_estimate_1(rewards, values.detach())
+-
++            # advantages, cum_returns = self.advantage_reinforce(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
++            # advantages, cum_returns = self.advantage_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
++            
++            advantages, cum_returns = self.advantage_TD_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
++            
++            # advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
++            
+             # update network params 
+             for _ in range(self.noptepochs):
+                 # STEP 6-7: calculate loss and update weights
+@@ -378,21 +480,22 @@ class PPO_PolicyGradient_V2:
+                 value_losses.append(value_loss.detach().numpy())
+ 
+             # log all statistical values to CSV
+-            self.log_stats(policy_losses, value_losses, rewards, batch_lens, steps)
+-
+-            # store model in checkpoints
+-            if steps % self.save_model == 0:
+-                env_name = env.unwrapped.spec.id
+-                policy_net_name = f'{MODEL_PATH}{env_name}_{CURR_DATE}_policyNet.pth'
+-                value_net_name = f'{MODEL_PATH}{env_name}_{CURR_DATE}_valueNet.pth'
++            self.log_stats(policy_losses, value_losses, rewards, ep_lens, training_steps, ep_time, exp_name=self.exp_name)
++
++            # store model with checkpoints
++            if training_steps % self.save_model == 0:
++                env_name = self.env.unwrapped.spec.id
++                env_model_path = os.path.join(self.exp_path, 'models')
++                policy_net_name = os.path.join(env_model_path, f'{env_name}_policyNet.pth')
++                value_net_name = os.path.join(env_model_path, f'{env_name}_valueNet.pth')
+                 torch.save({
+-                    'epoch': steps,
++                    'epoch': training_steps,
+                     'model_state_dict': self.policy_net.state_dict(),
+                     'optimizer_state_dict': self.policy_net_optim.state_dict(),
+                     'loss': policy_loss,
+                     }, policy_net_name)
+                 torch.save({
+-                    'epoch': steps,
++                    'epoch': training_steps,
+                     'model_state_dict': self.value_net.state_dict(),
+                     'optimizer_state_dict': self.value_net_optim.state_dict(),
+                     'loss': value_loss,
+@@ -410,44 +513,68 @@ class PPO_PolicyGradient_V2:
+ 
+         # Finalize and plot stats
+         if self.stats_plotter:
+-            df = self.stats_plotter.read_csv()
+-            self.stats_plotter.plot(df, x='timestep', y='mean episodic rewards', title=env_name)
++            df = self.stats_plotter.read_csv() # read all files in folder
++            self.stats_plotter.plot_seaborn_fill(df, x='timestep', y='mean episodic returns', 
++                                                y_min='min episodic returns', y_max='max episodic returns',  
++                                                title=f'{env_name}', x_label='Timestep', y_label='Mean Episodic Return', 
++                                                color='blue', smoothing=6, wandb=wandb, xlim_up=self.total_training_steps)
++
++            # self.stats_plotter.plot_box(df, x='timestep', y='mean episodic runtime', 
++            #                             title='title', x_label='Timestep', y_label='Mean Episodic Time', wandb=wandb)
++
++        # save files in path
++        wandb.save(os.path.join(self.exp_path, "*csv"))
++        # Save any files starting with "ppo"
++        wandb.save(os.path.join(wandb.run.dir, "ppo*"))
+ 
+-    def log_stats(self, p_losses, v_losses, batch_return, batch_lens, steps):
++
++    def log_stats(self, p_losses, v_losses, batch_return, episode_lens, training_steps, time, exp_name='experiment'):
+         """Calculate stats and log to W&B, CSV, logger """
+         if torch.is_tensor(batch_return):
+             batch_return = batch_return.detach().numpy()
+         # calculate stats
+-        mean_p_loss = np.mean([np.sum(loss) for loss in p_losses])
+-        mean_v_loss = np.mean([np.sum(loss) for loss in v_losses])
++        mean_p_loss = round(np.mean([np.sum(loss) for loss in p_losses]), 6)
++        mean_v_loss = round(np.mean([np.sum(loss) for loss in v_losses]), 6)
+ 
+         # Calculate the stats of an episode
+         cum_ret = [np.sum(ep_rews) for ep_rews in batch_return]
+-        mean_ep_lens = np.mean(batch_lens)
+-        mean_ep_rews = np.mean(cum_ret)
++        mean_ep_time = round(np.mean(time), 6) 
++        mean_ep_len = round(np.mean(episode_lens), 6)
++
++        # statistical values for return
++        mean_ep_ret = round(np.mean(cum_ret), 6)
++        max_ep_ret = round(np.max(cum_ret), 6)
++        min_ep_ret = round(np.min(cum_ret), 6)
++
+         # calculate standard deviation (spred of distribution)
+-        std_ep_rews = np.std(cum_ret)
++        std_ep_rew = round(np.std(cum_ret), 6)
+ 
+         # Log stats to CSV file
+-        self.stats_data['mean episodic length'].append(mean_ep_lens)
+-        self.stats_data['mean episodic rewards'].append(mean_ep_rews)
+-        self.stats_data['timestep'].append(steps)
++        self.stats_data['experiment'].append(exp_name)
++        self.stats_data['mean episodic length'].append(mean_ep_len)
++        self.stats_data['mean episodic returns'].append(mean_ep_ret)
++        self.stats_data['min episodic returns'].append(min_ep_ret)
++        self.stats_data['max episodic returns'].append(max_ep_ret)
++        self.stats_data['mean episodic runtime'].append(mean_ep_time)
++        self.stats_data['std episodic returns'].append(std_ep_rew)
++        self.stats_data['eval episodes'].append(len(cum_ret))
++        self.stats_data['timestep'].append(training_steps)
+ 
+         # Monitoring via W&B
+         wandb.log({
+-            'train/timesteps': steps,
++            'train/timesteps': training_steps,
+             'train/mean policy loss': mean_p_loss,
+             'train/mean value loss': mean_v_loss,
+-            'train/mean episode length': mean_ep_lens,
+-            'train/mean episode returns': mean_ep_rews,
+-            'train/std episode returns': std_ep_rews
++            'train/mean episode returns': mean_ep_ret,
++            'train/std episode returns': std_ep_rew,
++            'train/mean episode runtime': mean_ep_time,
++            'train/mean episode length': mean_ep_len
+         })
+ 
+         logging.info('\n')
+-        logging.info(f'------------ Episode: {steps} --------------')
+-        logging.info(f"Mean return:          {mean_ep_rews}")
++        logging.info(f'------------ Episode: {training_steps} --------------')
++        logging.info(f"Mean return:          {mean_ep_ret}")
+         logging.info(f"Mean policy loss:     {mean_p_loss}")
+         logging.info(f"Mean value loss:      {mean_v_loss}")
+         logging.info('--------------------------------------------')
+         logging.info('\n')
+-
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+index 6b0b1014..331fa54b 100644
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
++++ b/gym_pybullet_drones/gym_pybullet_drones/examples/learn.py
+@@ -31,7 +31,7 @@ from gym_pybullet_drones.utils.Logger import Logger
+ from gym_pybullet_drones.envs.single_agent_rl.TakeoffAviary import TakeoffAviary
+ from gym_pybullet_drones.utils.utils import sync, str2bool
+ 
+-import ppo_tf
++import ppo
+ 
+ DEFAULT_RLLIB = True
+ DEFAULT_GUI = True
+@@ -76,8 +76,8 @@ def run(rllib=DEFAULT_RLLIB,output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI
+                                                                                    )
+                   )
+         policy = agent.get_policy()'''
+-        ppo_tf.env_name = "takeoff-aviary-v0"
+-        ppo_tf.train()
++        ppo.env_name = "takeoff-aviary-v0"
++        ppo.train()
+         ray.shutdown()
+ 
+     #### Show (and record a video of) the model's performance ##
+@@ -97,7 +97,7 @@ def run(rllib=DEFAULT_RLLIB,output_folder=DEFAULT_OUTPUT_FOLDER, gui=DEFAULT_GUI
+                                             deterministic=True
+                                             )
+         else:
+-            action = ppo_tf.policy_net(obs.reshape(1,ppo_tf.input_length_net))
++            action = ppo.policy_net(obs.reshape(1,ppo_tf.input_length_net))
+         obs, reward, done, info = env.step(action)
+         logger.log(drone=0,
+                    timestamp=i/env.SIM_FREQ,
+diff --git a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py b/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
+deleted file mode 100644
+index 4404b81d..00000000
+--- a/gym_pybullet_drones/gym_pybullet_drones/examples/ppo_continuous.py
++++ /dev/null
+@@ -1,568 +0,0 @@
+-from collections import deque
+-import torch
+-from torch import nn
+-import torch.nn.functional as F
+-from torch.optim import Adam
+-from torch.distributions import MultivariateNormal
+-from torch.distributions import Categorical
+-from torch.utils.tensorboard import SummaryWriter
+-from distutils.util import strtobool
+-import numpy as np
+-import datetime
+-import os
+-import argparse
+-
+-# environemnts
+-import gym_pybullet_drones
+-import gym
+-
+-# logging python
+-import logging
+-import sys
+-
+-# monitoring/logging ML
+-import wandb
+-
+-MODEL_PATH = './models/'
+-
+-####################
+-####### TODO #######
+-####################
+-
+-# Hint: Please if working on it mark a todo as (done) if done
+-# 1) Check current implementation against article: https://iclr-blog-track.github.io/2022/03/25/ppo-implementation-details/
+-# 2) Check calculation of rewards --> correct mean reward over episodes? 
+-# 3) Check calculation of generalized advantage estimates (GAE)
+-
+-####################
+-####################
+-
+-class Net(nn.Module):
+-    def __init__(self) -> None:
+-        super(Net, self).__init__()
+-
+-class ValueNet(Net):
+-    """Setup Value Network (Critic) optimizer"""
+-    def __init__(self, in_dim, out_dim) -> None:
+-        super(ValueNet, self).__init__()
+-        self.layer1 = layer_init(nn.Linear(in_dim, 64))
+-        self.layer2 = layer_init(nn.Linear(64, 64))
+-        self.layer3 = layer_init(nn.Linear(64, out_dim), std=1.0)
+-        self.relu = nn.ReLU()
+-    
+-    def forward(self, obs):
+-        if isinstance(obs, np.ndarray):
+-            obs = torch.tensor(obs, dtype=torch.float)
+-        x = self.relu(self.layer1(obs))
+-        x = self.relu(self.layer2(x))
+-        out = self.layer3(x) # head has linear activation
+-        return out
+-    
+-    def loss(self, values, returns):
+-        """Objective function defined by mean-squared error"""
+-        # return 0.5 * ((rewards - values)**2).mean() # MSE loss
+-        return nn.MSELoss()(values, returns)
+-
+-class PolicyNet(Net):
+-    """Setup Policy Network (Actor)"""
+-    def __init__(self, in_dim, out_dim) -> None:
+-        super(PolicyNet, self).__init__()
+-        self.layer1 = layer_init(nn.Linear(in_dim, 64))
+-        self.layer2 = layer_init(nn.Linear(64, 64))
+-        self.layer3 = layer_init(nn.Linear(64, out_dim), std=0.01)
+-        self.relu = nn.ReLU()
+-
+-    def forward(self, obs):
+-        if isinstance(obs, np.ndarray):
+-            obs = torch.tensor(obs, dtype=torch.float)
+-        x = self.relu(self.layer1(obs))
+-        x = self.relu(self.layer2(x))
+-        out = self.layer3(x) # head has linear activation (continuous space)
+-        return out
+-    
+-    def loss(self, advantages, batch_log_probs, curr_log_probs, clip_eps=0.2):
+-        """ Make the clipped surrogate objective function to compute policy loss.
+-                - The ratio is clipped to be close to 1. 
+-                - The clipping ensures that the update will not be too large so that training is more stable.
+-                - The minimum is taken, so that the gradient will pull π_new towards π_OLD 
+-                  if the ratio is not between 1-ϵ and 1+ϵ.
+-        """
+-        ratio = torch.exp(curr_log_probs - batch_log_probs) # ratio between pi_theta(a_t | s_t) / pi_theta_k(a_t | s_t)
+-        clip_1 = ratio * advantages
+-        clip_2 = torch.clamp(ratio, 1.0 - clip_eps, 1.0 + clip_eps) * advantages
+-        policy_loss = (-torch.min(clip_1, clip_2)).mean() # negative as Adam mins loss, but we want to max it
+-        # calc clip frac
+-        self.clip_fraction = (abs((ratio - 1.0)) > clip_eps).to(torch.float).mean()
+-        return policy_loss
+-
+-
+-####################
+-####################
+-
+-
+-class PPO_PolicyGradient:
+-    """ Proximal Policy Optimization (PPO) is an online policy gradient method.
+-        As an online policy method it updates the policy and then discards the experience (no replay buffer).
+-        Thus the agent does well in environments with dense reward signals.
+-        The clipped objective function in PPO allows to keep the policy close to the policy 
+-        that was used to sample the data resulting in a more stable training. 
+-    """
+-    # Further reading
+-    # PPO experiments: https://nn.labml.ai/rl/ppo/experiment.html
+-    # PPO explained: https://huggingface.co/blog/deep-rl-ppo
+-
+-    def __init__(self, 
+-        env, 
+-        in_dim, 
+-        out_dim,
+-        total_steps,
+-        max_trajectory_size,
+-        trajectory_iterations,
+-        noptepochs=5,
+-        lr_p=1e-3,
+-        lr_v=1e-3,
+-        gamma=0.99,
+-        epsilon=0.22,
+-        adam_eps=1e-5,
+-        render=1,
+-        save_model=10) -> None:
+-        
+-        # hyperparams
+-        self.in_dim = in_dim
+-        self.out_dim = out_dim
+-        self.total_steps = total_steps
+-        self.max_trajectory_size = max_trajectory_size
+-        self.trajectory_iterations = trajectory_iterations
+-        self.noptepochs = noptepochs
+-        self.lr_p = lr_p
+-        self.lr_v = lr_v
+-        self.gamma = gamma
+-        self.epsilon = epsilon
+-        self.adam_eps = adam_eps
+-
+-        # environment
+-        self.env = env
+-        self.render_steps = render
+-        self.save_model = save_model
+-
+-        # keep track of rewards per episode
+-        self.ep_returns = deque(maxlen=max_trajectory_size)
+-
+-        # add net for actor and critic
+-        self.policy_net = PolicyNet(self.in_dim, self.out_dim) # Setup Policy Network (Actor) - (policy-based method) "How the agent behaves"
+-        self.value_net = ValueNet(self.in_dim, 1) # Setup Value Network (Critic) -  (value-based method) "How good the action taken is."
+-
+-        # add optimizer for actor and critic
+-        self.policy_net_optim = Adam(self.policy_net.parameters(), lr=self.lr_p, eps=self.adam_eps) # Setup Policy Network (Actor) optimizer
+-        self.value_net_optim = Adam(self.value_net.parameters(), lr=self.lr_v, eps=self.adam_eps)  # Setup Value Network (Critic) optimizer
+-
+-    def get_continuous_policy(self, obs):
+-        """Make function to compute action distribution in continuous action space."""
+-        # Multivariate Normal Distribution Lecture 15.7 (Andrew Ng) https://www.youtube.com/watch?v=JjB58InuTqM
+-        # fixes the detection of outliers, allows to capture correlation between features
+-        # https://discuss.pytorch.org/t/understanding-log-prob-for-normal-distribution-in-pytorch/73809
+-        # 1) Use Normal distribution for continuous space
+-        action_prob = self.policy_net(obs) # query Policy Network (Actor) for mean action
+-        cov_matrix = torch.diag(torch.full(size=(self.out_dim,), fill_value=0.5))
+-        return MultivariateNormal(action_prob, covariance_matrix=cov_matrix)
+-
+-    def get_action(self, dist):
+-        """Make action selection function (outputs actions, sampled from policy)."""
+-        action = dist.sample()
+-        log_prob = dist.log_prob(action)
+-        entropy = dist.entropy()
+-        return action, log_prob, entropy
+-    
+-    def get_values(self, obs, actions):
+-        """Make value selection function (outputs values for obs in a batch)."""
+-        values = self.value_net(obs).squeeze()
+-        dist = self.get_continuous_policy(obs)
+-        log_prob = dist.log_prob(actions)
+-        entropy = dist.entropy()
+-        return values, log_prob, entropy
+-
+-    def step(self, obs):
+-        """ Given an observation, get action and probabilities from policy network (actor)"""
+-        action_dist = self.get_continuous_policy(obs) 
+-        action, log_prob, entropy = self.get_action(action_dist)
+-        return action.detach().numpy(), log_prob.detach().numpy(), entropy.detach().numpy()
+-
+-    def cummulative_reward(self, batch_rewards):
+-        """Calculate cummulative rewards with discount factor gamma."""
+-        # Cumulative rewards: https://gongybable.medium.com/reinforcement-learning-introduction-609040c8be36
+-        # advantage function: δt = G(t) + γV (st+1) − V (st)
+-        # return value: G(t) = R(t) + gamma * R(t-1)
+-        cum_rewards = []
+-        for rewards in reversed(batch_rewards): # reversed order
+-            discounted_reward = 0
+-            for reward in reversed(rewards):
+-                discounted_reward = reward + (self.gamma * discounted_reward)
+-                cum_rewards.insert(0, discounted_reward)
+-        return torch.tensor(cum_rewards, dtype=torch.float)
+-
+-    def generalized_advantage_estimate(self, batch_rewards, values, done, normalized=True):
+-        """ Calculate advantage as a weighted average of A_t
+-            - advantage A_t gives information if this action is bettern than another at a state
+-            - done (Tensor): boolean flag for end of episode.
+-        """
+-        # general advantage estimage: https://nn.labml.ai/rl/ppo/gae.html
+-        advantages = []
+-        last_value = values[-1] # V(s_t+1)
+-        for rewards in reversed(batch_rewards):
+-            prev_advantage = 0
+-            for i in reversed(range(self.max_trajectory_size)):
+-                mask = 1.0 - done[i] # mask if episode completed after step i # TODO: Request done - true/false? 
+-                last_value = last_value * mask
+-                prev_advantage = prev_advantage * mask
+-                delta = rewards[i] + self.gamma * last_value - values[i]
+-                prev_advantage = delta + self.gamma * self.lambda_ * prev_advantage
+-                advantages.insert(0, prev_advantage) # we need to reverse it again
+-                last_value = values[i]
+-        if normalized:
+-            advantages = self.normalize_adv(advantages)
+-        return advantages
+-
+-    def advantage_estimate(self, returns, values, normalized=True):
+-        """ Advantage calculation
+-            - advantage A_t gives information if this action is bettern than another at a state
+-        """
+-        # STEP 5: compute advantage estimates A_t at step t
+-        advantages = returns - values
+-        if normalized:
+-            advantages = self.normalize_adv(advantages)
+-        return advantages
+-    
+-    def normalize_adv(self, advantages):
+-        return (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+-        
+-    def finish_episode(self):
+-        pass 
+-
+-    def collect_rollout(self, n_step=1, render=True):
+-        """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)"""
+-        
+-        step, ep_rewards = 0, []
+-
+-        # collect trajectories
+-        trajectory_obs = []
+-        trajectory_actions = []
+-        trajectory_action_probs = []
+-        trajectory_dones = []
+-        batch_rewards = []
+-        batch_lens = []
+-
+-        # Run Monte Carlo simulation for n timesteps per batch
+-        logging.info("Collecting batch trajectories...")
+-        while step < n_step:
+-            
+-            # rewards collected per episode
+-            ep_rewards, done = [], False 
+-            obs = self.env.reset()
+-
+-            # Run episode for a fixed amount of timesteps
+-            # to keep rollout size fixed and episodes independent
+-            for ep_t in range(0, self.max_trajectory_size):
+-                # render gym envs
+-                if render and ep_t % self.render_steps == 0:
+-                    self.env.render(mode='human')
+-                
+-                step += 1 
+-
+-                # action logic 
+-                # sampled via policy which defines behavioral strategy of an agent
+-                action, log_probability, _ = self.step(obs)
+-                        
+-                # STEP 3: collecting set of trajectories D_k by running action 
+-                # that was sampled from policy in environment
+-                __obs, reward, done, _ = self.env.step(action)
+-
+-                # collection of trajectories in batches
+-                trajectory_obs.append(obs)
+-                trajectory_actions.append(action)
+-                trajectory_action_probs.append(log_probability)
+-                ep_rewards.append(reward)
+-                trajectory_dones.append(done)
+-                    
+-                obs = __obs
+-
+-                # break out of loop if episode is terminated
+-                if done:
+-                    break
+-            
+-            batch_lens.append(ep_t + 1) # as we started at 0
+-            batch_rewards.append(ep_rewards)
+-
+-        # convert trajectories to torch tensors
+-        obs = torch.tensor(np.array(trajectory_obs), dtype=torch.float)
+-        actions = torch.tensor(np.array(trajectory_actions), dtype=torch.float)
+-        log_probs = torch.tensor(np.array(trajectory_action_probs), dtype=torch.float)
+-        dones = torch.tensor(np.array(trajectory_dones), dtype=torch.float)
+-        
+-        # STEP 4: Calculate cummulated reward
+-        cummulative_reward = self.cummulative_reward(batch_rewards)
+-        cummulative_reward = torch.tensor(np.array(cummulative_reward), dtype=torch.float)
+-
+-        # Calculate the stats
+-        cum_rews = [np.sum(ep_rews) for ep_rews in batch_rewards]
+-        mean_ep_lens = np.mean(batch_lens)
+-        mean_ep_rews = np.mean(cum_rews)
+-        std_ep_rews = np.std(cum_rews) # calculate standard deviation (spred of distribution)
+-        
+-        # Log stats
+-        wandb.log({
+-            "train/mean episode length": mean_ep_lens,
+-            "train/mean episode returns": mean_ep_rews,
+-            "train/std episode returns": std_ep_rews,
+-        })
+-
+-        return obs, actions, log_probs, dones, cummulative_reward, batch_lens, mean_ep_rews
+-                
+-
+-    def train(self, values, returns, advantages, batch_log_probs, curr_log_probs, epsilon):
+-        """Calculate loss and update weights of both networks."""
+-        logging.info("Updating network parameter...")
+-        # loss of the policy network
+-        self.policy_net_optim.zero_grad() # reset optimizer
+-        policy_loss = self.policy_net.loss(advantages, batch_log_probs, curr_log_probs, epsilon)
+-        policy_loss.backward() # backpropagation
+-        self.policy_net_optim.step() # single optimization step (updates parameter)
+-
+-        # loss of the value network
+-        self.value_net_optim.zero_grad() # reset optimizer
+-        value_loss = self.value_net.loss(values, returns) # TODO: discounted return 
+-        value_loss.backward()
+-        self.value_net_optim.step()
+-
+-        return policy_loss, value_loss
+-
+-    def learn(self):
+-        """"""
+-        steps = 0
+-
+-        while steps < self.total_steps:
+-        
+-            # Collect trajectory
+-            # STEP 3-4: simulate and collect trajectories --> the following values are all per batch
+-            obs, actions, log_probs, dones, cum_return, batch_lens, mean_reward = self.collect_rollout(n_step=self.trajectory_iterations)
+-            
+-            # timesteps simulated so far for batch collection
+-            steps += np.sum(batch_lens)
+-
+-            # STEP 5: compute advantage estimates A_t at timestep t_step
+-            values, _ , _ = self.get_values(obs, actions)
+-            advantages = self.advantage_estimate(cum_return, values.detach())
+-            # advantages = self.generalized_advantage_estimate(batch_rewards, values.detach(), dones)
+-            # update network params 
+-            for _ in range(self.noptepochs):
+-                # STEP 6-7: calculate loss and update weights
+-                values, curr_log_probs, _ = self.get_values(obs, actions)
+-                policy_loss, value_loss = self.train(values, cum_return, advantages, log_probs, curr_log_probs, self.epsilon)
+-
+-            logging.info('\n')
+-            logging.info('###########################################')
+-            logging.info(f"Mean return: {mean_reward}")
+-            logging.info(f"Policy loss: {policy_loss}")
+-            logging.info(f"Value loss:  {value_loss}")
+-            logging.info(f"Time step:   {steps}")
+-            logging.info('###########################################')
+-            logging.info('\n')
+-            
+-            # logging for monitoring in W&B
+-            wandb.log({
+-                'train/episode': steps,
+-                'train/policy loss': policy_loss,
+-                'train/value loss': value_loss})
+-            
+-            # store model in checkpoints
+-            if steps % self.save_model == 0:
+-                env_name = env.unwrapped.spec.id
+-                torch.save({
+-                    'epoch': steps,
+-                    'model_state_dict': self.policy_net.state_dict(),
+-                    'optimizer_state_dict': self.policy_net_optim.state_dict(),
+-                    'loss': policy_loss,
+-                    }, f'{MODEL_PATH}{env_name}__policyNet')
+-                torch.save({
+-                    'epoch': steps,
+-                    'model_state_dict': self.value_net.state_dict(),
+-                    'optimizer_state_dict': self.value_net_optim.state_dict(),
+-                    'loss': policy_loss,
+-                    }, f'{MODEL_PATH}{env_name}__valueNet')
+-                best_mean_reward = mean_reward
+-
+-####################
+-####################
+-
+-def arg_parser():
+-    parser = argparse.ArgumentParser()
+-    # fmt: off
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument("--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"),
+-        help="the name of this experiment")
+-    parser.add_argument("--gym-id", type=str, default="HalfCheetahBulletEnv-v0",
+-        help="the id of the gym environment")
+-    parser.add_argument("--learning-rate", type=float, default=3e-4,
+-        help="the learning rate of the optimizer")
+-    parser.add_argument("--seed", type=int, default=1,
+-        help="seed of the experiment")
+-    parser.add_argument("--total-timesteps", type=int, default=2000000,
+-        help="total timesteps of the experiments")
+-    parser.add_argument("--torch-deterministic", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
+-        help="if toggled, `torch.backends.cudnn.deterministic=False`")
+-    parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
+-        help="if toggled, cuda will be enabled by default")
+-    
+-    # Parse arguments if they are given
+-    args = parser.parse_args()
+-    return args
+-
+-def make_env(env_id='Pendulum-v1', gym_wrappers=False, seed=42):
+-    # generate gym env
+-    env = gym.make(env_id)
+-    # gym wrapper
+-    if gym_wrappers:
+-        env = gym.wrappers.ClipAction(env)
+-        env = gym.wrappers.NormalizeObservation(env)
+-        env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
+-        env = gym.wrappers.NormalizeReward(env)
+-        env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -10, 10))
+-    
+-    # seed env for reproducability
+-    env.seed(seed)
+-    env.action_space.seed(seed)
+-    env.observation_space.seed(seed)
+-    return env
+-
+-def make_vec_env(num_env=1):
+-    """ Create a vectorized environment for parallelized training."""
+-    pass
+-
+-def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
+-    """ Initialize the hidden layers with orthogonal initialization
+-        Engstrom, Ilyas, et al., (2020)
+-    """
+-    torch.nn.init.orthogonal_(layer.weight, std)
+-    torch.nn.init.constant_(layer.bias, bias_const)
+-    return layer
+-
+-def train():
+-    # TODO Add Checkpoints to load model 
+-    pass
+-
+-def test():
+-    pass
+-
+-if __name__ == '__main__':
+-    
+-    """ Classic control gym environments 
+-        Find docu: https://www.gymlibrary.dev/environments/classic_control/
+-    """
+-    if not os.path.exists(MODEL_PATH):
+-        os.makedirs(MODEL_PATH)
+-
+-    args = arg_parser()
+-    
+-    # Hyperparameter
+-    unity_file_name = ''            # name of unity environment
+-    total_steps = 30000000          # time steps to train agent
+-    max_trajectory_size = 1000      # max number of trajectory samples to be sampled per time step. 
+-    trajectory_iterations = 4600    # number of batches of episodes
+-    noptepochs = 5                  # Number of epochs per time step to optimize the neural networks
+-    learning_rate_p = 1e-4          # learning rate for policy network
+-    learning_rate_v = 1e-3          # learning rate for value network
+-    gae_lambda = 0.95               # trajectory discount for the general advantage estimation (GAE)
+-    gamma = 0.99                    # discount factor
+-    adam_epsilon = 1e-8             # default in the PPO baseline implementation is 1e-5, the pytorch default is 1e-8 - Andrychowicz, et al. (2021)  uses 0.9
+-    epsilon = 0.2                   # clipping factor
+-    env_name = 'takeoff-aviary-v0'  # name of OpenAI gym environment other: 'Pendulum-v1' , 'MountainCarContinuous-v0'
+-    env_number = 8                  # number of actors
+-    seed = 42                       # seed gym, env, torch, numpy 
+-    
+-    # setup for torch save models and rendering
+-    render_steps = 10
+-    save_steps = 10
+-
+-    # Configure logger
+-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+-    
+-    # seed gym, torch and numpy
+-    env = make_env(env_name, seed=seed)
+-
+-    torch.manual_seed(seed)
+-    np.random.seed(seed)
+-    torch.backends.cudnn.deterministic = args.torch_deterministic
+-
+-    # get correct device
+-    device = torch.device("cuda" if torch.cuda.is_available() and args.cuda else "cpu")
+-
+-    # get dimensions of obs (what goes in?)
+-    # and actions (what goes out?)
+-    obs_shape = env.observation_space.shape
+-    act_shape = env.action_space.shape
+-
+-    logging.info(f'env observation space: {obs_shape}')
+-    logging.info(f'env action space: {act_shape}')
+-    
+-    obs_dim = obs_shape[0] 
+-    act_dim = act_shape[0]
+-
+-    logging.info(f'env observation dim: {obs_dim}')
+-    logging.info(f'env action dim: {act_dim}')
+-    
+-    # upper and lower bound describing the values our obs can take
+-    logging.info(f'upper bound for env observation: {env.observation_space.high}')
+-    logging.info(f'lower bound for env observation: {env.observation_space.low}')
+-    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+-   
+-    # Monitoring with W&B
+-    wandb.init(
+-    project=f'drone-mechanics-ppo-OpenAIGym',
+-    entity='drone-mechanics',
+-    sync_tensorboard=True,
+-    config={ # stores hyperparams in job
+-            'total number of steps': total_steps,
+-            'max sampled trajectories': max_trajectory_size,
+-            'batches per episode': trajectory_iterations,
+-            'number of epochs for update': noptepochs,
+-            'input layer size': obs_dim,
+-            'output layer size': act_dim,
+-            'learning rate (policy net)': learning_rate_p,
+-            'learning rate (value net)': learning_rate_v,
+-            'epsilon (adam optimizer)': adam_epsilon,
+-            'gamma (discount)': gamma,
+-            'epsilon (clipping)': epsilon,
+-            'lambda (gae)': gae_lambda,
+-            'observations shape': obs_shape,
+-            'actions shape': act_shape,
+-            'actions dimensions': act_dim,
+-            'observations dimensions': obs_dim,
+-            'seed': seed,
+-        },
+-    name=f"{env_name}__{current_time}",
+-    monitor_gym=True,
+-    save_code=True,
+-    )
+-
+-    agent = PPO_PolicyGradient(
+-                env, 
+-                in_dim=obs_dim, 
+-                out_dim=act_dim,
+-                total_steps=total_steps,
+-                max_trajectory_size=max_trajectory_size,
+-                trajectory_iterations=trajectory_iterations,
+-                noptepochs=noptepochs,
+-                lr_p=learning_rate_p,
+-                lr_v=learning_rate_v,
+-                gamma=gamma,
+-                epsilon=epsilon,
+-                adam_eps=adam_epsilon,
+-                render=render_steps,
+-                save_model=save_steps)
+-    
+-    # run training for a total amount of steps
+-    agent.learn()
+-    logging.info('### Done ###')
+-
+-    # cleanup 
+-    env.close()
+-    wandb.run.finish() if wandb and wandb.run else None
+\ No newline at end of file

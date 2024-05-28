@@ -1,0 +1,10 @@
+
+INFO:root:Evaluation model...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 314, in <module>
+    test(args.model_path, env, in_dim=obs_dim, out_dim=act_dim, n_steps=1000, device=device)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 145, in test
+    policy_net = load_model(model_path, policy_net, device)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 90, in load_model
+    model.load_state_dict(checkpoint['model_state_dict'], map_location=device)
+TypeError: Module.load_state_dict() got an unexpected keyword argument 'map_location'

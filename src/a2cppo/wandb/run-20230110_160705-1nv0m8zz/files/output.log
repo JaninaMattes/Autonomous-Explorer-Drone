@@ -1,0 +1,15 @@
+INFO:root:Training model...
+INFO:root:Collecting batch trajectories...
+INFO:root:Updating network parameter...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 949, in <module>
+    train(env,
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 805, in train
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 554, in learn
+    policy_loss, value_loss = self.train(values, cum_returns, advantages, batch_log_probs, curr_log_probs, self.epsilon)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 519, in train
+    policy_loss = self.policy_net.loss(advantages, batch_log_probs, curr_log_probs, epsilon)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 100, in loss
+    clip_1 = ratio * advantages
+RuntimeError: The size of tensor a (2600) must match the size of tensor b (200) at non-singleton dimension 1

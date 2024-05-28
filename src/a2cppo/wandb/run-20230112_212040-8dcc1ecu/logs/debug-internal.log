@@ -1,0 +1,230 @@
+2023-01-12 21:20:40,370 INFO    StreamThr :10001 [internal.py:wandb_internal():87] W&B internal server running at pid: 10001, started at: 2023-01-12 21:20:40.370448
+2023-01-12 21:20:40,371 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: status
+2023-01-12 21:20:40,374 INFO    WriterThread:10001 [datastore.py:open_for_write():85] open: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/run-8dcc1ecu.wandb
+2023-01-12 21:20:40,375 DEBUG   SenderThread:10001 [sender.py:send():334] send: header
+2023-01-12 21:20:40,389 DEBUG   SenderThread:10001 [sender.py:send():334] send: run
+2023-01-12 21:20:40,931 INFO    SenderThread:10001 [dir_watcher.py:__init__():216] watching files in: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files
+2023-01-12 21:20:40,931 INFO    SenderThread:10001 [sender.py:_start_run_threads():1065] run started: 8dcc1ecu with start time 1673554840.370027
+2023-01-12 21:20:40,932 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: summary_record
+2023-01-12 21:20:40,933 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-12 21:20:40,937 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: check_version
+2023-01-12 21:20:40,937 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: check_version
+2023-01-12 21:20:41,095 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: run_start
+2023-01-12 21:20:41,105 DEBUG   HandlerThread:10001 [system_info.py:__init__():31] System info init
+2023-01-12 21:20:41,105 DEBUG   HandlerThread:10001 [system_info.py:__init__():46] System info init done
+2023-01-12 21:20:41,105 INFO    HandlerThread:10001 [system_monitor.py:start():151] Starting system monitor
+2023-01-12 21:20:41,105 INFO    SystemMonitor:10001 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-12 21:20:41,105 INFO    HandlerThread:10001 [system_monitor.py:probe():172] Collecting system info
+2023-01-12 21:20:41,105 INFO    SystemMonitor:10001 [interfaces.py:start():168] Started cpu
+2023-01-12 21:20:41,106 INFO    SystemMonitor:10001 [interfaces.py:start():168] Started disk
+2023-01-12 21:20:41,107 INFO    SystemMonitor:10001 [interfaces.py:start():168] Started gpuapple
+2023-01-12 21:20:41,108 DEBUG   HandlerThread:10001 [system_info.py:probe():195] Probing system
+2023-01-12 21:20:41,109 INFO    SystemMonitor:10001 [interfaces.py:start():168] Started memory
+2023-01-12 21:20:41,109 INFO    SystemMonitor:10001 [interfaces.py:start():168] Started network
+2023-01-12 21:20:41,113 DEBUG   HandlerThread:10001 [system_info.py:_probe_git():180] Probing git
+2023-01-12 21:20:41,129 DEBUG   HandlerThread:10001 [system_info.py:_probe_git():188] Probing git done
+2023-01-12 21:20:41,129 DEBUG   HandlerThread:10001 [system_info.py:probe():241] Probing system done
+2023-01-12 21:20:41,130 DEBUG   HandlerThread:10001 [system_monitor.py:probe():181] {'os': 'macOS-13.0.1-arm64-arm-64bit', 'python': '3.10.8', 'heartbeatAt': '2023-01-12T20:20:41.108926', 'startedAt': '2023-01-12T20:20:40.353049', 'docker': None, 'cuda': None, 'args': ('--train', 'True', '--exp-name', '(seperate network, actor-critic advantage)'), 'state': 'running', 'program': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py', 'codePath': 'PPO/ppo_torch/ppo_continuous.py', 'git': {'remote': 'git@github.com:bkunters/ml-explorer-drone.git', 'commit': 'f1a2638ad1144e1517ff103fadabcbfeac5bd23f'}, 'email': 'janina.alica.mattes@gmail.com', 'root': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone', 'host': 'Janinas-MacBook-Pro.local', 'username': 'janinaalicamattes', 'executable': '/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/bin/python', 'cpu_count': 8, 'cpu_count_logical': 8, 'disk': {'total': 460.4317207336426, 'used': 10.886878967285156}, 'gpuapple': {'type': 'arm', 'vendor': 'Apple'}, 'memory': {'total': 16.0}}
+2023-01-12 21:20:41,130 INFO    HandlerThread:10001 [system_monitor.py:probe():182] Finished collecting system info
+2023-01-12 21:20:41,130 INFO    HandlerThread:10001 [system_monitor.py:probe():185] Publishing system info
+2023-01-12 21:20:41,130 DEBUG   HandlerThread:10001 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-01-12 21:20:41,130 DEBUG   HandlerThread:10001 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-12 21:20:41,130 DEBUG   HandlerThread:10001 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-01-12 21:20:41,935 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/conda-environment.yaml
+2023-01-12 21:20:41,935 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/wandb-summary.json
+2023-01-12 21:20:41,935 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/requirements.txt
+2023-01-12 21:20:43,126 DEBUG   HandlerThread:10001 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-12 21:20:43,126 DEBUG   HandlerThread:10001 [system_info.py:_save_code():89] Saving code
+2023-01-12 21:20:43,132 DEBUG   HandlerThread:10001 [system_info.py:_save_code():110] Saving code done
+2023-01-12 21:20:43,132 DEBUG   HandlerThread:10001 [system_info.py:_save_patches():127] Saving git patches
+2023-01-12 21:20:43,207 DEBUG   HandlerThread:10001 [system_info.py:_save_patches():169] Saving git patches done
+2023-01-12 21:20:43,208 INFO    HandlerThread:10001 [system_monitor.py:probe():187] Finished publishing system info
+2023-01-12 21:20:43,212 DEBUG   SenderThread:10001 [sender.py:send():334] send: files
+2023-01-12 21:20:43,212 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file wandb-metadata.json with policy now
+2023-01-12 21:20:43,212 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file code/PPO/ppo_torch/ppo_continuous.py with policy now
+2023-01-12 21:20:43,212 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file diff.patch with policy now
+2023-01-12 21:20:43,217 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: stop_status
+2023-01-12 21:20:43,218 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: stop_status
+2023-01-12 21:20:43,578 INFO    Thread-17 :10001 [upload_job.py:push():123] Skipped uploading /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmp_9hhpfzowandb/r9tkcaa9-code/PPO/ppo_torch/ppo_continuous.py
+2023-01-12 21:20:43,584 DEBUG   SenderThread:10001 [sender.py:send():334] send: telemetry
+2023-01-12 21:20:43,678 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-12 21:20:43,680 DEBUG   SenderThread:10001 [sender.py:send():334] send: history
+2023-01-12 21:20:43,680 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: summary_record
+2023-01-12 21:20:43,681 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-12 21:20:43,681 DEBUG   SenderThread:10001 [sender.py:send():334] send: telemetry
+2023-01-12 21:20:43,681 DEBUG   SenderThread:10001 [sender.py:send():334] send: files
+2023-01-12 21:20:43,681 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth with policy live
+2023-01-12 21:20:43,682 DEBUG   SenderThread:10001 [sender.py:send():334] send: files
+2023-01-12 21:20:43,682 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth with policy live
+2023-01-12 21:20:43,942 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/conda-environment.yaml
+2023-01-12 21:20:43,943 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/wandb-summary.json
+2023-01-12 21:20:43,943 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/code/PPO/ppo_torch/ppo_continuous.py
+2023-01-12 21:20:43,943 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/diff.patch
+2023-01-12 21:20:43,943 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth
+2023-01-12 21:20:43,944 INFO    Thread-16 :10001 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmp_9hhpfzowandb/tdlsqb5n-wandb-metadata.json
+2023-01-12 21:20:43,944 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/wandb-metadata.json
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/output.log
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/code
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/code/PPO
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039/models
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039
+2023-01-12 21:20:43,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/code/PPO/ppo_torch
+2023-01-12 21:20:44,139 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-12 21:20:44,141 DEBUG   SenderThread:10001 [sender.py:send():334] send: history
+2023-01-12 21:20:44,141 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: summary_record
+2023-01-12 21:20:44,142 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-12 21:20:44,143 DEBUG   SenderThread:10001 [sender.py:send():334] send: files
+2023-01-12 21:20:44,143 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth with policy live
+2023-01-12 21:20:44,143 DEBUG   SenderThread:10001 [sender.py:send():334] send: files
+2023-01-12 21:20:44,143 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth with policy live
+2023-01-12 21:20:44,303 DEBUG   SenderThread:10001 [sender.py:send():334] send: exit
+2023-01-12 21:20:44,303 INFO    SenderThread:10001 [sender.py:send_exit():557] handling exit code: 1
+2023-01-12 21:20:44,303 INFO    SenderThread:10001 [sender.py:send_exit():559] handling runtime: 3
+2023-01-12 21:20:44,303 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-12 21:20:44,303 INFO    SenderThread:10001 [sender.py:send_exit():565] send defer
+2023-01-12 21:20:44,304 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:44,304 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 0
+2023-01-12 21:20:44,304 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:44,304 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 0
+2023-01-12 21:20:44,304 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 1
+2023-01-12 21:20:44,304 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:44,304 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 1
+2023-01-12 21:20:44,304 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:44,304 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 1
+2023-01-12 21:20:44,304 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 2
+2023-01-12 21:20:44,304 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:44,304 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 2
+2023-01-12 21:20:44,304 INFO    HandlerThread:10001 [system_monitor.py:finish():161] Stopping system monitor
+2023-01-12 21:20:44,322 DEBUG   SystemMonitor:10001 [system_monitor.py:_start():130] Starting system metrics aggregation loop
+2023-01-12 21:20:44,322 DEBUG   SystemMonitor:10001 [system_monitor.py:_start():137] Finished system metrics aggregation loop
+2023-01-12 21:20:44,322 DEBUG   SystemMonitor:10001 [system_monitor.py:_start():141] Publishing last batch of metrics
+2023-01-12 21:20:44,323 INFO    HandlerThread:10001 [interfaces.py:finish():175] Joined cpu
+2023-01-12 21:20:44,323 INFO    HandlerThread:10001 [interfaces.py:finish():175] Joined disk
+2023-01-12 21:20:44,593 INFO    HandlerThread:10001 [interfaces.py:finish():175] Joined gpuapple
+2023-01-12 21:20:44,593 INFO    HandlerThread:10001 [interfaces.py:finish():175] Joined memory
+2023-01-12 21:20:44,593 INFO    HandlerThread:10001 [interfaces.py:finish():175] Joined network
+2023-01-12 21:20:44,594 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:44,594 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 2
+2023-01-12 21:20:44,594 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 3
+2023-01-12 21:20:44,594 DEBUG   SenderThread:10001 [sender.py:send():334] send: telemetry
+2023-01-12 21:20:44,594 DEBUG   SenderThread:10001 [sender.py:send():334] send: stats
+2023-01-12 21:20:44,594 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:44,594 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 3
+2023-01-12 21:20:44,594 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:44,594 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 3
+2023-01-12 21:20:44,594 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 4
+2023-01-12 21:20:44,594 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:44,594 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 4
+2023-01-12 21:20:44,594 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:44,594 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 4
+2023-01-12 21:20:44,594 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 5
+2023-01-12 21:20:44,594 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:44,594 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 5
+2023-01-12 21:20:44,595 DEBUG   SenderThread:10001 [sender.py:send():334] send: summary
+2023-01-12 21:20:44,605 INFO    SenderThread:10001 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-12 21:20:44,612 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:44,612 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 5
+2023-01-12 21:20:44,612 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 6
+2023-01-12 21:20:44,612 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:44,612 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 6
+2023-01-12 21:20:44,618 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:44,618 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 6
+2023-01-12 21:20:44,626 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: status_report
+2023-01-12 21:20:44,866 INFO    Thread-19 :10001 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmp_9hhpfzowandb/shtovrki-log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth
+2023-01-12 21:20:44,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/wandb-summary.json
+2023-01-12 21:20:44,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth
+2023-01-12 21:20:44,945 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth
+2023-01-12 21:20:44,947 INFO    Thread-20 :10001 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmp_9hhpfzowandb/3812m6b5-log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth
+2023-01-12 21:20:44,975 INFO    Thread-18 :10001 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmp_9hhpfzowandb/safqmk2y-diff.patch
+2023-01-12 21:20:45,026 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 7
+2023-01-12 21:20:45,027 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:45,027 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 7
+2023-01-12 21:20:45,027 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:45,027 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 7
+2023-01-12 21:20:45,306 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: poll_exit
+2023-01-12 21:20:45,676 INFO    Thread-21 :10001 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmp_9hhpfzowandb/02tg271q-log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth
+2023-01-12 21:20:45,751 INFO    Thread-22 :10001 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmp_9hhpfzowandb/625u22yv-log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth
+2023-01-12 21:20:45,951 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/config.yaml
+2023-01-12 21:20:45,951 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/output.log
+2023-01-12 21:20:46,315 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 8
+2023-01-12 21:20:46,316 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: poll_exit
+2023-01-12 21:20:46,316 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:46,316 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 8
+2023-01-12 21:20:46,316 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:46,316 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 8
+2023-01-12 21:20:46,334 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 9
+2023-01-12 21:20:46,334 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:46,334 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 9
+2023-01-12 21:20:46,335 DEBUG   SenderThread:10001 [sender.py:send():334] send: artifact
+2023-01-12 21:20:46,957 INFO    Thread-13 :10001 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/output.log
+2023-01-12 21:20:48,050 INFO    Thread-26 :10001 [upload_job.py:push():98] Skipped uploading /Users/janinaalicamattes/Library/Application Support/wandb/artifacts/staging/tmpt022ycyl
+2023-01-12 21:20:48,051 INFO    Thread-25 :10001 [upload_job.py:push():98] Skipped uploading /Users/janinaalicamattes/Library/Application Support/wandb/artifacts/staging/tmpwsuav3et
+2023-01-12 21:20:49,488 INFO    Thread-24 :10001 [upload_job.py:push():101] Uploaded file /Users/janinaalicamattes/Library/Application Support/wandb/artifacts/staging/tmpla7oqt2f
+2023-01-12 21:20:50,328 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-12 21:20:51,154 INFO    SenderThread:10001 [sender.py:send_artifact():1415] sent artifact job-git_github.com_bkunters_ml-explorer-drone.git_PPO_ppo_torch_ppo_continuous.py - {'id': 'QXJ0aWZhY3Q6MzIyNTY4MTkw', 'digest': '365194a41663b9f5d945d99bb21882a7', 'state': 'PENDING', 'aliases': [], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjQ5MjU0ODky', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6MzIyNTY3MTE5', 'versionIndex': 59}}, 'version': 'latest'}
+2023-01-12 21:20:51,154 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:51,154 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 9
+2023-01-12 21:20:51,154 INFO    SenderThread:10001 [dir_watcher.py:finish():362] shutting down directory watcher
+2023-01-12 21:20:51,984 INFO    SenderThread:10001 [dir_watcher.py:finish():392] scan: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files
+2023-01-12 21:20:51,985 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/conda-environment.yaml conda-environment.yaml
+2023-01-12 21:20:51,985 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/config.yaml config.yaml
+2023-01-12 21:20:51,985 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/diff.patch diff.patch
+2023-01-12 21:20:51,986 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/output.log output.log
+2023-01-12 21:20:51,988 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/requirements.txt requirements.txt
+2023-01-12 21:20:51,990 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/wandb-metadata.json wandb-metadata.json
+2023-01-12 21:20:51,990 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/wandb-summary.json wandb-summary.json
+2023-01-12 21:20:51,997 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/code/PPO/ppo_torch/ppo_continuous.py code/PPO/ppo_torch/ppo_continuous.py
+2023-01-12 21:20:51,998 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_policyNet.pth
+2023-01-12 21:20:51,998 INFO    SenderThread:10001 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth log/exp_Pendulum-v1_20230112-212039/models/Pendulum-v1_valueNet.pth
+2023-01-12 21:20:51,998 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 10
+2023-01-12 21:20:51,999 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:51,999 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 10
+2023-01-12 21:20:51,999 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: status_report
+2023-01-12 21:20:51,999 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:51,999 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 10
+2023-01-12 21:20:52,000 INFO    SenderThread:10001 [file_pusher.py:finish():160] shutting down file pusher
+2023-01-12 21:20:52,830 INFO    Thread-27 :10001 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/conda-environment.yaml
+2023-01-12 21:20:52,925 INFO    Thread-31 :10001 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/wandb-summary.json
+2023-01-12 21:20:52,927 INFO    Thread-28 :10001 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/config.yaml
+2023-01-12 21:20:52,936 INFO    Thread-30 :10001 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/requirements.txt
+2023-01-12 21:20:53,065 INFO    Thread-29 :10001 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/files/output.log
+2023-01-12 21:20:53,271 INFO    Thread-12 (_thread_body):10001 [sender.py:transition_state():585] send defer: 11
+2023-01-12 21:20:53,271 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:53,272 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 11
+2023-01-12 21:20:53,272 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:53,272 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 11
+2023-01-12 21:20:53,272 INFO    SenderThread:10001 [file_pusher.py:join():165] waiting for file pusher
+2023-01-12 21:20:53,272 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 12
+2023-01-12 21:20:53,273 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:53,273 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 12
+2023-01-12 21:20:53,273 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:53,273 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 12
+2023-01-12 21:20:53,475 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 13
+2023-01-12 21:20:53,475 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:53,476 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 13
+2023-01-12 21:20:53,476 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:53,476 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 13
+2023-01-12 21:20:53,476 INFO    SenderThread:10001 [sender.py:transition_state():585] send defer: 14
+2023-01-12 21:20:53,477 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: defer
+2023-01-12 21:20:53,477 INFO    HandlerThread:10001 [handler.py:handle_request_defer():170] handle defer: 14
+2023-01-12 21:20:53,477 DEBUG   SenderThread:10001 [sender.py:send():334] send: final
+2023-01-12 21:20:53,478 DEBUG   SenderThread:10001 [sender.py:send():334] send: footer
+2023-01-12 21:20:53,478 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: defer
+2023-01-12 21:20:53,478 INFO    SenderThread:10001 [sender.py:send_request_defer():581] handle sender defer: 14
+2023-01-12 21:20:53,479 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: poll_exit
+2023-01-12 21:20:53,480 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: poll_exit
+2023-01-12 21:20:53,480 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: server_info
+2023-01-12 21:20:53,481 DEBUG   SenderThread:10001 [sender.py:send_request():361] send_request: server_info
+2023-01-12 21:20:53,482 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: get_summary
+2023-01-12 21:20:53,483 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: sampled_history
+2023-01-12 21:20:53,729 INFO    MainThread:10001 [wandb_run.py:_footer_history_summary_info():3427] rendering history
+2023-01-12 21:20:53,729 INFO    MainThread:10001 [wandb_run.py:_footer_history_summary_info():3459] rendering summary
+2023-01-12 21:20:53,730 INFO    MainThread:10001 [wandb_run.py:_footer_sync_info():3383] logging synced files
+2023-01-12 21:20:53,730 DEBUG   HandlerThread:10001 [handler.py:handle_request():144] handle_request: shutdown
+2023-01-12 21:20:53,730 INFO    HandlerThread:10001 [handler.py:finish():841] shutting down handler
+2023-01-12 21:20:54,482 INFO    WriterThread:10001 [datastore.py:close():299] close: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230112_212040-8dcc1ecu/run-8dcc1ecu.wandb
+2023-01-12 21:20:54,732 INFO    SenderThread:10001 [sender.py:finish():1491] shutting down sender
+2023-01-12 21:20:54,732 INFO    SenderThread:10001 [file_pusher.py:finish():160] shutting down file pusher
+2023-01-12 21:20:54,733 INFO    SenderThread:10001 [file_pusher.py:join():165] waiting for file pusher

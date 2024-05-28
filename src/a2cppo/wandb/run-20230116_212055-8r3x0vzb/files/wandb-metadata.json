@@ -1,0 +1,41 @@
+{
+    "os": "macOS-13.0.1-arm64-arm-64bit",
+    "python": "3.10.8",
+    "heartbeatAt": "2023-01-16T20:20:57.675382",
+    "startedAt": "2023-01-16T20:20:55.864627",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--hyperparam",
+        "True",
+        "--exp-name",
+        "(actor-critic advantage, normalize ret/adv)",
+        "--project-name",
+        "OpenAIGym-PPO"
+    ],
+    "state": "running",
+    "program": "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py",
+    "codePath": "PPO/ppo_torch/ppo_continuous.py",
+    "git": {
+        "remote": "git@github.com:bkunters/ml-explorer-drone.git",
+        "commit": "a4dbe4792a9275886b11851bab110dbbab209001"
+    },
+    "email": "janina.alica.mattes@gmail.com",
+    "root": "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone",
+    "host": "Janinas-MacBook-Pro.local",
+    "username": "janinaalicamattes",
+    "executable": "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "total": 460.4317207336426,
+        "used": 10.886878967285156
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

@@ -46,7 +46,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/blob/master/">
-    <img src="images/quadcopter.png" alt="Logo" width="350" height="220">
+    <img src="img/drone/quadcopter.png" alt="Logo" width="350" height="220">
   </a>
 
   <h3 align="center">Autonomous Explorer Drone</h3>
@@ -99,18 +99,30 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The design of a control system for an agile mobile robot in the continuous domain is a central question in robotics. This project specifically addresses the challenge of autonomous drone flight. Reinforcement learning (RL) is utilized as it can directly optimize a task-level objective and leverage domain randomization to handle model uncertainty, enabling the discovery of more robust control responses.
+The design of a control system for an agile mobile robot in the continuous domain is a central question in robotics. This project specifically addresses the challenge of autonomous drone flight. Model-free reinforcement learning (RL) is utilized as it can directly optimize a task-level objective and leverage domain randomization to handle model uncertainty, enabling the discovery of more robust control responses. The task analyzed in the following is a single agent stabilization task.
+
+### Drone Model and Simulation
+The ```gym-pybullet-drones``` environment is based on the ```Crazyflie 2.x``` nanoquadcopter. It implements the
+ ```OpenAI gym``` API for single or multi-agent reinforcement learning (MARL).
+
+ <div align="center">
+  <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
+    <img src="img/drone/drone_config.png" alt="Logo" width="400" height="320">
+  </a>
+  <br>
+<small>Fig. 1: The three types of <code>gym-pybullet-drones</code> models, as well as the forces and torques acting on each vehicle.</small>
+</div>
 
 ### Training Result
 
-The following displays a training result where the model has learned to control the four rotors to overcome simulated gravity forces by the physics engine and go into steady flight.
+The following shows a training result where the agent has learned to control the four independent rotors to overcome simulated physical forces (e.g. gravity) by the Bullet physics engine, stabilize and go into steady flight.
 
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
-    <img src="images/gifs/drone-flight-takeoff.gif" alt="Logo" width="400" height="320">
+    <img src="img/gifs/drone-flight-takeoff.gif" alt="Logo" width="400" height="320">
   </a>
   <br>
-<small>Fig. 1: Illustration of the drone's steady flight during inference.</small>
+<small>Fig. 2: Rendering of a <code>gym-pybullet-drones</code> stable flight with a Crazyflie 2.x during inference.</small>
 </div>
 
 #### PPO Actor-Critic Architecture
@@ -118,9 +130,9 @@ The following displays a training result where the model has learned to control 
 In this project the policy gradient method is used for training with a custom implementation of [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf).
 
 <div align="center">
-  <img src="images/architecture/architecture.png" alt="Logo" width="500">
+  <img src="img/architecture/architecture.png" alt="Logo" width="500">
   <br>
-  <small>Fig. 2: Overview of the Actor-Critic Proximal Policy Optimisation Algorithm process</small>
+  <small>Fig. 3: Overview of the Actor-Critic Proximal Policy Optimisation Algorithm process</small>
 </div>
 </br>
 
@@ -148,7 +160,7 @@ The observation space is defined through the quadrotor state, which includes the
 
 #### Reward Function
 
-The reward function is defined as follows:
+The reward function defines the problem specification as follows:
 
 $$
 \text{Reward} =
@@ -171,10 +183,10 @@ The environment is a custom OpenAI Gym environment built using PyBullet for mult
 
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
-    <img src="images/pybullet.png" alt="Logo" width="450" height="">
+    <img src="img/pybullet.png" alt="Logo" width="450" height="">
   </a>
   </br>
-  <small>Fig. 3: 3D simulation of the drone's orientation in the x, y, and z axes.</small>
+  <small>Fig. 4: 3D simulation of the drone's orientation in the x, y, and z axes.</small>
 </div>
 
 #### PID Controller
@@ -185,7 +197,7 @@ The environment is a custom OpenAI Gym environment built using PyBullet for mult
 
 ### Built With
 
-The project was developed using Python and the PyTorch machine learning framework. To simulate the quadrotor's environment, the PyBullet physics engine is leveraged. Further, to streamline the development process and avoid potential issues, the pre-built PyBullet drone implementation provided by the [gym-pybullet-drones library](https://github.com/utiasDSL/gym-pybullet-drones) is utilized.
+The project was developed using Python and the PyTorch machine learning framework. To simulate the quadrotor's environment, the Bullet physics engine is leveraged. Further, to streamline the development process and avoid potential issues, the pre-built PyBullet drone implementation provided by the [gym-pybullet-drones library](https://github.com/utiasDSL/gym-pybullet-drones) is utilized.
 
 
 Programming Languages-Frameworks-Tools<br /><br />
@@ -201,30 +213,40 @@ Programming Languages-Frameworks-Tools<br /><br />
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
-### Prerequisites
+### Requirements and Installation
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+This repository was written using Python 3.10 and Anaconda tested on macOS 14.4.1.
 
-### Installation
+#### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+_Major dependencies are gym, pybullet, stable-baselines3, and rllib_
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+1. Create virtual environment and install major dependencies 
    ```
-3. Install NPM packages
-   ```sh
-   npm install
+    $ pip3 install --upgrade numpy matplotlib Pillow cycler 
+    $ pip3 install --upgrade gym pybullet stable_baselines3 'ray[rllib]' 
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+
+   or requirements.txt
+   ```
+   $ pip install -r requirements_pybullet.txt
+   ```
+
+2. Video recording requires to have ```ffmpeg``` installed, on macOS
+   ```
+   $ brew install ffmpeg
+   ```
+
+   or on Ubuntu
+   ```
+   $ sudo apt install ffmpeg
+   ```
+
+3. The ```gym-pybullet-drones``` repo is structured as a Gym Environment and can be installed with pip install --editable
+
+   ```
+   $ cd gym-pybullet-drones/
+   $ pip3 install -e .
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

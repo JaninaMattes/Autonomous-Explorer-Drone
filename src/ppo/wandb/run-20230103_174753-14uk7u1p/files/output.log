@@ -1,7 +1,0 @@
-/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py:830: ExperimentalWarning: WeightsAndBiasesCallback is experimental (supported from v2.9.0). The interface can change in the future.
-  wandbc = WeightsAndBiasesCallback(wandb_kwargs=wandb_kwargs, as_multirun=True)
-/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py:832: ExperimentalWarning: track_in_wandb is experimental (supported from v3.0.0). The interface can change in the future.
-  @wandbc.track_in_wandb()
-[32m[I 2023-01-03 17:47:56,474][39m A new study created in memory with name: no-name-eb14a9b6-fd06-40a8-aa6a-71304c96d033
-[32m[I 2023-01-03 17:47:56,475][39m Trial 0 finished with value: 46.10581811799315 and parameters: {'x': 8.790126517082959}. Best is trial 0 with value: 46.10581811799315.
-[34m[1mwandb[39m[22m: [33mWARNING[39m Step cannot be set when using syncing with tensorboard. Please log your step values as a metric such as 'global_step'

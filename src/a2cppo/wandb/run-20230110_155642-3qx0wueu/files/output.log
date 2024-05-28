@@ -1,0 +1,14 @@
+INFO:root:Training model...
+INFO:root:Collecting batch trajectories...
+/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py:298: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+  advantages = torch.tensor(np.array(advantages), dtype=torch.float)
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 946, in <module>
+    train(env,
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 802, in train
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 546, in learn
+    advantages, cum_returns = self.advantage_estimate(rewards, values)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 298, in advantage_estimate
+    advantages = torch.tensor(np.array(advantages), dtype=torch.float)
+TypeError: can't convert np.ndarray of type numpy.object_. The only supported types are: float64, float32, float16, complex64, complex128, int64, int32, int16, int8, uint8, and bool.

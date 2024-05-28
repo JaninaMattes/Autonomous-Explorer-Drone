@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 1177, in <module>
-    for key, val in param_dict:
-ValueError: too many values to unpack (expected 2)

@@ -32,7 +32,7 @@ from gym_pybullet_drones.envs.single_agent_rl.TakeoffAviary import TakeoffAviary
 from gym_pybullet_drones.utils.utils import sync, str2bool
 
 # import own modules
-import ppo
+import a2cppo
 
 DEFAULT_ENVID = "takeoff-aviary-v0" #'hover-aviary-v0'
 DEFAULT_ENTRY = 'gym_pybullet_drones.envs.single_agent_rl:TakeoffAviary' #'gym_pybullet_drones.envs.single_agent_rl:HoverAviary'
@@ -89,9 +89,9 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
     
     elif select_ppo == 'PPOv2':
         # our ppo-v2
-        ppo.register_env(id=env_id, entry_point=entry_point)
+        a2cppo.register_env(id=env_id, entry_point=entry_point)
         # get PPOTrainer
-        trainer = ppo.PPOTrainer(env, 
+        trainer = a2cppo.PPOTrainer(env, 
                     total_training_steps=1_000, # 1_000_000, shorter just for testing
                     epsilon=0.22) 
         # train PPO
@@ -107,11 +107,11 @@ def run(env_id=DEFAULT_ENVID, entry_point=DEFAULT_ENTRY, rllib=DEFAULT_RLLIB, se
         ray.shutdown()
         ray.init(ignore_reinit_error=True)
         register_env(env_id, lambda _: TakeoffAviary())
-        config = ppo.DEFAULT_CONFIG.copy()
+        config = a2cppo.DEFAULT_CONFIG.copy()
         config["num_workers"] = 2
         config["framework"] = "torch"
         config["env"] = env_id
-        agent = ppo.PPOTrainer(config)
+        agent = a2cppo.PPOTrainer(config)
         for i in range(3): # Typically not enough
             results = agent.train()
             print("[INFO] {:d}: episode_reward max {:f} min {:f} mean {:f}".format(i,

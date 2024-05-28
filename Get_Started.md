@@ -17,11 +17,11 @@ This repository contains a UnityML drone environment and the PyBullet Drone envi
 └── README.md
 ```
 
-## 1. Unity [ml-explorer-drone environment]
+## 1. Unity ```ml-explorer-drone``` environment
 Unity Machine Learning Controlled Explorer Drone
 Will be continued in the future...
 
-## 2. PyBullet Drones [gym-pybullet-drone environment]
+## 2. PyBullet Drones ```gym-pybullet-drone ```environment
 
 ### Option 1: Docker
 Build the Docker image:
@@ -47,7 +47,7 @@ or
 - ```$ pip install --upgrade gym pybullet stable_baselines3 'ray[rllib]'```
 
 For video and graphical output install:
-- Ubuntu: ```$ sudo apt install ffmpeg```
+- Ubuntu: ```$ apt install ffmpeg```
 - Windows: https://github.com/utiasDSL/gym-pybullet-drones/tree/master/assignments#on-windows
 
 Then register the custom PyBullet environemnts:
@@ -65,7 +65,7 @@ Select a training from scratch with optional flags (--algo, --train_steps, --env
 - ```$ python learn.py --env_id "takeoff" --algo "ppo_v2" --train_steps 10_000```
 - ```$ python learn.py --env_id "hover" --algo "ppo_v2" --train_steps 10_000```
 
-## 3. Custom implementation [PPO_V1, PPO_V2]
+## 3. Test custom implementation ```PPO_V1, PPO_V2```
 
 [1] Installation
 
@@ -87,3 +87,7 @@ Run training with PPO
 
 ## 4. Logging
 All training results are logged under W&B and ```./log``` in the respective directory.
+
+
+## 5. Plotting
+During training values are collected as ```.csv```file and plotted after a successful run.

@@ -1,0 +1,30 @@
+diff --git a/.gitignore b/.gitignore
+index 2d5f4324..b9ee61da 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -37,7 +37,7 @@ sysinfo.txt
+ 
+ # Monitoring
+ */wandb/*
+-ppo_impl/ppo_torch/wandb/*
++PPO/ppo_torch/wandb/
+ 
+ # Checkpoints
+ # IPython notebook checkpoints
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index 617da7b1..9aad2976 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -248,10 +248,10 @@ class PPO_PolicyGradient:
+                 advantages.insert(0, prev_advantage) # reverse it again
+                 # store current value as V(s_t+1)
+                 last_value = values[i]
+-        advantages = np.array(advantages)
++        advantages = advantages.detach().numpy()
+         if normalized:
+             advantages = self.normalize_adv(advantages)
+-        return torch.tensor(np.array(advantages), dtype=torch.float), torch.tensor(np.array(returns), dtype=torch.float)
++        return torch.tensor(advantages, dtype=torch.float), torch.tensor(np.array(returns), dtype=torch.float)
+ 
+ 
+     def advantage_estimate(self, next_obs, obs, batch_rewards, dones, normalized=True):

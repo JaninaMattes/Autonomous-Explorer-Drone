@@ -1,0 +1,12 @@
+INFO:root:Training model...
+INFO:root:Collecting batch trajectories...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 925, in <module>
+    train(env,
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 788, in train
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 533, in learn
+    advantages, cum_returns = self.generalized_advantage_estimate_0(rewards, values.detach())
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 305, in generalized_advantage_estimate_0
+    advantages = cum_returns - values # delta = r - v
+TypeError: unsupported operand type(s) for -: 'list' and 'Tensor'

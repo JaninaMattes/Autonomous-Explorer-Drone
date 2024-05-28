@@ -1,0 +1,10 @@
+
+=== Tue Nov 29 23:17:17 2022
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.burst from version 1.6.5 to 1.6.6
+  com.unity.ide.rider from version 3.0.14 to 3.0.16
+  com.unity.postprocessing from version 3.2.1 to 3.2.2
