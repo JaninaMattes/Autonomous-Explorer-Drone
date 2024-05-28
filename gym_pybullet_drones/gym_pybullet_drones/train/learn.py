@@ -17,14 +17,17 @@ reinforcement learning libraries `stable-baselines3` as well as the implementati
 """
 import time
 import argparse
+import numpy as np
+
 import gym
 from gym_pybullet_drones.envs.single_agent_rl.FlyThruGateAviary import FlyThruGateAviary
 from gym_pybullet_drones.envs.single_agent_rl.HoverAviary import HoverAviary
 from gym_pybullet_drones.utils.enums import DroneModel, Physics
-import numpy as np
+
 from stable_baselines3 import A2C
 from stable_baselines3.a2c import MlpPolicy
 from stable_baselines3.common.env_checker import check_env
+
 import ray
 from ray.tune import register_env
 # from ray.rllib.agents import ppo
@@ -34,7 +37,7 @@ from gym_pybullet_drones.envs.single_agent_rl.TakeoffAviary import TakeoffAviary
 from gym_pybullet_drones.utils.utils import sync, str2bool
 
 # import own modules
-import gym_pybullet_drones.ppo.ppo_v2 as ppo
+from gym_pybullet_drones.ppo.ppo_v2 import PPO_PolicyGradient
 from gym_pybullet_drones.ppo.ppo_v2 import PPOTrainer
 
 #######################################

@@ -81,9 +81,10 @@ class PPO:
     
     s,a,R,V = (np.array(e) for e in zip(*rollout))          # Get trajectories from rollout
     value = self.step(th.tensor(state))[1]                  # Get value of next state 
-    A = G = cumulate_discount(R, self.gamma)                # REINFORCE Advantages (TODO 4-1)
-    # A = G - V                                               # Actor Critic Advantages (TODO 4-1)
-    A = R + self.gamma * np.append(V[1:], value) - V        # TD Actor-Critic Advantages (TODO 4-1)
+    A = G = cumulate_discount(R, self.gamma)                # REINFORCE Advantages 
+    # A = G - V                                             # Actor Critic Advantages 
+    A = R + self.gamma * np.append(V[1:], value) - V        # TD Actor-Critic Advantages 
+    
     return (th.tensor(x.copy()) for x in (s,a,G,A)), state  # state, action, Return, Advantage Tensors 
 
   def train(self, states, actions, returns, advantages):        # Update policy weights
