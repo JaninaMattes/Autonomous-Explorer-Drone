@@ -72,4 +72,4 @@ wandb==0.13.6
 wcwidth==0.2.5
 werkzeug==2.2.2
 wheel==0.38.4
-zipp==3.11.0
+zipp==3.19.1
