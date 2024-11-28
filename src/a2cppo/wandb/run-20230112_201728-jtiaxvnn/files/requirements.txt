@@ -104,7 +104,7 @@ torchaudio==0.13.1
 torchvision==0.14.1
 tqdm==4.64.1
 typing-extensions==4.4.0
-urllib3==1.26.13
+urllib3==1.26.18
 virtualenv==20.17.1
 wandb==0.13.8
 wcwidth==0.2.5
