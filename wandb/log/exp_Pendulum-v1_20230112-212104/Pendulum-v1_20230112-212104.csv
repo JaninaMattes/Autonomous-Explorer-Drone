@@ -1,0 +1,3 @@
+,experiment,timestep,mean episodic runtime,mean episodic length,mean episodic returns,min episodic returns,max episodic returns,std episodic returns
+0,"exp_name: Pendulum-v1_2023-01-12 (seperate network, actor-critic advantage)",2200,0.037653,200.0,-1224.634815,-1633.46679,-739.713681,293.073728
+0,"exp_name: Pendulum-v1_2023-01-12 (seperate network, actor-critic advantage)",4400,0.037462,200.0,-1462.113125,-1714.740111,-1195.103324,166.57026
