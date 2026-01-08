@@ -364,7 +364,7 @@ $ python - <<EOF
 
 Install Lightning
 
-````
+```
 $ conda install lightning -c conda-forge
 ```
 
@@ -394,7 +394,7 @@ _Major dependencies are gym, pybullet, stable-baselines3, and rllib_
 
  ```
  $ conda install -c conda-forge pybullet
-````
+ ```
 
 ```
 $ cd gym-pybullet-drones/
