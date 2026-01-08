@@ -34,7 +34,7 @@ Run the Docker container:
 This will mount the current directory to the ```/app``` directory inside the container and start a Bash shell. You can then proceed with the steps below and run a training with the specified parameters.
 
 ### Option 2: Manual Installation
-[1] Installation
+(1) Installation
 
 Create conda env
 - ```$ conda create --name ppo_drone_py39 python=3.9```
@@ -54,11 +54,11 @@ Then register the custom PyBullet environemnts:
 - ```$ cd gym-pybullet-drones/```
 - ```$ pip install -e .```
 
-[2] Test if everything runs
+(2) Test if everything runs
 - ```$ cd gym_pybullet_drones/examples```
 - ```$ python fly.py```
 
-[3] Training
+(3) Training
 The default is the custom _PPO_v2_ algorithm with takeoff-aviary-v0 environment.
 Select a training from scratch with optional flags (--algo, --train_steps, --env_id):
 
@@ -67,21 +67,21 @@ Select a training from scratch with optional flags (--algo, --train_steps, --env
 
 ## 3. Test custom implementation ```PPO_V1, PPO_V2```
 
-[1] Installation
+(1) Installation
 
 - ```$ conda create --name ppo_py310 python=3.10```
 - ```$ conda activate ppo_py310```
 - ```$ pip install -r requirements.txt```
 
-[2] Training
+(2) Training
 
 Run training with PPO
 - ```python ppo_continuous.py --run_train True```
 
-[3] Evaluation
+(3) Evaluation
 - ```python ppo_continuous.py --run_test True```
 
-[3] Hyperparameter Tuning
+(4) Hyperparameter Tuning
 Run training with PPO
 - ```python ppo_continuous.py --run_hyperparam True```
 
