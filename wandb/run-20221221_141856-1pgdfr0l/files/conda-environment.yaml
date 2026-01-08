@@ -189,6 +189,6 @@ dependencies:
       - virtualenv==20.17.1
       - wandb==0.13.6
       - wcwidth==0.2.5
-      - werkzeug==2.2.2
+      - werkzeug==3.0.3
       - zipp==3.11.0
 prefix: /Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research

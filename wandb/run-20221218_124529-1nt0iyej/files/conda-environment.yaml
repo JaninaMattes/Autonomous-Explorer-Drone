@@ -142,5 +142,5 @@ dependencies:
       - torch-tb-profiler==0.4.0
       - urllib3==1.26.13
       - wandb==0.13.6
-      - werkzeug==2.2.2
+      - werkzeug==3.0.3
 prefix: /Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research
