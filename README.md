@@ -1,5 +1,7 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+
 <a name="readme-top"></a>
+
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
 *** that would make this better, please fork the repo and create a pull request
@@ -7,8 +9,6 @@
 *** Don't forget to give the project a star!
 *** Thanks again! Now go create something AMAZING! :D
 -->
-
-
 
 <!-- PROJECT SHIELDS -->
 <!--
@@ -24,7 +24,6 @@
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 -->
 
-
 <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/issues">
     <img src="https://img.shields.io/github/issues/JaninaMattes/Autonomous-Explorer-Drone.svg?style=for-the-badge" alt="Issues">
@@ -39,8 +38,6 @@
     <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch">
   </a>
 </div>
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -66,8 +63,6 @@
     -->
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -95,15 +90,16 @@
   </ol>
 </details>
 
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 The design of a control system for an agile mobile robot in the continuous domain is a central question in robotics. This project specifically addresses the challenge of autonomous drone flight. Model-free reinforcement learning (RL) is utilized as it can directly optimize a task-level objective and leverage domain randomization to handle model uncertainty, enabling the discovery of more robust control responses. The task analyzed in the following is a single agent stabilization task.
 
 ### Drone Model and Simulation
-The ```gym-pybullet-drones``` environment is based on the ```Crazyflie 2.x``` nanoquadcopter. It implements the
- ```OpenAI gym``` API for single or multi-agent reinforcement learning (MARL).
+
+The `gym-pybullet-drones` environment is based on the `Crazyflie 2.x` nanoquadcopter. It implements the
+`OpenAI gym` API for single or multi-agent reinforcement learning (MARL).
 
  <div align="center">
   <a href="https://github.com/JaninaMattes/Autonomous-Explorer-Drone/">
@@ -172,7 +168,6 @@ $$
 
 where $y_{pos}$ is the current height of the drone. The reward function encourages the drone to maintain a certain height while also penalizing excessive movement in the y-axis.
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### PyBullet Environment & Drone
@@ -225,9 +220,9 @@ $$
 
 where:
 
-- `e(t)` is the error between the desired setpoint and the measured state  
-- `K_p` is the proportional gain  
-- `K_i` is the integral gain  
+- `e(t)` is the error between the desired setpoint and the measured state
+- `K_p` is the proportional gain
+- `K_i` is the integral gain
 - `K_d` is the derivative gain
 
 The controller continuously computes these errors using simulated onboard sensor data, including position, velocity, orientation, and angular rates.
@@ -238,7 +233,7 @@ The controller continuously computes these errors using simulated onboard sensor
 
 The PID controller stabilizes and regulates:
 
-- **Position:**  `x, y, z`
+- **Position:** `x, y, z`
 - **Attitude:** roll, pitch, yaw
 - **Angular rates**
 - **Collective thrust**
@@ -268,23 +263,19 @@ This separation allows reinforcement learning methods (e.g., PPO) to focus on hi
   </small>
 </div>
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ### Built With
 
 The project was developed using Python and the PyTorch machine learning framework. To simulate the quadrotor's environment, the Bullet physics engine is leveraged. Further, to streamline the development process and avoid potential issues, the pre-built PyBullet drone implementation provided by the [gym-pybullet-drones library](https://github.com/utiasDSL/gym-pybullet-drones) is utilized.
-
 
 Programming Languages-Frameworks-Tools<br /><br />
 [![My Skills](https://skillicons.dev/icons?i=py,pytorch,docker,anaconda,unity&theme=light&perline=10)](https://skillicons.dev)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 This is an example of how you may be setting up your project locally.
@@ -310,51 +301,128 @@ Autonomous-Explorer-Drone/
 ├── Dockerfile                 # Reproducible environment
 └── README.md                  # Project description
 ```
+
 Design rationale:
 
-* All original research and training code lives in src/
+- All original research and training code lives in src/
 
-* Simulation environments are kept isolated to avoid coupling and ease replacement
+- Simulation environments are kept isolated to avoid coupling and ease replacement
 
-* Unity support is optional and does not affect the core PyBullet Gym pipeline
+- Unity support is optional and does not affect the core PyBullet Gym pipeline
 
+#### Anaconda Environment
+
+This project was developed and tested using **Python 3.10** with  
+[**Anaconda**](https://www.anaconda.com/download) (or **Miniconda**) on **macOS (Apple Silicon, M1/M2)**.
+
+---
+
+1. Verify Conda Installation
+
+Check that Conda is installed:
+
+```
+$ conda --version
+```
+
+2. Create Conda Environment:
+   Create and activate the environment for the project:
+
+```
+$ conda create -n drone-env python=3.10
+$ conda activate drone-env
+$ conda info --envs
+```
+
+Check version
+
+```
+$ python --version
+# Should show 3.10.x
+```
+
+Upgrade pip inside the environment:
+
+```
+pip install --upgrade pip
+```
+
+1. Install PyTorch and Lightning
+
+Install PyTorch along with `torchvision` and `torchaudio` for M1/M2 Macs:
+
+```
+# Install PyTorch + torchvision + torchaudio for Apple Silicon on M1
+conda install pytorch torchvision torchaudio -c pytorch
+
+$ python - <<EOF
+  import torch
+  print("PyTorch version:", torch.__version__)
+  print("MPS available:", torch.backends.mps.is_available())
+  EOF
+```
+
+Install Lightning
+
+````
+$ conda install lightning -c conda-forge
+```
+
+The MPS backend enables GPU acceleration via Apple’s Metal framework.
+Some reinforcement learning libraries may still default to CPU execution.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 #### Installation
 
 _Major dependencies are gym, pybullet, stable-baselines3, and rllib_
 
-1. Create virtual environment and install all major dependencies 
-   ```
-    $ pip3 install --upgrade numpy matplotlib Pillow cycler 
-    $ pip3 install --upgrade gym pybullet stable_baselines3 'ray[rllib]' 
-   ```
+1. Start virtual environment and install the core RL dependencies
+ ```
+  $ pip install --upgrade numpy matplotlib Pillow cycler
+  $ pip install --upgrade gym pybullet stable_baselines3 'ray[rllib]'
+ ```
 
-   or requirements.txt
-   ```
-   $ pip install -r requirements_pybullet.txt
-   ```
+ Or install all dependencies from requirements.txt:
+ ```
+ $ pip install -r requirements.txt
+ ```
 
-2. Video recording requires to have ```ffmpeg``` installed, on macOS
+2. The ```gym-pybullet-drones``` repo is structured as a Gym Environment and can be installed with pip install --editable
+
+ If the installation of ```pybullet```fails, install via Conda:
+
+ ```
+ $ conda install -c conda-forge pybullet
+````
+
+```
+$ cd gym-pybullet-drones/
+$ pip install -e . # if needed, `sudo apt install build-essential` to install `gcc` and build `pybullet`
+```
+
+On Linux, you may need development tools for building wheels:
+
+```
+sudo apt install build-essential
+```
+
+3. Video recording requires to have `ffmpeg` installed, on macOS
+
    ```
    $ brew install ffmpeg
    ```
 
    or on Ubuntu
+
    ```
    $ sudo apt install ffmpeg
    ```
 
-3. The ```gym-pybullet-drones``` repo is structured as a Gym Environment and can be installed with pip install --editable
-
-   ```
-   $ cd gym-pybullet-drones/
-   $ pip3 install -e .
-   ```
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [x] Add Changelog
@@ -366,40 +434,37 @@ _Major dependencies are gym, pybullet, stable-baselines3, and rllib_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Project Link: [Autonomous-Explorer-Drone](https://github.com/JaninaMattes/Autonomous-Explorer-Drone/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
-* [GitHub - ML Drone Collection](https://github.com/mbaske/ml-drone-collection)
-* [Lab ML AI - PPO Explained](https://nn.labml.ai/rl/ppo/)
-* [Huggingface - PPO Explained](https://huggingface.co/blog/deep-rl-ppo)
-* [Pytorch Forum - Discussion](https://discuss.pytorch.org/t/understanding-log-prob-for-normal-distribution-in-pytorch/73809)
-* [David Silver - Introduction to Reinforcement Learning](https://www.davidsilver.uk/teaching/)
+- [GitHub - ML Drone Collection](https://github.com/mbaske/ml-drone-collection)
+- [Lab ML AI - PPO Explained](https://nn.labml.ai/rl/ppo/)
+- [Huggingface - PPO Explained](https://huggingface.co/blog/deep-rl-ppo)
+- [Pytorch Forum - Discussion](https://discuss.pytorch.org/t/understanding-log-prob-for-normal-distribution-in-pytorch/73809)
+- [David Silver - Introduction to Reinforcement Learning](https://www.davidsilver.uk/teaching/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
 [contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
@@ -428,4 +493,4 @@ Project Link: [Autonomous-Explorer-Drone](https://github.com/JaninaMattes/Autono
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
+[JQuery-url]: https://jquery.com
