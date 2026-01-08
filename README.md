@@ -219,16 +219,16 @@ This architecture closely mirrors the **onboard Crazyflie PID controller** used 
 
 Each control loop applies the standard PID formulation:
 
-\[
+$$
 u(t) = K_p \, e(t) + K_i \int_0^t e(\tau)\, d\tau + K_d \frac{d}{dt} e(t)
-\]
+$$
 
 where:
 
-- \( e(t) \) is the error between the desired setpoint and the measured state  
-- \( K_p \) is the proportional gain  
-- \( K_i \) is the integral gain  
-- \( K_d \) is the derivative gain  
+- $$ e(t) $$ is the error between the desired setpoint and the measured state  
+- $$ K_p $$ is the proportional gain  
+- $$ K_i $$ is the integral gain  
+- $$ K_d $$ is the derivative gain  
 
 The controller continuously computes these errors using simulated onboard sensor data, including position, velocity, orientation, and angular rates.
 
@@ -238,7 +238,7 @@ The controller continuously computes these errors using simulated onboard sensor
 
 The PID controller stabilizes and regulates:
 
-- **Position:** \( x, y, z \)
+- **Position:** $$ x, y, z $$
 - **Attitude:** roll, pitch, yaw
 - **Angular rates**
 - **Collective thrust**
