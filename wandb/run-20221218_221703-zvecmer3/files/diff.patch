@@ -1,0 +1,45 @@
+diff --git a/CartPole-v1_animation.gif b/CartPole-v1_animation.gif
+deleted file mode 100644
+index 30eb4e6..0000000
+Binary files a/CartPole-v1_animation.gif and /dev/null differ
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index 3cde1df..789c6ab 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -399,7 +399,8 @@ def test():
+ 
+ if __name__ == '__main__':
+     
+-    """ Classic control gym environments docu: https://www.gymlibrary.dev/environments/classic_control/
++    """ Classic control gym environments 
++        Find docu: https://www.gymlibrary.dev/environments/classic_control/
+     """
+     if not os.path.exists(MODEL_PATH):
+         os.makedirs(MODEL_PATH)
+diff --git a/PPO/ppo_torch/wandb/debug-internal.log b/PPO/ppo_torch/wandb/debug-internal.log
+index e13c885..c5d041a 120000
+--- a/PPO/ppo_torch/wandb/debug-internal.log
++++ b/PPO/ppo_torch/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20221218_174135-258hmm1m/logs/debug-internal.log
+\ No newline at end of file
++run-20221218_221703-zvecmer3/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/debug.log b/PPO/ppo_torch/wandb/debug.log
+index fab1043..54ddf86 120000
+--- a/PPO/ppo_torch/wandb/debug.log
++++ b/PPO/ppo_torch/wandb/debug.log
+@@ -1 +1 @@
+-run-20221218_174135-258hmm1m/logs/debug.log
+\ No newline at end of file
++run-20221218_221703-zvecmer3/logs/debug.log
+\ No newline at end of file
+diff --git a/PPO/ppo_torch/wandb/latest-run b/PPO/ppo_torch/wandb/latest-run
+index f0d978e..1fc0ae1 120000
+--- a/PPO/ppo_torch/wandb/latest-run
++++ b/PPO/ppo_torch/wandb/latest-run
+@@ -1 +1 @@
+-run-20221218_174135-258hmm1m
+\ No newline at end of file
++run-20221218_221703-zvecmer3
+\ No newline at end of file
