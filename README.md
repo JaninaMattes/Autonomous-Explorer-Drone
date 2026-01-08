@@ -260,7 +260,7 @@ This separation allows reinforcement learning methods (e.g., PPO) to focus on hi
 ---
 
 <div align="center">
-  <img src="img/gifs/pid-controller-mechanism.gif" alt="PID controller mechanism" width="500" height="320">
+  <img src="img/gifs/pid-controller-mechanism.gif" alt="PID controller mechanism" width="300" height="150">
   <br>
   <small>
     Fig. 2: Stable Crazyflie 2.x flight achieved using a cascaded PID controller in the
