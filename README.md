@@ -210,18 +210,43 @@ Programming Languages-Frameworks-Tools<br /><br />
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
+This is an example of how you may be setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Requirements and Installation
 
 This repository was written using Python 3.10 and Anaconda tested on macOS 14.4.1.
 
+#### Project structure
+
+The repository is organized so that core algorithms, simulation backends, and optional extensions are separated:
+
+```
+Autonomous-Explorer-Drone/
+├── src/                       # Main project source code (PPO, training, utils)
+├── gym_pybullet_drones/       # PyBullet-based drone simulation (vendored)
+├── unity_mlagent_drones/      # Optional Unity ML-Agents extension (future work)
+├── assets/                    # Models, images, and videos
+├── docs/                      # PDFs and theoretical references
+├── img/                       # Figures used in README/docs
+├── requirements*.txt          # Python dependencies
+├── Dockerfile                 # Reproducible environment
+└── README.md                  # Project description
+```
+Design rationale:
+
+* All original research and training code lives in src/
+
+* Simulation environments are kept isolated to avoid coupling and ease replacement
+
+* Unity support is optional and does not affect the core PyBullet Gym pipeline
+
+
 #### Installation
 
 _Major dependencies are gym, pybullet, stable-baselines3, and rllib_
 
-1. Create virtual environment and install major dependencies 
+1. Create virtual environment and install all major dependencies 
    ```
     $ pip3 install --upgrade numpy matplotlib Pillow cycler 
     $ pip3 install --upgrade gym pybullet stable_baselines3 'ray[rllib]' 
