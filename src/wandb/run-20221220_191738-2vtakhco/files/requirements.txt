@@ -67,7 +67,7 @@ torch-tb-profiler==0.4.0
 torch==1.12.1
 tqdm==4.64.1
 typing-extensions==4.4.0
-urllib3==1.26.13
+urllib3==2.6.3
 wandb==0.13.6
 wcwidth==0.2.5
 werkzeug==2.2.2
