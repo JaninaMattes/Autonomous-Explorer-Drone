@@ -191,16 +191,16 @@ The environment is a custom OpenAI Gym environment built using PyBullet for mult
 
 #### PID Controller
 
-To stabilize the quadrotor during simulation, a **pre-implemented classical PID flight controller** is used.  
-The controller follows a **cascaded control architecture**, which is standard for real-world micro aerial vehicles such as the **Crazyflie 2.x**.
+To stabilize the quadrotor during simulation, a pre-implemented classical PID flight controller is used.  
+The controller follows a cascaded control architecture, which is standard for real-world micro aerial vehicles such as the Crazyflie 2.x.
 
-In the `gym-pybullet-drones` environment, the PID controller operates directly on the simulated vehicle state provided by **PyBullet** and generates low-level motor commands to ensure stable and physically consistent flight.
+In the `gym-pybullet-drones` environment, the PID controller operates directly on the simulated vehicle state provided by PyBullet and generates low-level motor commands to ensure stable and physically consistent flight.
 
 ---
 
 ##### Cascaded Control Structure
 
-The controller is organized as a **hierarchical (cascaded) PID system**:
+The controller is organized as a hierarchical (cascaded) PID system:
 
 1. **Position Control (Outer Loop)**  
    Regulates the drone’s Cartesian position and computes desired roll, pitch, and collective thrust setpoints.
@@ -211,7 +211,7 @@ The controller is organized as a **hierarchical (cascaded) PID system**:
 3. **Motor Mixing**  
    Converts thrust and torque commands into individual motor speeds for the four rotors.
 
-This architecture closely mirrors the **onboard Crazyflie PID controller** used in real flight.
+This architecture closely mirrors the onboard Crazyflie PID controller used in real flight.
 
 ---
 
@@ -225,10 +225,10 @@ $$
 
 where:
 
-- $$ e(t) $$ is the error between the desired setpoint and the measured state  
-- $$ K_p $$ is the proportional gain  
-- $$ K_i $$ is the integral gain  
-- $$ K_d $$ is the derivative gain  
+- `e(t)` is the error between the desired setpoint and the measured state  
+- `K_p` is the proportional gain  
+- `K_i` is the integral gain  
+- `K_d` is the derivative gain
 
 The controller continuously computes these errors using simulated onboard sensor data, including position, velocity, orientation, and angular rates.
 
@@ -238,12 +238,12 @@ The controller continuously computes these errors using simulated onboard sensor
 
 The PID controller stabilizes and regulates:
 
-- **Position:** $$ x, y, z $$
+- **Position:**  `x, y, z`
 - **Attitude:** roll, pitch, yaw
 - **Angular rates**
 - **Collective thrust**
 
-The resulting control signals are translated into **four individual rotor thrust commands**, accounting for the Crazyflie 2.x quadrotor configuration and motor layout.
+The resulting control signals are translated into four individual rotor thrust commands, accounting for the Crazyflie 2.x quadrotor configuration and motor layout.
 
 ---
 
@@ -255,7 +255,7 @@ The PID controller serves multiple purposes:
 - Reference policy for comparison with reinforcement learning agents
 - Reliable mechanism for hovering, takeoff, and trajectory tracking
 
-This separation allows reinforcement learning methods (e.g., PPO) to focus on **high-level decision making**, while low-level stabilization remains robust and physically grounded.
+This separation allows reinforcement learning methods (e.g., PPO) to focus on high-level decision making, while low-level stabilization remains robust and physically grounded.
 
 ---
 
