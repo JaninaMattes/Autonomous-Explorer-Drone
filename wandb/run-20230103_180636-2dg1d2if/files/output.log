@@ -1,0 +1,6 @@
+INFO:root:Hyperparameter tuning...
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.wandb.ai:443
+DEBUG:urllib3.connectionpool:https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 None
+Create sweep with ID: 5r8rtdwl
+Sweep URL: https://wandb.ai/drone-mechanics/ppo-OpenAIGym-hyperparam-tuning/sweeps/5r8rtdwl
+[34m[1mwandb[39m[22m: [33mWARNING[39m Changes to your `wandb` environment variables will be ignored because your `wandb` session has already started. For more information on how to modify your settings with `wandb.init()` arguments, please refer to [34m[4mhttps://wandb.me/wandb-init[39m[24m.

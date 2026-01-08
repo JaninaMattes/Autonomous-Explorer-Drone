@@ -1,0 +1,12 @@
+
+INFO:root:Collecting batch trajectories...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 688, in <module>
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 429, in learn
+    advantages, cum_returns = self.generalized_advantage_estimate_3(batch_rewards, values, dones)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 252, in generalized_advantage_estimate_3
+    advantages = self.normalize_adv(advantages)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 323, in normalize_adv
+    return (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+AttributeError: 'list' object has no attribute 'mean'

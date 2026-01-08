@@ -1,0 +1,33 @@
+2023-01-03 17:11:17,485 INFO    MainThread:32510 [wandb_setup.py:_flush():68] Configure stats pid to 32510
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_setup.py:_flush():68] Loading settings from /Users/janinaalicamattes/.config/wandb/settings
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_setup.py:_flush():68] Loading settings from /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/settings
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_setup.py:_flush():68] Loading settings from environment variables: {'_require_service': 'True'}
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_setup.py:_flush():68] Inferring run settings from compute environment: {'program_relpath': 'PPO/ppo_torch/ppo_continuous.py', 'program': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py'}
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_init.py:_log_setup():476] Logging user logs to /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230103_171117-cfylaxka/logs/debug.log
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_init.py:_log_setup():477] Logging internal logs to /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230103_171117-cfylaxka/logs/debug-internal.log
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_init.py:init():516] calling init triggers
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_init.py:init():519] wandb.init called with sweep_config: {}
+config: {'total number of steps': 10000000, 'max sampled trajectories': 1000, 'batches per episode': 2408, 'number of epochs for update': 12, 'input layer size': 3, 'output layer size': 1, 'learning rate (policy net)': 0.0001, 'learning rate (value net)': 0.001, 'epsilon (adam optimizer)': 1e-08, 'gamma (discount)': 0.99, 'epsilon (clipping)': 0.2, 'seed': 42}
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_init.py:init():569] starting backend
+2023-01-03 17:11:17,486 INFO    MainThread:32510 [wandb_init.py:init():573] setting up manager
+2023-01-03 17:11:17,494 INFO    MainThread:32510 [backend.py:_multiprocessing_setup():102] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2023-01-03 17:11:17,498 INFO    MainThread:32510 [wandb_init.py:init():580] backend started and connected
+2023-01-03 17:11:17,502 INFO    MainThread:32510 [wandb_init.py:init():658] updated telemetry
+2023-01-03 17:11:17,514 INFO    MainThread:32510 [wandb_init.py:init():693] communicating run to backend with 60 second timeout
+2023-01-03 17:11:38,705 WARNING MainThread:32510 [wandb_init.py:init():1099] interrupted
+Traceback (most recent call last):
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/sdk/wandb_init.py", line 1078, in init
+    run = wi.init()
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/sdk/wandb_init.py", line 697, in init
+    result = handle.wait(
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 261, in wait
+    found = self._slot._get_and_clear(timeout=wait_timeout)
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 118, in _get_and_clear
+    if self._wait(timeout=timeout):
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 114, in _wait
+    return self._event.wait(timeout=timeout)
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/threading.py", line 607, in wait
+    signaled = self._cond.wait(timeout)
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/threading.py", line 324, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt

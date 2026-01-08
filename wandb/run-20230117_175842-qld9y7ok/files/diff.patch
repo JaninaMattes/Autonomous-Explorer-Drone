@@ -1,0 +1,22 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index f5908cb7..a7c6b9f7 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -784,7 +784,7 @@ class PPO_PolicyGradient_V2:
+             'train/timesteps': training_steps,
+             'train/mean policy loss': mean_p_loss,
+             'train/mean value loss': mean_v_loss,
+-            'train/mean episode returns': mean_ep_ret,
++            'train/mean episode returns': min_ep_ret,
+             'train/min episode returns': min_ep_ret,
+             'train/max episode returns': max_ep_ret,
+             'train/std episode returns': std_ep_rew,
+@@ -1036,7 +1036,7 @@ if __name__ == '__main__':
+     env_number = 1                       # number of actors
+     seed = 42                            # seed gym, env, torch, numpy 
+     normalize_adv = True                 # wether to normalize the advantage estimate
+-    normalize_ret = True                # wether to normalize the return function
++    normalize_ret = False                # wether to normalize the return function
+     
+     # setup for torch save models and rendering
+     render_video = False
