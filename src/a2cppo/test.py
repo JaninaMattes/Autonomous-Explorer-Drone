@@ -181,7 +181,6 @@ def _log_summary(ep_len, ep_ret, ep_num):
         logging.info('\n')
 
 def arg_parser():
-    parser = argparse.ArgumentParser()
     # fmt: off
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=False, help="if toggled, capture video of run")
@@ -223,7 +222,7 @@ def make_env(env_id='Pendulum-v1', gym_wrappers=False, gym_monitor=False, monito
 
 if __name__ == '__main__':
 
-        # Hyperparameter
+    # Hyperparameter
     total_training_steps = 3_000_000     # time steps regarding batches collected and train agent
     batch_size = 512                     # max number of episode samples to be sampled per time step. 
     n_rollout_steps = 2048               # number of batches per episode, or experiences to collect per environment

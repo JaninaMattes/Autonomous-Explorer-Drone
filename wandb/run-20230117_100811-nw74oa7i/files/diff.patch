@@ -1,0 +1,18 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index c6cc461f..01137896 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -1169,10 +1169,10 @@ if __name__ == '__main__':
+                 # 'learning rate (value net)': [1e-5, 1e-4, 1e-3, 1e-2],
+                 # 'gamma (discount)': [0.95, 0.96, 0.97, 0.98, 0.99],
+                 # 'epsilon (clip_range)': [0.1, 0.2, 0.3],
+-                # 'gae lambda (GAE)': [0.9, 0.93, 0.95, 0.96, 0.99, 1.0],
++                # 'gae lambda (GAE)': [0.9, 0.93, 0.95, 0.96, 0.97, 0.99, 1.0],
+                 # 'epsilon (adam optimizer)': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5],
+-                'number of epochs for update': [8, 16, 32, 64, 128],
+-                'max sampled trajectories': [32, 64, 128, 256, 512, 1024]
++                # 'number of epochs for update': [8, 16, 32, 64, 128, 256],
++                'max sampled trajectories': [32, 64, 128, 256, 512, 1024, 2048, 4096]
+         }
+ 
+         # iterate over settings

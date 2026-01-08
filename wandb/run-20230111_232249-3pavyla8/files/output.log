@@ -1,0 +1,18 @@
+INFO:root:Training model...
+INFO:root:Collecting batch trajectories...
+INFO:root:Updating network parameter...
+INFO:root:Updating network parameter...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 976, in <module>
+    train(env,
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 833, in train
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 579, in learn
+    policy_loss, value_loss = self.train(values, cum_returns, advantages, batch_log_probs, curr_log_probs, self.epsilon)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 545, in train
+    policy_loss.backward(retain_graph=True) # backpropagation
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/torch/_tensor.py", line 488, in backward
+    torch.autograd.backward(
+  File "/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/lib/python3.10/site-packages/torch/autograd/__init__.py", line 197, in backward
+    Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.FloatTensor [64, 1]], which is output 0 of AsStridedBackward0, is at version 4; expected version 3 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).

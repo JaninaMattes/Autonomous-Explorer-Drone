@@ -1,0 +1,988 @@
+2023-01-15 22:40:32,247 INFO    StreamThr :55762 [internal.py:wandb_internal():87] W&B internal server running at pid: 55762, started at: 2023-01-15 22:40:32.247280
+2023-01-15 22:40:32,248 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status
+2023-01-15 22:40:32,251 INFO    WriterThread:55762 [datastore.py:open_for_write():85] open: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/run-k6ccllih.wandb
+2023-01-15 22:40:32,252 DEBUG   SenderThread:55762 [sender.py:send():334] send: header
+2023-01-15 22:40:32,264 DEBUG   SenderThread:55762 [sender.py:send():334] send: run
+2023-01-15 22:40:32,768 INFO    SenderThread:55762 [dir_watcher.py:__init__():216] watching files in: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files
+2023-01-15 22:40:32,768 INFO    SenderThread:55762 [sender.py:_start_run_threads():1065] run started: k6ccllih with start time 1673818832.246826
+2023-01-15 22:40:32,768 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:40:32,769 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:40:32,771 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: check_version
+2023-01-15 22:40:32,771 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: check_version
+2023-01-15 22:40:32,921 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: run_start
+2023-01-15 22:40:32,930 DEBUG   HandlerThread:55762 [system_info.py:__init__():31] System info init
+2023-01-15 22:40:32,930 DEBUG   HandlerThread:55762 [system_info.py:__init__():46] System info init done
+2023-01-15 22:40:32,930 INFO    HandlerThread:55762 [system_monitor.py:start():151] Starting system monitor
+2023-01-15 22:40:32,930 INFO    SystemMonitor:55762 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-15 22:40:32,931 INFO    HandlerThread:55762 [system_monitor.py:probe():172] Collecting system info
+2023-01-15 22:40:32,931 DEBUG   HandlerThread:55762 [system_info.py:probe():195] Probing system
+2023-01-15 22:40:32,931 INFO    SystemMonitor:55762 [interfaces.py:start():168] Started cpu
+2023-01-15 22:40:32,931 INFO    SystemMonitor:55762 [interfaces.py:start():168] Started disk
+2023-01-15 22:40:32,933 INFO    SystemMonitor:55762 [interfaces.py:start():168] Started gpuapple
+2023-01-15 22:40:32,935 INFO    SystemMonitor:55762 [interfaces.py:start():168] Started memory
+2023-01-15 22:40:32,936 INFO    SystemMonitor:55762 [interfaces.py:start():168] Started network
+2023-01-15 22:40:32,937 DEBUG   HandlerThread:55762 [system_info.py:_probe_git():180] Probing git
+2023-01-15 22:40:32,951 DEBUG   HandlerThread:55762 [system_info.py:_probe_git():188] Probing git done
+2023-01-15 22:40:32,952 DEBUG   HandlerThread:55762 [system_info.py:probe():241] Probing system done
+2023-01-15 22:40:32,952 DEBUG   HandlerThread:55762 [system_monitor.py:probe():181] {'os': 'macOS-13.0.1-arm64-arm-64bit', 'python': '3.10.8', 'heartbeatAt': '2023-01-15T21:40:32.931382', 'startedAt': '2023-01-15T21:40:32.231765', 'docker': None, 'cuda': None, 'args': ('--exp-name', 'exp_Pendulum-v1_20230115-195821', '--model-path', '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/log/exp_Pendulum-v1_20230115-195821/models/Pendulum-v1_policyNet.pth', '--project-name', 'OpenAIGym-PPO'), 'state': 'running', 'program': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py', 'codePath': 'PPO/ppo_torch/test.py', 'git': {'remote': 'git@github.com:bkunters/ml-explorer-drone.git', 'commit': '6e5d49ff3305f08ea54e278ff40ae335bf146fb2'}, 'email': 'janina.alica.mattes@gmail.com', 'root': '/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone', 'host': 'Janinas-MacBook-Pro.local', 'username': 'janinaalicamattes', 'executable': '/Users/janinaalicamattes/miniforge3/envs/pytorch-ppo-research/bin/python', 'cpu_count': 8, 'cpu_count_logical': 8, 'disk': {'total': 460.4317207336426, 'used': 10.886878967285156}, 'gpuapple': {'type': 'arm', 'vendor': 'Apple'}, 'memory': {'total': 16.0}}
+2023-01-15 22:40:32,952 INFO    HandlerThread:55762 [system_monitor.py:probe():182] Finished collecting system info
+2023-01-15 22:40:32,952 INFO    HandlerThread:55762 [system_monitor.py:probe():185] Publishing system info
+2023-01-15 22:40:32,952 DEBUG   HandlerThread:55762 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-01-15 22:40:32,952 DEBUG   HandlerThread:55762 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-15 22:40:32,952 DEBUG   HandlerThread:55762 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-01-15 22:40:33,774 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/conda-environment.yaml
+2023-01-15 22:40:33,774 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/requirements.txt
+2023-01-15 22:40:33,774 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:40:37,726 DEBUG   HandlerThread:55762 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-15 22:40:37,726 DEBUG   HandlerThread:55762 [system_info.py:_save_code():89] Saving code
+2023-01-15 22:40:37,734 DEBUG   HandlerThread:55762 [system_info.py:_save_code():110] Saving code done
+2023-01-15 22:40:37,734 DEBUG   HandlerThread:55762 [system_info.py:_save_patches():127] Saving git patches
+2023-01-15 22:40:37,793 DEBUG   HandlerThread:55762 [system_info.py:_save_patches():169] Saving git patches done
+2023-01-15 22:40:37,793 INFO    HandlerThread:55762 [system_monitor.py:probe():187] Finished publishing system info
+2023-01-15 22:40:37,795 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/conda-environment.yaml
+2023-01-15 22:40:37,795 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/diff.patch
+2023-01-15 22:40:37,795 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-metadata.json
+2023-01-15 22:40:37,795 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/code/PPO/ppo_torch/test.py
+2023-01-15 22:40:37,795 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/code/PPO/ppo_torch
+2023-01-15 22:40:37,795 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/code
+2023-01-15 22:40:37,795 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/code/PPO
+2023-01-15 22:40:37,799 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:40:37,799 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-metadata.json with policy now
+2023-01-15 22:40:37,799 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file code/PPO/ppo_torch/test.py with policy now
+2023-01-15 22:40:37,799 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file diff.patch with policy now
+2023-01-15 22:40:37,800 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:40:37,802 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: stop_status
+2023-01-15 22:40:37,802 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: stop_status
+2023-01-15 22:40:38,196 DEBUG   SenderThread:55762 [sender.py:send():334] send: telemetry
+2023-01-15 22:40:38,219 INFO    Thread-17 :55762 [upload_job.py:push():123] Skipped uploading /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/r96iptnf-code/PPO/ppo_torch/test.py
+2023-01-15 22:40:38,592 INFO    Thread-16 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/2eu7iljh-wandb-metadata.json
+2023-01-15 22:40:38,792 INFO    Thread-18 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/fjwvexb5-diff.patch
+2023-01-15 22:40:38,800 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:40:39,759 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:40:39,760 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:40:39,760 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:40:39,761 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:40:39,830 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:40:40,835 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:40:42,843 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:40:42,850 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:40:47,873 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:40:52,807 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:40:52,808 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:40:52,897 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:40:57,834 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:40:57,922 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:01,443 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:41:01,444 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:41:01,444 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_1_dcbcc440ba09986019b9.gif with policy now
+2023-01-15 22:41:01,444 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:41:01,444 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:41:01,445 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:41:01,925 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:41:01,925 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_1_dcbcc440ba09986019b9.gif
+2023-01-15 22:41:01,925 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:41:01,925 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media
+2023-01-15 22:41:01,925 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos
+2023-01-15 22:41:01,963 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:41:01,964 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:41:01,965 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:41:01,965 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:41:02,412 INFO    Thread-19 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/xlactk12-media/videos/test/video_1_dcbcc440ba09986019b9.gif
+2023-01-15 22:41:02,863 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:02,930 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:41:02,995 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:03,252 INFO    Thread-20 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/w40d3wz4-media/videos/test/video_1_dcbcc440ba09986019b9.gif
+2023-01-15 22:41:03,936 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/config.yaml
+2023-01-15 22:41:07,881 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:08,276 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:12,905 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:13,299 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:17,923 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:18,325 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:22,947 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:23,350 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:27,970 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:28,373 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:32,941 DEBUG   SystemMonitor:55762 [system_monitor.py:_start():130] Starting system metrics aggregation loop
+2023-01-15 22:41:32,942 DEBUG   SenderThread:55762 [sender.py:send():334] send: telemetry
+2023-01-15 22:41:32,942 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:41:32,991 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:33,959 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:35,079 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/config.yaml
+2023-01-15 22:41:35,083 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:41:38,014 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:39,268 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:43,040 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:44,285 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:46,511 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:41:46,511 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_3_fa381d0a204f02638691.gif with policy now
+2023-01-15 22:41:46,511 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:41:46,512 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:41:46,512 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:41:46,513 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:41:47,044 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:41:47,045 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:41:47,045 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:41:47,046 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:41:47,146 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:41:47,146 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_3_fa381d0a204f02638691.gif
+2023-01-15 22:41:47,146 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:41:47,675 INFO    Thread-21 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/g6jvqysh-media/videos/test/video_3_fa381d0a204f02638691.gif
+2023-01-15 22:41:48,067 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:48,800 INFO    Thread-22 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/lobkmmic-media/videos/test/video_3_fa381d0a204f02638691.gif
+2023-01-15 22:41:49,152 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:41:50,097 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:53,087 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:41:55,117 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:41:58,110 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:00,139 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:02,947 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:42:03,134 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:05,959 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:08,151 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:10,981 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:13,172 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:16,002 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:18,193 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:21,026 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:23,214 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:26,051 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:28,236 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:31,076 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:32,949 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:42:33,254 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:36,967 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:38,275 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:41,986 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:43,309 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:47,009 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:48,327 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:52,033 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:53,351 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:42:54,641 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:42:54,642 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:42:54,642 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_5_a6966a14d6b1ad2597b7.gif with policy now
+2023-01-15 22:42:54,642 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:42:54,643 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:42:54,644 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:42:55,134 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:42:55,135 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:42:55,135 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:42:55,136 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:42:55,464 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:42:55,464 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_5_a6966a14d6b1ad2597b7.gif
+2023-01-15 22:42:55,464 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:42:55,771 INFO    Thread-23 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/3fyenziu-media/videos/test/video_5_a6966a14d6b1ad2597b7.gif
+2023-01-15 22:42:56,895 INFO    Thread-24 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/peyjwwa5-media/videos/test/video_5_a6966a14d6b1ad2597b7.gif
+2023-01-15 22:42:57,177 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:42:57,474 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:42:58,370 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:02,196 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:02,951 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:43:03,390 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:07,971 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:08,405 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:12,995 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:13,426 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:18,013 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:18,449 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:23,034 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:23,468 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:28,052 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:28,493 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:32,955 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:43:33,515 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:33,960 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:38,539 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:38,983 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:43,557 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:44,006 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:48,576 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:49,028 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:53,601 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:54,046 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:43:58,616 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:43:59,067 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:02,957 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:44:03,638 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:04,971 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:08,660 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:09,989 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:13,683 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:15,013 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:18,711 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:20,031 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:23,736 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:25,054 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:26,158 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:44:26,159 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:44:26,159 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_7_54f5a6fe95245813c51d.gif with policy now
+2023-01-15 22:44:26,160 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:44:26,160 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:44:26,161 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:44:26,679 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:44:26,680 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:44:26,680 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:44:26,685 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:44:26,893 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:44:26,893 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:44:26,893 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_7_54f5a6fe95245813c51d.gif
+2023-01-15 22:44:26,893 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:44:27,318 INFO    Thread-25 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/88zsk694-media/videos/test/video_7_54f5a6fe95245813c51d.gif
+2023-01-15 22:44:28,649 INFO    Thread-26 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/qyc013bg-media/videos/test/video_7_54f5a6fe95245813c51d.gif
+2023-01-15 22:44:28,762 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:28,903 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:44:30,730 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:32,958 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:44:33,787 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:35,971 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:38,804 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:40,996 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:43,827 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:46,022 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:48,851 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:51,046 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:53,869 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:44:56,066 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:44:58,893 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:01,084 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:02,959 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:45:03,907 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:06,982 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:08,907 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:12,008 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:13,953 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:17,028 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:18,978 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:22,053 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:23,999 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:27,073 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:29,024 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:32,099 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:32,964 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:45:34,044 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:37,989 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:39,069 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:43,012 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:44,097 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:48,026 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:49,121 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:53,050 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:54,148 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:45:58,072 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:45:59,175 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:02,969 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:46:03,973 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:04,203 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:08,992 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:09,225 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:14,007 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:14,256 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:19,032 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:19,281 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:19,726 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:46:19,726 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:46:19,726 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_9_f1fbaad8cf8419825236.gif with policy now
+2023-01-15 22:46:19,727 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:46:19,728 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:46:19,729 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:46:20,224 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:46:20,226 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:46:20,226 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:46:20,229 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:46:20,436 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:46:20,437 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_9_f1fbaad8cf8419825236.gif
+2023-01-15 22:46:20,437 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:46:20,983 INFO    Thread-27 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/8j18b93t-media/videos/test/video_9_f1fbaad8cf8419825236.gif
+2023-01-15 22:46:21,442 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:46:22,175 INFO    Thread-28 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/p3rqwau3-media/videos/test/video_9_f1fbaad8cf8419825236.gif
+2023-01-15 22:46:24,283 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:24,306 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:29,297 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:29,326 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:32,972 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:46:34,339 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:34,978 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:39,361 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:39,994 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:44,387 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:45,011 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:49,410 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:50,028 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:54,434 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:46:55,048 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:46:59,453 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:00,073 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:02,976 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:47:04,479 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:05,988 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:09,495 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:10,999 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:14,515 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:16,024 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:19,544 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:21,050 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:24,569 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:26,070 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:29,598 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:31,090 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:32,978 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:47:34,619 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:36,995 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:39,640 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:42,016 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:44,660 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:47,034 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:49,683 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:52,054 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:54,708 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:47:57,075 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:47:59,731 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:02,094 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:02,980 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:48:04,749 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:07,997 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:09,771 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:13,019 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:14,803 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:18,045 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:19,833 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:23,070 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:24,858 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:28,096 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:29,881 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:32,986 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:48:33,991 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:34,903 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:36,016 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:48:36,016 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:48:36,019 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_11_cbbef31e901088df39f4.gif with policy now
+2023-01-15 22:48:36,020 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:48:36,020 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:48:36,021 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:48:36,083 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:48:36,083 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_11_cbbef31e901088df39f4.gif
+2023-01-15 22:48:36,083 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:48:36,571 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:48:36,577 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:48:36,577 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:48:36,579 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:48:37,424 INFO    Thread-29 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/wkarsctm-media/videos/test/video_11_cbbef31e901088df39f4.gif
+2023-01-15 22:48:38,093 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:48:38,626 INFO    Thread-30 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/51sevg1d-media/videos/test/video_11_cbbef31e901088df39f4.gif
+2023-01-15 22:48:39,628 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:39,979 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:44,651 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:45,053 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:49,677 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:50,076 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:54,696 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:48:55,099 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:48:59,715 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:00,121 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:02,985 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:49:04,993 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:05,143 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:10,015 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:10,167 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:15,034 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:15,191 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:20,056 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:20,208 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:25,076 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:25,229 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:30,102 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:30,252 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:32,988 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:49:35,268 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:35,995 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:40,285 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:41,021 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:45,299 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:46,044 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:50,308 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:51,066 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:49:55,327 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:49:56,088 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:00,348 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:01,111 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:02,994 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:50:05,370 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:07,019 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:10,395 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:12,037 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:15,417 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:17,059 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:20,434 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:22,084 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:25,455 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:27,103 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:30,475 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:32,125 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:32,995 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:50:35,492 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:38,016 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:40,525 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:43,038 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:45,552 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:48,060 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:50,590 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:53,088 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:50:55,614 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:50:58,104 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:00,641 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:03,001 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:51:04,004 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:05,679 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:09,029 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:10,704 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:14,049 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:15,450 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:51:15,451 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:51:15,454 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_13_4101eb64b676d386d7d2.gif with policy now
+2023-01-15 22:51:15,455 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:51:15,455 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:51:15,456 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:51:15,723 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:15,804 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:51:15,804 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_13_4101eb64b676d386d7d2.gif
+2023-01-15 22:51:15,804 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:51:15,969 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:51:15,970 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:51:15,970 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:51:15,972 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:51:16,821 INFO    Thread-31 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/twweaqgf-media/videos/test/video_13_4101eb64b676d386d7d2.gif
+2023-01-15 22:51:17,812 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:51:18,178 INFO    Thread-32 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/kl9qhb42-media/videos/test/video_13_4101eb64b676d386d7d2.gif
+2023-01-15 22:51:20,030 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:20,748 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:25,054 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:25,773 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:30,079 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:30,802 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:32,998 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:51:35,829 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:36,013 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:40,847 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:41,031 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:45,865 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:46,056 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:50,885 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:51,079 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:51:55,914 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:51:56,098 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:00,929 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:01,123 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:03,002 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:52:05,949 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:07,024 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:10,974 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:12,047 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:15,997 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:17,073 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:21,023 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:22,095 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:26,047 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:26,051 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:27,120 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:31,072 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:32,141 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:33,008 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:52:36,092 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:38,032 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:41,113 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:43,050 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:46,132 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:48,075 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:51,156 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:53,094 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:52:56,180 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:52:58,114 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:01,201 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:03,008 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:53:04,014 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:06,222 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:09,038 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:11,243 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:14,062 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:16,264 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:19,084 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:21,288 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:24,106 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:26,313 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:29,130 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:31,338 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:33,013 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:53:35,024 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:36,361 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:40,050 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:41,390 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:45,072 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:46,419 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:50,095 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:51,451 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:53:55,118 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:53:56,471 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:00,141 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:01,495 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:03,020 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:54:06,027 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:06,515 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:11,048 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:11,534 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:16,066 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:16,547 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:17,494 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:54:17,494 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:54:17,498 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_15_7edf2752eb80d95e6e2a.gif with policy now
+2023-01-15 22:54:17,499 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:54:17,499 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:54:17,500 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:54:17,664 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:54:17,665 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_15_7edf2752eb80d95e6e2a.gif
+2023-01-15 22:54:17,665 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:54:18,054 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:54:18,055 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:54:18,055 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:54:18,058 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:54:18,670 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:54:19,197 INFO    Thread-33 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/dn7g2qoi-media/videos/test/video_15_7edf2752eb80d95e6e2a.gif
+2023-01-15 22:54:20,681 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:54:20,733 INFO    Thread-34 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/p7nywjcu-media/videos/test/video_15_7edf2752eb80d95e6e2a.gif
+2023-01-15 22:54:21,114 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:21,574 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:26,135 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:26,599 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:31,160 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:31,622 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:33,021 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:54:36,644 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:37,038 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:41,668 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:42,063 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:46,685 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:47,081 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:51,706 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:52,099 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:54:56,722 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:54:57,119 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:01,743 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:02,137 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:03,026 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:55:06,762 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:08,050 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:11,782 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:13,072 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:16,808 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:18,088 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:21,832 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:23,109 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:26,847 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:28,131 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:31,866 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:33,028 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:55:34,033 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:36,883 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:39,052 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:41,905 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:44,075 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:46,926 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:49,099 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:51,949 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:54,115 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:55:56,965 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:55:59,139 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:01,983 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:03,031 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:56:05,039 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:07,002 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:10,062 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:12,028 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:15,088 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:17,041 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:20,111 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:22,064 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:25,134 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:27,086 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:30,154 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:32,104 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:33,036 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:56:36,048 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:37,126 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:41,068 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:42,138 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:46,085 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:47,162 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:51,104 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:52,180 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:56:56,124 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:56:57,204 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:01,142 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:02,232 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:03,040 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:57:07,057 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:07,251 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:12,079 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:12,279 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:17,101 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:17,304 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:22,118 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:22,330 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:27,143 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:27,353 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:32,164 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:32,390 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:33,046 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:57:37,417 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:38,077 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:42,444 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:42,994 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:57:42,995 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 22:57:42,995 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_17_d1391c62453534aba537.gif with policy now
+2023-01-15 22:57:42,996 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:57:42,996 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:57:42,996 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:57:43,516 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 22:57:43,516 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 22:57:43,517 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 22:57:43,517 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:43,521 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 22:57:43,647 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 22:57:43,648 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_17_d1391c62453534aba537.gif
+2023-01-15 22:57:43,648 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 22:57:44,649 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 22:57:45,768 INFO    Thread-35 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/3if13s6u-media/videos/test/video_17_d1391c62453534aba537.gif
+2023-01-15 22:57:47,240 INFO    Thread-36 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/d9424pl7-media/videos/test/video_17_d1391c62453534aba537.gif
+2023-01-15 22:57:47,464 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:48,584 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:52,482 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:53,610 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:57:57,506 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:57:58,636 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:02,529 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:03,048 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:58:04,053 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:07,553 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:09,079 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:12,576 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:14,100 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:17,606 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:19,122 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:22,631 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:24,144 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:27,651 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:29,163 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:32,675 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:33,050 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:58:35,061 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:37,699 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:40,081 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:42,719 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:45,100 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:47,736 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:50,119 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:52,758 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:58:55,136 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:58:57,778 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:00,155 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:02,801 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:03,051 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:59:06,061 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:07,828 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:11,079 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:12,851 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:16,102 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:17,875 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:21,121 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:22,898 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:26,142 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:27,919 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:31,163 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:32,938 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:33,054 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 22:59:37,074 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:37,963 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:42,094 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:42,990 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:47,116 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:48,015 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:52,140 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:53,040 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 22:59:57,157 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 22:59:58,051 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:02,173 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:03,056 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:00:03,071 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:08,081 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:08,097 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:13,094 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:13,114 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:18,112 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:18,136 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:23,135 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:23,162 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:28,159 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:28,184 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:33,065 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:00:33,213 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:34,069 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:38,243 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:39,088 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:43,259 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:44,098 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:48,279 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:49,123 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:53,300 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:54,144 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:00:58,325 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:00:59,165 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:03,062 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:01:03,346 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:05,073 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:08,371 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:10,094 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:13,402 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:15,116 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:18,430 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:20,137 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:23,452 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:25,157 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:28,472 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:30,158 DEBUG   SenderThread:55762 [sender.py:send():334] send: files
+2023-01-15 23:01:30,158 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file media/videos/test/video_19_be665db6d1bccdd7528d.gif with policy now
+2023-01-15 23:01:30,159 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:01:30,160 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 23:01:30,160 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:01:30,161 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:30,163 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:01:30,707 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 23:01:30,707 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_created():275] file/dir created: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_19_be665db6d1bccdd7528d.gif
+2023-01-15 23:01:30,708 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test
+2023-01-15 23:01:30,712 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: partial_history
+2023-01-15 23:01:30,713 DEBUG   SenderThread:55762 [sender.py:send():334] send: history
+2023-01-15 23:01:30,713 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: summary_record
+2023-01-15 23:01:30,719 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:01:31,690 INFO    Thread-37 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/82z73n72-media/videos/test/video_19_be665db6d1bccdd7528d.gif
+2023-01-15 23:01:33,064 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:01:33,269 INFO    Thread-38 :55762 [upload_job.py:push():143] Uploaded file /var/folders/4h/v0fwv1zs4596mmdvwj516k840000gn/T/tmpw6o071duwandb/2mydiy2b-media/videos/test/video_19_be665db6d1bccdd7528d.gif
+2023-01-15 23:01:33,497 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:33,724 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 23:01:36,080 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:38,519 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:41,102 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:43,544 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:46,121 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:48,566 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:51,146 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:53,591 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:01:56,165 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:01:58,617 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:01,182 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:03,069 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:02:03,641 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:07,089 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:08,654 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:12,108 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:13,671 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:17,127 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:18,691 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:22,148 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:23,708 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:27,166 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:28,727 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:32,191 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:33,067 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:02:33,747 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:38,093 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:38,768 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:43,118 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:43,791 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:48,134 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:48,815 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:53,157 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:53,837 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:02:58,181 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:02:58,861 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:03,070 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:03:03,888 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:04,075 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:08,907 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:09,101 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:13,928 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:14,126 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:18,939 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:19,144 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:23,959 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:24,165 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:28,980 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:29,188 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:33,072 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:03:34,013 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:35,082 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:39,025 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:40,102 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:44,054 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:45,118 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:49,078 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:50,140 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:54,110 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:03:55,163 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:03:59,129 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:04:00,181 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:03,074 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:04:04,163 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:04:06,085 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:09,184 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:04:11,109 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:14,203 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:04:16,126 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:19,232 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:04:21,151 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:24,241 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:04:26,176 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:27,837 DEBUG   SenderThread:55762 [sender.py:send():334] send: exit
+2023-01-15 23:04:27,837 INFO    SenderThread:55762 [sender.py:send_exit():557] handling exit code: 255
+2023-01-15 23:04:27,837 INFO    SenderThread:55762 [sender.py:send_exit():559] handling runtime: 1434
+2023-01-15 23:04:27,838 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:04:27,839 INFO    SenderThread:55762 [sender.py:send_exit():565] send defer
+2023-01-15 23:04:27,839 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,839 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 0
+2023-01-15 23:04:27,839 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,839 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 0
+2023-01-15 23:04:27,839 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 1
+2023-01-15 23:04:27,839 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,839 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 1
+2023-01-15 23:04:27,839 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,839 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 1
+2023-01-15 23:04:27,839 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 2
+2023-01-15 23:04:27,839 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,839 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 2
+2023-01-15 23:04:27,839 INFO    HandlerThread:55762 [system_monitor.py:finish():161] Stopping system monitor
+2023-01-15 23:04:27,860 DEBUG   SystemMonitor:55762 [system_monitor.py:_start():137] Finished system metrics aggregation loop
+2023-01-15 23:04:27,860 DEBUG   SystemMonitor:55762 [system_monitor.py:_start():141] Publishing last batch of metrics
+2023-01-15 23:04:27,860 INFO    HandlerThread:55762 [interfaces.py:finish():175] Joined cpu
+2023-01-15 23:04:27,860 INFO    HandlerThread:55762 [interfaces.py:finish():175] Joined disk
+2023-01-15 23:04:27,860 INFO    HandlerThread:55762 [interfaces.py:finish():175] Joined gpuapple
+2023-01-15 23:04:27,860 INFO    HandlerThread:55762 [interfaces.py:finish():175] Joined memory
+2023-01-15 23:04:27,860 INFO    HandlerThread:55762 [interfaces.py:finish():175] Joined network
+2023-01-15 23:04:27,861 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,861 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 2
+2023-01-15 23:04:27,861 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 3
+2023-01-15 23:04:27,861 DEBUG   SenderThread:55762 [sender.py:send():334] send: stats
+2023-01-15 23:04:27,861 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,861 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 3
+2023-01-15 23:04:27,861 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,861 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 3
+2023-01-15 23:04:27,861 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 4
+2023-01-15 23:04:27,861 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,861 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 4
+2023-01-15 23:04:27,862 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,862 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 4
+2023-01-15 23:04:27,862 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 5
+2023-01-15 23:04:27,862 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,862 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 5
+2023-01-15 23:04:27,862 DEBUG   SenderThread:55762 [sender.py:send():334] send: summary
+2023-01-15 23:04:27,862 INFO    SenderThread:55762 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-15 23:04:27,862 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,862 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 5
+2023-01-15 23:04:27,862 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 6
+2023-01-15 23:04:27,862 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,862 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 6
+2023-01-15 23:04:27,863 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,863 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 6
+2023-01-15 23:04:27,863 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 7
+2023-01-15 23:04:27,863 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:27,863 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:27,863 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 7
+2023-01-15 23:04:27,863 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:27,863 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 7
+2023-01-15 23:04:28,544 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 23:04:28,843 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: poll_exit
+2023-01-15 23:04:29,899 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 8
+2023-01-15 23:04:29,899 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: poll_exit
+2023-01-15 23:04:29,900 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:29,900 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 8
+2023-01-15 23:04:29,900 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:29,900 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 8
+2023-01-15 23:04:29,909 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 9
+2023-01-15 23:04:29,909 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:29,909 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 9
+2023-01-15 23:04:29,909 DEBUG   SenderThread:55762 [sender.py:send():334] send: artifact
+2023-01-15 23:04:30,553 INFO    Thread-13 :55762 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 23:04:31,507 INFO    Thread-41 :55762 [upload_job.py:push():98] Skipped uploading /Users/janinaalicamattes/Library/Application Support/wandb/artifacts/staging/tmpfsc9pqop
+2023-01-15 23:04:31,507 INFO    Thread-42 :55762 [upload_job.py:push():98] Skipped uploading /Users/janinaalicamattes/Library/Application Support/wandb/artifacts/staging/tmpso1dxe7r
+2023-01-15 23:04:32,189 INFO    Thread-40 :55762 [upload_job.py:push():101] Uploaded file /Users/janinaalicamattes/Library/Application Support/wandb/artifacts/staging/tmp7e9652we
+2023-01-15 23:04:33,861 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: keepalive
+2023-01-15 23:04:33,980 INFO    SenderThread:55762 [sender.py:send_artifact():1415] sent artifact job-git_github.com_bkunters_ml-explorer-drone.git_PPO_ppo_torch_test.py - {'id': 'QXJ0aWZhY3Q6MzI3MDM0MTk3', 'digest': 'ef8ed7ec068f09623d4acf917eeaf522', 'state': 'PENDING', 'aliases': [], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjQ5NjE5Mzkz', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6MzI3MDA5ODY1', 'versionIndex': 8}}, 'version': 'latest'}
+2023-01-15 23:04:33,980 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:33,980 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 9
+2023-01-15 23:04:33,980 INFO    SenderThread:55762 [dir_watcher.py:finish():362] shutting down directory watcher
+2023-01-15 23:04:33,980 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: status_report
+2023-01-15 23:04:34,570 INFO    SenderThread:55762 [dir_watcher.py:finish():392] scan: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files
+2023-01-15 23:04:34,571 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/conda-environment.yaml conda-environment.yaml
+2023-01-15 23:04:34,571 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/config.yaml config.yaml
+2023-01-15 23:04:34,572 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/diff.patch diff.patch
+2023-01-15 23:04:34,579 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log output.log
+2023-01-15 23:04:34,579 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/requirements.txt requirements.txt
+2023-01-15 23:04:34,588 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-metadata.json wandb-metadata.json
+2023-01-15 23:04:34,588 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json wandb-summary.json
+2023-01-15 23:04:34,597 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/code/PPO/ppo_torch/test.py code/PPO/ppo_torch/test.py
+2023-01-15 23:04:34,597 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_11_cbbef31e901088df39f4.gif media/videos/test/video_11_cbbef31e901088df39f4.gif
+2023-01-15 23:04:34,597 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_13_4101eb64b676d386d7d2.gif media/videos/test/video_13_4101eb64b676d386d7d2.gif
+2023-01-15 23:04:34,597 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_15_7edf2752eb80d95e6e2a.gif media/videos/test/video_15_7edf2752eb80d95e6e2a.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_17_d1391c62453534aba537.gif media/videos/test/video_17_d1391c62453534aba537.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_19_be665db6d1bccdd7528d.gif media/videos/test/video_19_be665db6d1bccdd7528d.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_1_dcbcc440ba09986019b9.gif media/videos/test/video_1_dcbcc440ba09986019b9.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_3_fa381d0a204f02638691.gif media/videos/test/video_3_fa381d0a204f02638691.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_5_a6966a14d6b1ad2597b7.gif media/videos/test/video_5_a6966a14d6b1ad2597b7.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_7_54f5a6fe95245813c51d.gif media/videos/test/video_7_54f5a6fe95245813c51d.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [dir_watcher.py:finish():406] scan save: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/media/videos/test/video_9_f1fbaad8cf8419825236.gif media/videos/test/video_9_f1fbaad8cf8419825236.gif
+2023-01-15 23:04:34,598 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 10
+2023-01-15 23:04:34,598 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:34,598 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 10
+2023-01-15 23:04:34,599 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:34,599 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 10
+2023-01-15 23:04:34,599 INFO    SenderThread:55762 [file_pusher.py:finish():160] shutting down file pusher
+2023-01-15 23:04:35,784 INFO    Thread-43 :55762 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/conda-environment.yaml
+2023-01-15 23:04:35,786 INFO    Thread-46 :55762 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/requirements.txt
+2023-01-15 23:04:35,793 INFO    Thread-47 :55762 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/wandb-summary.json
+2023-01-15 23:04:35,807 INFO    Thread-44 :55762 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/config.yaml
+2023-01-15 23:04:35,875 INFO    Thread-45 :55762 [upload_job.py:push():143] Uploaded file /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/files/output.log
+2023-01-15 23:04:36,079 INFO    Thread-12 (_thread_body):55762 [sender.py:transition_state():585] send defer: 11
+2023-01-15 23:04:36,080 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:36,080 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 11
+2023-01-15 23:04:36,080 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:36,080 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 11
+2023-01-15 23:04:36,080 INFO    SenderThread:55762 [file_pusher.py:join():165] waiting for file pusher
+2023-01-15 23:04:36,080 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 12
+2023-01-15 23:04:36,081 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:36,081 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 12
+2023-01-15 23:04:36,081 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:36,081 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 12
+2023-01-15 23:04:36,682 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 13
+2023-01-15 23:04:36,683 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:36,684 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 13
+2023-01-15 23:04:36,684 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:36,684 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 13
+2023-01-15 23:04:36,685 INFO    SenderThread:55762 [sender.py:transition_state():585] send defer: 14
+2023-01-15 23:04:36,686 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: defer
+2023-01-15 23:04:36,686 DEBUG   SenderThread:55762 [sender.py:send():334] send: final
+2023-01-15 23:04:36,687 DEBUG   SenderThread:55762 [sender.py:send():334] send: footer
+2023-01-15 23:04:36,687 INFO    HandlerThread:55762 [handler.py:handle_request_defer():170] handle defer: 14
+2023-01-15 23:04:36,687 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: defer
+2023-01-15 23:04:36,688 INFO    SenderThread:55762 [sender.py:send_request_defer():581] handle sender defer: 14
+2023-01-15 23:04:36,689 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: poll_exit
+2023-01-15 23:04:36,690 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: poll_exit
+2023-01-15 23:04:36,691 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: server_info
+2023-01-15 23:04:36,692 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: get_summary
+2023-01-15 23:04:36,692 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: sampled_history
+2023-01-15 23:04:36,694 DEBUG   SenderThread:55762 [sender.py:send_request():361] send_request: server_info
+2023-01-15 23:04:36,969 INFO    MainThread:55762 [wandb_run.py:_footer_history_summary_info():3427] rendering history
+2023-01-15 23:04:36,971 INFO    MainThread:55762 [wandb_run.py:_footer_history_summary_info():3459] rendering summary
+2023-01-15 23:04:36,971 INFO    MainThread:55762 [wandb_run.py:_footer_sync_info():3383] logging synced files
+2023-01-15 23:04:36,973 DEBUG   HandlerThread:55762 [handler.py:handle_request():144] handle_request: shutdown
+2023-01-15 23:04:36,973 INFO    HandlerThread:55762 [handler.py:finish():841] shutting down handler
+2023-01-15 23:04:37,700 INFO    WriterThread:55762 [datastore.py:close():299] close: /Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/wandb/run-20230115_224032-k6ccllih/run-k6ccllih.wandb
+2023-01-15 23:04:37,971 INFO    SenderThread:55762 [sender.py:finish():1491] shutting down sender
+2023-01-15 23:04:37,971 INFO    SenderThread:55762 [file_pusher.py:finish():160] shutting down file pusher
+2023-01-15 23:04:37,971 INFO    SenderThread:55762 [file_pusher.py:join():165] waiting for file pusher

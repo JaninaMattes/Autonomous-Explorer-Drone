@@ -190,7 +190,84 @@ The environment is a custom OpenAI Gym environment built using PyBullet for mult
 </div>
 
 #### PID Controller
-- stabilize drone flight
+
+To stabilize the quadrotor during simulation, a pre-implemented classical PID flight controller is used.  
+The controller follows a cascaded control architecture, which is standard for real-world micro aerial vehicles such as the Crazyflie 2.x.
+
+In the `gym-pybullet-drones` environment, the PID controller operates directly on the simulated vehicle state provided by PyBullet and generates low-level motor commands to ensure stable and physically consistent flight.
+
+---
+
+##### Cascaded Control Structure
+
+The controller is organized as a hierarchical (cascaded) PID system:
+
+1. **Position Control (Outer Loop)**  
+   Regulates the drone’s Cartesian position and computes desired roll, pitch, and collective thrust setpoints.
+
+2. **Attitude Control (Inner Loop)**  
+   Regulates roll, pitch, and yaw angles and outputs desired body torques.
+
+3. **Motor Mixing**  
+   Converts thrust and torque commands into individual motor speeds for the four rotors.
+
+This architecture closely mirrors the onboard Crazyflie PID controller used in real flight.
+
+---
+
+##### PID Control Law
+
+Each control loop applies the standard PID formulation:
+
+$$
+u(t) = K_p \, e(t) + K_i \int_0^t e(\tau)\, d\tau + K_d \frac{d}{dt} e(t)
+$$
+
+where:
+
+- `e(t)` is the error between the desired setpoint and the measured state  
+- `K_p` is the proportional gain  
+- `K_i` is the integral gain  
+- `K_d` is the derivative gain
+
+The controller continuously computes these errors using simulated onboard sensor data, including position, velocity, orientation, and angular rates.
+
+---
+
+##### Controlled Quantities
+
+The PID controller stabilizes and regulates:
+
+- **Position:**  `x, y, z`
+- **Attitude:** roll, pitch, yaw
+- **Angular rates**
+- **Collective thrust**
+
+The resulting control signals are translated into four individual rotor thrust commands, accounting for the Crazyflie 2.x quadrotor configuration and motor layout.
+
+---
+
+##### Role in the Learning Pipeline
+
+The PID controller serves multiple purposes:
+
+- Baseline stabilizing controller
+- Reference policy for comparison with reinforcement learning agents
+- Reliable mechanism for hovering, takeoff, and trajectory tracking
+
+This separation allows reinforcement learning methods (e.g., PPO) to focus on high-level decision making, while low-level stabilization remains robust and physically grounded.
+
+---
+
+<div align="center">
+  <img src="img/gifs/pid-controller-mechanism.gif" alt="PID controller mechanism" width="300" height="150">
+  <br>
+  <small>
+    Fig. 2: Stable Crazyflie 2.x flight achieved using a cascaded PID controller in the
+    <code>gym-pybullet-drones</code> simulation.
+  </small>
+</div>
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -210,18 +287,43 @@ Programming Languages-Frameworks-Tools<br /><br />
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
+This is an example of how you may be setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Requirements and Installation
 
 This repository was written using Python 3.10 and Anaconda tested on macOS 14.4.1.
 
+#### Project structure
+
+The repository is organized so that core algorithms, simulation backends, and optional extensions are separated:
+
+```
+Autonomous-Explorer-Drone/
+├── src/                       # Main project source code (PPO, training, utils)
+├── gym_pybullet_drones/       # PyBullet-based drone simulation (vendored)
+├── unity_mlagent_drones/      # Optional Unity ML-Agents extension (future work)
+├── assets/                    # Models, images, and videos
+├── docs/                      # PDFs and theoretical references
+├── img/                       # Figures used in README/docs
+├── requirements*.txt          # Python dependencies
+├── Dockerfile                 # Reproducible environment
+└── README.md                  # Project description
+```
+Design rationale:
+
+* All original research and training code lives in src/
+
+* Simulation environments are kept isolated to avoid coupling and ease replacement
+
+* Unity support is optional and does not affect the core PyBullet Gym pipeline
+
+
 #### Installation
 
 _Major dependencies are gym, pybullet, stable-baselines3, and rllib_
 
-1. Create virtual environment and install major dependencies 
+1. Create virtual environment and install all major dependencies 
    ```
     $ pip3 install --upgrade numpy matplotlib Pillow cycler 
     $ pip3 install --upgrade gym pybullet stable_baselines3 'ray[rllib]' 

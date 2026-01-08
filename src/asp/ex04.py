@@ -77,7 +77,7 @@ class PPO:
       state = _state; 
       self.num_steps += 1                                   # Update state & step
       if done: 
-        _, state = self.finish_episode()             # Reset env if done 
+        _, state = self.finish_episode()                    # Reset env if done 
     
     s,a,R,V = (np.array(e) for e in zip(*rollout))          # Get trajectories from rollout
     value = self.step(th.tensor(state))[1]                  # Get value of next state 
@@ -85,7 +85,7 @@ class PPO:
     # A = G - V                                             # Actor Critic Advantages 
     A = R + self.gamma * np.append(V[1:], value) - V        # TD Actor-Critic Advantages 
     
-    return (th.tensor(x.copy()) for x in (s,a,G,A)), state  # state, action, Return, Advantage Tensors 
+    return (th.tensor(x.copy()) for x in (s,a,G,A)), state      # state, action, Return, Advantage Tensors 
 
   def train(self, states, actions, returns, advantages):        # Update policy weights
     self.pi.optimizer.zero_grad(); self.vf.optimizer.zero_grad()# Reset optimizer
@@ -102,14 +102,15 @@ class PPO:
       rollout, state = self.collect_rollout(state)              # Collect Rollout 
       stats.append((self.num_steps, np.mean(self.ep_returns)))  # Early Stopping and logging 
       if np.mean(self.ep_returns) >= self.env.spec.reward_threshold: return stats  
-      print(f"At Step {self.num_steps:5d} Mean Return {stats[-1][1]:.2f}", end="\r", flush=True)
+      print(f"At Step {self.num_steps:5d} Mean Return {stats[-1][1]:.2f}", 
+            end="\r", flush=True)
       self.train(*rollout)                                      # Perfom Update using rollout 
     return stats
 
 if __name__ == '__main__':
-  env = gym.make('CartPole-v1')       # Setup Env ['CartPole-v1'|'Acrobot-v1'|'MountainCar-v1']
-  agent = PPO(env)                    # Setup PPO Agent 
-  stats = agent.learn(steps=100000)   # Train Agent 
+  env = gym.make('CartPole-v1')                                   # Setup Env ['CartPole-v1'|'Acrobot-v1'|'MountainCar-v1']
+  agent = PPO(env)                                                # Setup PPO Agent 
+  stats = agent.learn(steps=100000)                               # Train Agent 
 
   # Find output directory & save final video + training progress 
   dir = f"./results/run_{len(next(os.walk('./results'))[1])}"

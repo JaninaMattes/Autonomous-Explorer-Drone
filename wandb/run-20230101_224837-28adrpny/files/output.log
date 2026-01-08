@@ -1,0 +1,10 @@
+
+INFO:root:Collecting batch trajectories...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 689, in <module>
+    agent.learn()
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 430, in learn
+    advantages, cum_returns = self.generalized_advantage_estimate_3(batch_rewards, values, dones)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 251, in generalized_advantage_estimate_3
+    advantages = advantages.detach().numpy()
+AttributeError: 'list' object has no attribute 'detach'

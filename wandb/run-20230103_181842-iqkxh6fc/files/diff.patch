@@ -1,0 +1,170 @@
+diff --git a/PPO/ppo_torch/ppo_continuous.py b/PPO/ppo_torch/ppo_continuous.py
+index ebfe0bbc..b6ac858c 100644
+--- a/PPO/ppo_torch/ppo_continuous.py
++++ b/PPO/ppo_torch/ppo_continuous.py
+@@ -21,6 +21,10 @@ import sys
+ import wandb
+ from wrapper.stats_logger import CSVWriter
+ 
++# hyperparameter tuning
++import optuna
++from optuna.integration.wandb import WeightsAndBiasesCallback
++
+ # Paths and other constants
+ MODEL_PATH = './models/'
+ LOG_PATH = './log/'
+@@ -28,18 +32,19 @@ VIDEO_PATH = './video/'
+ 
+ CURR_DATE = datetime.today().strftime('%Y-%m-%d')
+ 
++
+ ####################
+ ####### TODO #######
+ ####################
+ 
+ # Hint: Please if working on it mark a todo as (done) if done
+ # 1) Check current implementation against article: https://iclr-blog-track.github.io/2022/03/25/ppo-implementation-details/
+-# 2) Check calculation of rewards --> correct mean reward over episodes? 
+ # 3) Check calculation of advantage 
+ 
+ ####################
+ ####################
+ 
++
+ class Net(nn.Module):
+     def __init__(self) -> None:
+         super(Net, self).__init__()
+@@ -128,7 +133,7 @@ class PPO_PolicyGradient:
+         gamma=0.99,
+         epsilon=0.22,
+         adam_eps=1e-5,
+-        render=1,
++        render=10,
+         save_model=10,
+         csv_writer=None,
+         log_video=False) -> None:
+@@ -546,6 +551,8 @@ def arg_parser():
+         help="if toggled, run model in training mode")
+     parser.add_argument("--test", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
+         help="if toggled, run model in testing mode")
++    parser.add_argument("--hyperparam", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
++        help="if toggled, log hyperparameters")
+     parser.add_argument("--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"),
+         help="the name of this experiment")
+     parser.add_argument("--gym-id", type=str, default="HalfCheetahBulletEnv-v0",
+@@ -692,6 +699,28 @@ def test(path, env, in_dim, out_dim, steps=10_000, render=True, log_video=False)
+         if log_video:
+             wandb.log({"test/video": wandb.Video(VIDEO_PATH, caption='episode: '+str(ep_num), fps=4, format="gif"), "step": ep_num})
+ 
++def hyperparam_tuning(config=None):
++    log_video = False
++    # set config
++    with wandb.init(config=config):
++        agent = PPO_PolicyGradient(
++                env,
++                in_dim=config.obs_dim, 
++                out_dim=config.act_dim,
++                total_steps=config.total_steps,
++                max_trajectory_size=config.max_trajectory_size,
++                trajectory_iterations=config.trajectory_iterations,
++                noptepochs=config.noptepochs,
++                gae_lambda = config.gae_lambda,
++                gamma=config.gamma,
++                epsilon=config.epsilon,
++                adam_eps=config.adam_epsilon,
++                lr_p=config.learning_rate_p,
++                lr_v=config.learning_rate_v)
++    
++    # run training for a total amount of steps
++    agent.learn()
++
+ 
+ if __name__ == '__main__':
+     
+@@ -767,10 +796,10 @@ if __name__ == '__main__':
+ 
+     # Monitoring with W&B
+     wandb.init(
+-    project=f'drone-mechanics-ppo-OpenAIGym',
+-    entity='drone-mechanics',
+-    sync_tensorboard=True,
+-    config={ # stores hyperparams in job
++            project=f'drone-mechanics-ppo-OpenAIGym',
++            entity='drone-mechanics',
++            sync_tensorboard=True,
++            config={ # stores hyperparams in job
+             'total number of steps': total_steps,
+             'max sampled trajectories': max_trajectory_size,
+             'batches per episode': trajectory_iterations,
+@@ -782,15 +811,13 @@ if __name__ == '__main__':
+             'epsilon (adam optimizer)': adam_epsilon,
+             'gamma (discount)': gamma,
+             'epsilon (clipping)': epsilon,
++            'gae lambda (GAE)': gae_lambda,
+             'seed': seed
+         },
+-    name=f"exp_name: {env_name}_{CURR_DATE}",
+-    monitor_gym=True,
+-    save_code=True
+-    )
+-
+-    # monitor gym
+-    wandb.gym.monitor()
++            name=f"exp_name: {env_name}_{CURR_DATE}",
++            monitor_gym=True,
++            save_code=True
++        )
+ 
+     if args.train:
+         logging.info('Training model...')
+@@ -817,6 +844,42 @@ if __name__ == '__main__':
+         PATH = './models/Pendulum-v1_2023-01-01_policyNet.pth'
+         test(PATH, env, in_dim=obs_dim, out_dim=act_dim)
+     
++    elif args.hyperparam:
++        logging.info('Hyperparameter tuning...')
++        # sweep config
++        sweep_config = {
++            'method': 'bayes'
++            }
++        metric = {
++            'name': 'mean_ep_rews',
++            'goal': 'maximize'   
++            }
++        parameters_dict = {
++            'learning_rate_p': {
++                'values': [1e-5, 1e-4, 1e-3, 1e-2]
++            },
++            'learning_rate_v': {
++                'values': [1e-5, 1e-4, 1e-3, 1e-2]
++            },
++            'gamma': {
++                'values': [0.95, 0.96, 0.97, 0.98, 0.99]
++            },
++            'adam_epsilon': {
++                'values': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5]
++            },
++            'epsilon': {
++                'values': [0.1, 0.2, 0.25, 0.3, 0.4]
++            },
++            }
++
++        # set defined parameters
++        sweep_config['parameters'] = parameters_dict
++        sweep_config['metric'] = metric
++
++        # run sweep with sweep controller
++        sweep_id = wandb.sweep(sweep_config, project="ppo-OpenAIGym-hyperparam-tuning")
++        wandb.agent(sweep_id, hyperparam_tuning, count=5)
++
+     else:
+         assert("Needs training (--train) or testing (--test) flag set!")
+ 
+@@ -824,4 +887,4 @@ if __name__ == '__main__':
+ 
+     # cleanup 
+     env.close()
+-    wandb.run.finish() if wandb and wandb.run else None
+\ No newline at end of file
++    # wandb.run.finish() if wandb and wandb.run else None
+\ No newline at end of file

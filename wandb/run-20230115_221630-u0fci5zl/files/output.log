@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 314, in <module>
+    test(args.model_path, env, in_dim=obs_dim, out_dim=act_dim, n_steps=1000, device=device)
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/test.py", line 149, in test
+    (ep_lengths, ep_returns, frames) = simulate_rollout(policy_net, env, render)
+ValueError: too many values to unpack (expected 3)
+INFO:root:Evaluation model...

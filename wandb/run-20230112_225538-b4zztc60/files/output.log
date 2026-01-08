@@ -1,0 +1,6 @@
+
+INFO:root:Training model...
+Traceback (most recent call last):
+  File "/Volumes/Work Disk Janina Mattes/DEV/University/ASP/ml-explorer-drone/PPO/ppo_torch/ppo_continuous.py", line 1069, in <module>
+    train(env,
+TypeError: train() got an unexpected keyword argument 'normalize_advantage'
