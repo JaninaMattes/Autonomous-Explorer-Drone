@@ -123,7 +123,7 @@ The following shows a training result where the agent has learned to control the
 
 #### PPO Actor-Critic Architecture
 
-In this project, the policy gradient method is used for training with a custom implementation of [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf).
+In this project the policy gradient method is used for training with a custom implementation of [**Proximal Policy Optimization (PPO)**](https://arxiv.org/pdf/1707.06347.pdf). The results are compared against the baseline results from [**Stable Baselines3**](https://stable-baselines3.readthedocs.io/en/master/).
 
 <div align="center">
   <img src="img/architecture/architecture.png" alt="Logo" width="500">
@@ -279,16 +279,15 @@ Programming Languages-Frameworks-Tools<br /><br />
 ## Getting Started
 
 This is an example of how you may be setting up your project locally.
-To get a local copy up and running, follow these simple example steps.
-Quickstart with [**PyBullet**]([https://www.anaconda.com/download](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA/edit?tab=t.0)).
+To get a local copy up and running follow these simple example steps.
 
 ### Requirements and Installation
 
-This repository was written using Python 3.10, and Anaconda and was tested on macOS 14.4.1.
+This repository was written using Python 3.10 and Anaconda tested on macOS 14.4.1.
 
 #### Project structure
 
-The repository is organised so that core algorithms, simulation backends, and optional extensions are separated:
+The repository is organized so that core algorithms, simulation backends, and optional extensions are separated:
 
 ```
 Autonomous-Explorer-Drone/
@@ -316,65 +315,69 @@ Design rationale:
 This project was developed and tested using **Python 3.10** with  
 [**Anaconda**](https://www.anaconda.com/download) (or **Miniconda**) on **macOS (Apple Silicon, M1/M2)**.
 
-
 ---
 
 1. Verify Conda Installation
 
-Check that Conda is installed:
+    Check that Conda is installed:
 
-```
-$ conda --version
-```
+    ```
+    $ conda --version
+    ```
 
-2. Create Conda Environment:
-   Create and activate the environment for the project:
+2. Create Conda Environment
+   
+   Create and activate a new environment for the project:
 
-```
-$ conda create -n drone-env python=3.10
-$ conda activate drone-env
-$ conda info --envs
-```
+    Install all dependencies from requirements.yaml:
+    ```
+    $ conda env create -f requirements.yaml
+    ```
 
-Check version
+    OR manually: 
 
-```
-$ python --version
-# Should show 3.10.x
-```
+    ```
+    $ conda create -n drone-env python=3.10
+    $ conda activate drone-env
+    $ conda info --envs
+    ```
 
-Upgrade pip inside the environment:
+3. Check version
 
-```
-pip install --upgrade pip
-```
+    ```
+    $ python --version # Should show 3.10.x
+    ```
+
+    Upgrade pip inside the environment
+
+    ```
+    $ pip install --upgrade pip
+    ```
 
 1. Install PyTorch and Lightning
 
-Install PyTorch along with `torchvision` and `torchaudio` for M1/M2 Macs:
+    Install PyTorch along with `torchvision` and `torchaudio` for M1/M2 Macs:
 
-```
-# Install PyTorch + torchvision + torchaudio for Apple Silicon on M1
-conda install pytorch torchvision torchaudio -c pytorch
 
-$ python - <<EOF
-  import torch
-  print("PyTorch version:", torch.__version__)
-  print("MPS available:", torch.backends.mps.is_available())
-  EOF
-```
+    ```
+    # Install PyTorch + torchvision + torchaudio (Apple Silicon on M1)
+    conda install pytorch torchvision torchaudio -c pytorch
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+    $ python - <<EOF
+      import torch
+      print("PyTorch version:", torch.__version__)
+      print("MPS available:", torch.backends.mps.is_available())
+      EOF
+    ```
 
-<!-- Install Dependencies -->
-Install Lightning
+    Install Lightning
 
-```
-$ conda install lightning -c conda-forge
-```
+    ```
+    $ conda install lightning -c conda-forge
+    ```
 
-The MPS backend enables GPU acceleration via Apple’s Metal framework.
-Some reinforcement learning libraries may still default to CPU execution.
+    The MPS backend enables GPU acceleration via Apple’s Metal framework.
+    Some reinforcement learning libraries may still default to CPU execution.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -382,47 +385,40 @@ Some reinforcement learning libraries may still default to CPU execution.
 
 _Major dependencies are gym, pybullet, stable-baselines3, and rllib_
 
-1. Start virtual environment and install the core RL dependencies
- ```
-  $ pip install --upgrade numpy matplotlib Pillow cycler
-  $ pip install --upgrade gym pybullet stable_baselines3 'ray[rllib]'
- ```
-
- Or install all dependencies from requirements.txt:
- ```
- $ pip install -r requirements.txt
- ```
+1. Start virtual environment and if not started from ```environment.yaml```, install the core RL dependencies
+    ```
+      $ pip install --upgrade numpy matplotlib Pillow cycler
+      $ pip install --upgrade gym pybullet stable_baselines3 'ray[rllib]'
+    ```
 
 2. The ```gym-pybullet-drones``` repo is structured as a Gym Environment and can be installed with pip install --editable
 
- If the installation of ```pybullet```fails, install via Conda:
+    If the installation of ```pybullet```fails, install via Conda:
 
- ```
- $ conda install -c conda-forge pybullet
- ```
 
-```
-$ cd gym-pybullet-drones/
-$ pip install -e . # if needed, `sudo apt install build-essential` to install `gcc` and build `pybullet`
-```
+    ```
+    $ conda install -c conda-forge pybullet
+    $ cd gym-pybullet-drones/
+    $ pip install -e . # if needed, `sudo apt install build-essential` to install `gcc` and build `pybullet`
+    ```
 
-On Linux, you may need development tools for building wheels:
+    On Linux, you may need development tools for building wheels:
 
-```
-sudo apt install build-essential
-```
+    ```
+    sudo apt install build-essential
+    ```
 
-3. Video recording requires to have `ffmpeg` installed, on macOS
+  1. Video recording requires to have `ffmpeg` installed, on macOS
 
-   ```
-   $ brew install ffmpeg
-   ```
+      ```
+      $ brew install ffmpeg
+      ```
 
-   or on Ubuntu
+      or on Ubuntu
 
-   ```
-   $ sudo apt install ffmpeg
-   ```
+      ```
+      $ sudo apt install ffmpeg
+      ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -432,6 +428,8 @@ sudo apt install build-essential
 
 - [x] Add Changelog
 - [x] Add back to top links
+- [ ] Migrate to new PyBullet version 
+- [ ] Simplify project structure 
 - [ ] Fix sparse reward issue by adding prox rewards
 - [ ] Adjustment of the reward function to achieve the approach of a target
 - [ ] Implement in Unity with ML agents
@@ -499,3 +497,4 @@ Project Link: [Autonomous-Explorer-Drone](https://github.com/JaninaMattes/Autono
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com
+

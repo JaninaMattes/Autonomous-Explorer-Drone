@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9-slim-bullseye
 
 RUN apt-get -y update && apt-get -y install ffmpeg
 RUN apt-get -y update && apt-get -y install git wget python-dev python3-dev python-pip zlib1g-dev cmake python-opencv
