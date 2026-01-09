@@ -34,22 +34,54 @@ Run the Docker container:
 This will mount the current directory to the ```/app``` directory inside the container and start a Bash shell. You can then proceed with the steps below and run a training with the specified parameters.
 
 ### Option 2: Manual Installation
-(1) Installation
 
-Create conda env
-- ```$ conda create --name ppo_drone_py39 python=3.9```
-- ```$ conda activate ppo_drone_py39```
+1. Setup Conda Environment
 
-Installation
-- ```$ pip install -r requirements_pybullet.txt```
-or 
-- ```$ pip install --upgrade numpy Pillow matplotlib cycler```
-- ```$ pip install --upgrade gym pybullet stable_baselines3 'ray[rllib]'```
+    Create and activate a new environment for the project:
 
-For video and graphical output install:
-- Ubuntu: ```$ apt install ffmpeg```
-- Windows: https://github.com/utiasDSL/gym-pybullet-drones/tree/master/assignments#on-windows
+    Install all dependencies from requirements.yaml:
+    ```
+    $ conda env create -f requirements.yaml
+    ```
 
+    OR manually: 
+
+    ```
+    $ conda create -n drone-env python=3.10
+    $ conda activate drone-env
+    $ conda info --envs
+    ```
+
+    Install PyTorch along with `torchvision` and `torchaudio` for M1/M2 Macs:
+
+    ```
+    # Install PyTorch + torchvision + torchaudio (Apple Silicon on M1)
+    conda install pytorch torchvision torchaudio -c pytorch
+
+    $ python - <<EOF
+      import torch
+      print("PyTorch version:", torch.__version__)
+      print("MPS available:", torch.backends.mps.is_available())
+      EOF
+    ```
+
+2. Start virtual environment and install the core RL dependencies
+
+    ```
+      $ pip install --upgrade numpy matplotlib Pillow cycler
+      $ pip install --upgrade gym pybullet stable_baselines3 'ray[rllib]'
+    ```
+
+3. For video and graphical output install:
+   - Ubuntu: 
+        ```
+        $ apt install ffmpeg
+        ```
+   - Windows: https://github.com/utiasDSL/gym-pybullet-drones/tree/master/assignments#on-windows
+    - macOS: install via homebrew
+      ```
+      $ brew install ffmpeg
+      ```
 Then register the custom PyBullet environemnts:
 - ```$ cd gym-pybullet-drones/```
 - ```$ pip install -e .```
@@ -76,14 +108,14 @@ Select a training from scratch with optional flags (--algo, --train_steps, --env
 (2) Training
 
 Run training with PPO
-- ```python ppo_continuous.py --run_train True```
+- ```$ python ppo_continuous.py --run_train True```
 
 (3) Evaluation
-- ```python ppo_continuous.py --run_test True```
+- ```$ python ppo_continuous.py --run_test True```
 
 (4) Hyperparameter Tuning
 Run training with PPO
-- ```python ppo_continuous.py --run_hyperparam True```
+- ```$ python ppo_continuous.py --run_hyperparam True```
 
 ## 4. Logging
 All training results are logged under W&B and ```./log``` in the respective directory.

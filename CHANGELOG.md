@@ -13,3 +13,11 @@
 ### Removed
 
 - Some packages/libraries from acknowledgements I no longer use
+
+
+
+## v2.0.0
+
+### Added or Changed
+- Major update: switched to new PyBullet Gym with breaking changes (many old models removed)
+- Refactored PPO implementation to the new codebase
