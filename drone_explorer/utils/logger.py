@@ -28,7 +28,8 @@ def setup_logger(
 
     formatter = logging.Formatter(
         fmt="{asctime} - {levelname} - {message}",
-        datefmt="%Y-%m-%d %H:%M:%S"
+        datefmt="%Y-%m-%d %H:%M:%S",
+        style="{"  # Add this line!
     )
 
     # Clear previous handlers
