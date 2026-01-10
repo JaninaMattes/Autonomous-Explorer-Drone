@@ -1,6 +1,10 @@
 # This file may be used to create an environment using:
 # $ conda create --name <env> --file <this file>
 # platform: osx-arm64
+
+# conda create -n drone-env python=3.10
+# conda activate drone-env
+
 _openmp_mutex=4.5=7_kmp_llvm
 aiohappyeyeballs=2.6.1=pyhd8ed1ab_0
 aiohttp=3.13.3=py310hd5e7861_0

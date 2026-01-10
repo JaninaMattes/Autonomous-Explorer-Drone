@@ -19,9 +19,8 @@ def normalize(x: torch.Tensor, eps: float = 1e-8):
 
 
 
-
 if __name__ == "__main__":
-    # Test layer_init
+    # Simple examples as test layer_init
     print("Testing layer_init...")
     test_layer = nn.Linear(10, 5)
     initialized_layer = layer_init(test_layer)
