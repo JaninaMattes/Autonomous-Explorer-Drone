@@ -1,0 +1,22 @@
+# Base config
+defaults:
+  - _self_
+  - envs: hover
+  - algorithms: ppo
+  - experiment: null
+
+  # disable hydra logging
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: disabled
+
+  
+# ----------------------------------------
+name: debug/your_exp
+
+# ----------------------------------------
+# logging
+use_wandb: False
+use_wandb_offline: False
+wandb_project: image-ldm
+
+tags: []

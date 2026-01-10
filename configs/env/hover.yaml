@@ -1,0 +1,11 @@
+# configs/envs/hover.yaml
+name: hover-aviary
+
+observation: kin
+action: one_d_rpm
+
+multiagent: false
+num_agents: 1
+
+num_envs: 1
+seed: 0
