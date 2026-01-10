@@ -1,6 +1,8 @@
+# drone_explorer/utils/utility.py
+ 
+import torch
 from torch import nn
 import numpy as np
-import torch
 
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
     """ Initialize the hidden layers with orthogonal initialization
