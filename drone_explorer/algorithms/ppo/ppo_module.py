@@ -1,30 +1,24 @@
-from drone_explorer.models.mlp.
+from collections import deque
+
+import torch
+from torch.distributions import MultivariateNormal
+import numpy as np
+
+
+# Custom modules
+from drone_explorer.models.base.network
+
 
 class PPOPolicyGradient:
-    """ Proximal Policy Optimization algorithm (PPO) (clip version)
+    """ 
+    Proximal Policy Optimization algorithm (PPO) (clip version)
 
-        Paper:              https://arxiv.org/abs/1707.06347
-        Stable Baseline:    https://github.com/hill-a/stable-baselines
+    Paper:              https://arxiv.org/abs/1707.06347
+    Stable Baseline:    https://github.com/hill-a/stable-baselines
 
         Proximal Policy Optimization (PPO) is an online policy gradient method.
         As an online policy method it updates the policy and then discards the experience (no replay buffer).
         Thus the agent does well in environments with dense reward signals.
-        The clipped objective function in PPO allows to keep the policy close to the policy 
-        that was used to sample the data resulting in a more stable training.
-
-        :param env: The environment to learn from (if registered in Gym)
-        :param learning_rate: The learning rate, it can be a function
-        of the current progress remaining (from 1 to 0)
-        :param max_trajectory_size: Minibatch size of collected experiences
-        :param n_optepochs: Number of epoch when optimizing the surrogate loss
-        :param gamma: Discount factor
-        :param gae_lambda: Factor for trade-off of bias vs variance for Generalized Advantage Estimator
-        :param epsilon: Clipping parameter, it can be a function of the current progress
-        remaining (from 1 to 0).
-        :param normalize_advantage: Whether to normalize or not the advantage
-        :param normalize_returns: Whether to normalize or not the return
-        :param device: Device (cpu, cuda, ...) on which the code should be run.
-        Setting it to auto, the code will be run on the GPU if possible.
     """
     # Further reading
     # PPO experiments: https://nn.labml.ai/rl/ppo/experiment.html
@@ -60,7 +54,7 @@ class PPOPolicyGradient:
                  advantage_type='gae',
                  normalize_adv=False,
                  normalize_ret=False
-        ) -> None:
+                 ) -> None:
 
         # environment
         self.env = env
@@ -123,14 +117,15 @@ class PPOPolicyGradient:
 
         # add optimizer for actor and critic
         if self.adam:
-            self.policy_net_optim = Adam(self.policy_net.parameters(
-            ), lr=self.learning_rate_p, eps=self.adam_eps)  # Setup Policy Network (Actor) optimizer
-            self.value_net_optim = Adam(self.value_net.parameters(
+            self.policy_net_optim = torch.optim.Adam(
+                self.policy_net.parameters(
+                ), lr=self.learning_rate_p, eps=self.adam_eps)  # Setup Policy Network (Actor) optimizer
+            self.value_net_optim = torch.optim.Adam(self.value_net.parameters(
             ), lr=self.learning_rate_v, eps=self.adam_eps)  # Setup Value Network (Critic) optimizer
         else:
-            self.policy_net_optim = SGD(
+            self.policy_net_optim = torch.optim.SGD(
                 self.policy_net.parameters(), lr=self.learning_rate_p, momentum=self.momentum)
-            self.value_net_optim = SGD(
+            self.value_net_optim = torch.optim.SGD(
                 self.value_net.parameters(), lr=self.learning_rate_v, momentum=self.momentum)
 
     def get_continuous_policy(self, obs):
@@ -395,8 +390,8 @@ class PPOPolicyGradient:
         """Collect a batch of simulated data each time we iterate the actor/critic network (on-policy)
            A typical rollout length - 2048 t0 4096
         """
-        
-        t_step, rewards, frames = 0, [], deque(maxlen=24) # 4 fps - 6 sec
+
+        t_step, rewards, frames = 0, [], deque(maxlen=24)  # 4 fps - 6 sec
 
         # log time
         episode_time = []
@@ -413,7 +408,7 @@ class PPOPolicyGradient:
         # Run Monte Carlo simulation for n timesteps per batch
         logging.info(f"Collecting trajectories for {n_steps} episodes.")
         while t_step < n_steps:
-            
+
             # rewards collected
             rewards, done, frames = [], False, []
             obs = self.env.reset()
@@ -428,20 +423,20 @@ class PPOPolicyGradient:
                 # render gym envs
                 if self.render_video and t % self.render_steps == 0:
                     frames.append(self.env.render(mode="rgb_array"))
-                
-                t_step += 1 
 
-                # action logic 
+                t_step += 1
+
+                # action logic
                 # sampled via policy which defines behavioral strategy of an agent
                 action, log_probability, _ = self.step(obs)
 
-                # Perform action logic at random 
+                # Perform action logic at random
                 # action, log_probability, _ = self.random_step(obs)
-                        
-                # STEP 3: collecting set of trajectories D_k by running action 
+
+                # STEP 3: collecting set of trajectories D_k by running action
                 # that was sampled from policy in environment
                 __obs, reward, done, truncated = self.env.step(action)
-                
+
                 # collection of trajectories in batches
                 episode_obs.append(obs)
                 episode_nextobs.append(__obs)
@@ -449,13 +444,13 @@ class PPOPolicyGradient:
                 episode_action_probs.append(log_probability)
                 rewards.append(reward)
                 episode_dones.append(done)
-                    
+
                 obs = __obs
 
                 # break out of loop if episode is terminated
                 if done or truncated:
                     break
-            
+
             # stop time per episode
             # Waits for everything to finish running
             # torch.cuda.synchronize()
@@ -463,18 +458,22 @@ class PPOPolicyGradient:
             time_elapsed = end_epoch - start_epoch
             episode_time.append(time_elapsed)
 
-            episode_lens.append(t + 1) # as we started at 0
+            episode_lens.append(t + 1)  # as we started at 0
             episode_rewards.append(rewards)
 
         # convert trajectories to torch tensors
-        obs = torch.tensor(np.array(episode_obs), device=self.device, dtype=torch.float)
-        next_obs = torch.tensor(np.array(episode_nextobs), device=self.device, dtype=torch.float)
-        actions = torch.tensor(np.array(episode_actions), device=self.device, dtype=torch.float)
-        action_log_probs = torch.tensor(np.array(episode_action_probs), device=self.device, dtype=torch.float)
-        dones = torch.tensor(np.array(episode_dones), device=self.device, dtype=torch.float)
+        obs = torch.tensor(np.array(episode_obs),
+                           device=self.device, dtype=torch.float)
+        next_obs = torch.tensor(np.array(episode_nextobs),
+                                device=self.device, dtype=torch.float)
+        actions = torch.tensor(np.array(episode_actions),
+                               device=self.device, dtype=torch.float)
+        action_log_probs = torch.tensor(
+            np.array(episode_action_probs), device=self.device, dtype=torch.float)
+        dones = torch.tensor(np.array(episode_dones),
+                             device=self.device, dtype=torch.float)
 
         return obs, next_obs, actions, action_log_probs, dones, episode_rewards, episode_lens, np.array(episode_time), frames
-                
 
     def train(self, values, returns, advantages, batch_log_probs, curr_log_probs, epsilon):
         """Calculate loss and update weights of both networks."""
@@ -503,31 +502,36 @@ class PPOPolicyGradient:
             # Collect data over one episode
             # Episode = recording of actions and states that an agent performed from a start state to an end state
             # STEP 3: simulate and collect trajectories --> the following values are all per batch over one episode
-            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time, frames = self.collect_rollout(n_steps=self.n_rollout_steps)
+            obs, next_obs, actions, batch_log_probs, dones, rewards, ep_lens, ep_time, frames = self.collect_rollout(
+                n_steps=self.n_rollout_steps)
 
             # experiences simulated so far
             training_steps += np.sum(ep_lens)
 
             # STEP 4-5: Calculate cummulated reward and advantage at timestep t_step
-            values, _ , _ = self.get_values(obs, actions)
+            values, _, _ = self.get_values(obs, actions)
             # Calculate advantage function
             # advantages, cum_returns = self.advantage_reinforce(rewards, normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
             # advantages, cum_returns = self.advantage_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
             # advantages, cum_returns = self.advantage_TD_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            
-            # update network params 
-            logging.info(f"Updating network parameter for {self.n_optepochs} epochs.")
+            advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(
+            ), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+
+            # update network params
+            logging.info(
+                f"Updating network parameter for {self.n_optepochs} epochs.")
             for _ in range(self.n_optepochs):
                 # STEP 6-7: calculate loss and update weights
                 values, curr_log_probs, _ = self.get_values(obs, actions)
-                policy_loss, value_loss = self.train(values, cum_returns, advantages, batch_log_probs, curr_log_probs, self.epsilon)
-                
+                policy_loss, value_loss = self.train(
+                    values, cum_returns, advantages, batch_log_probs, curr_log_probs, self.epsilon)
+
                 policy_losses.append(policy_loss.detach().numpy())
                 value_losses.append(value_loss.detach().numpy())
 
             # log all statistical values to CSV
-            self.log_stats(policy_losses, value_losses, rewards, ep_lens, training_steps, ep_time, done_so_far, exp_name=self.exp_name)
+            self.log_stats(policy_losses, value_losses, rewards, ep_lens,
+                           training_steps, ep_time, done_so_far, exp_name=self.exp_name)
 
             # increment for each iteration
             done_so_far += 1
@@ -536,20 +540,22 @@ class PPOPolicyGradient:
             if training_steps % self.save_model == 0:
                 env_name = self.env.unwrapped.spec.id
                 env_model_path = os.path.join(self.exp_path, 'models')
-                policy_net_name = os.path.join(env_model_path, f'{env_name}_policyNet.pth')
-                value_net_name = os.path.join(env_model_path, f'{env_name}_valueNet.pth')
+                policy_net_name = os.path.join(
+                    env_model_path, f'{env_name}_policyNet.pth')
+                value_net_name = os.path.join(
+                    env_model_path, f'{env_name}_valueNet.pth')
                 torch.save({
                     'epoch': training_steps,
                     'model_state_dict': self.policy_net.state_dict(),
                     'optimizer_state_dict': self.policy_net_optim.state_dict(),
                     'loss': policy_loss,
-                    }, policy_net_name)
+                }, policy_net_name)
                 torch.save({
                     'epoch': training_steps,
                     'model_state_dict': self.value_net.state_dict(),
                     'optimizer_state_dict': self.value_net_optim.state_dict(),
                     'loss': value_loss,
-                    }, value_net_name)
+                }, value_net_name)
 
                 if wandb:
                     wandb.save(policy_net_name)
@@ -563,27 +569,28 @@ class PPOPolicyGradient:
 
                 # Log to video
                 if self.render_video and done_so_far % self.video_log_steps == 0:
-                    filename='pendulum_v1.gif'
+                    filename = 'pendulum_v1.gif'
                     self.save_frames_as_gif(frames, self.exp_path, filename)
                     if wandb:
                         wandb.log({
-                            "train/video": wandb.Video(os.path.join(self.exp_path, filename), 
-                            caption='episode: '+str(done_so_far), 
-                            fps=4, format="gif"), "step": done_so_far
-                            })
+                            "train/video": wandb.Video(os.path.join(self.exp_path, filename),
+                                                       caption='episode: ' +
+                                                       str(done_so_far),
+                                                       fps=4, format="gif"), "step": done_so_far
+                        })
 
         # Finalize and plot stats
         if self.stats_plotter:
-            try: 
-                df = self.stats_plotter.read_csv() # read all files in folder
-                self.stats_plotter.plot_seaborn_fill(df, 
-                                                    x='timestep', y='mean episodic returns', 
-                                                    y_min='min episodic returns', y_max='max episodic returns',  
-                                                    title=f'{env_name}', 
-                                                    x_label='Episode', 
-                                                    y_label='Mean Episodic Return',
-                                                    smoothing=2, 
-                                                    wandb=wandb)
+            try:
+                df = self.stats_plotter.read_csv()  # read all files in folder
+                self.stats_plotter.plot_seaborn_fill(df,
+                                                     x='timestep', y='mean episodic returns',
+                                                     y_min='min episodic returns', y_max='max episodic returns',
+                                                     title=f'{env_name}',
+                                                     x_label='Episode',
+                                                     y_label='Mean Episodic Return',
+                                                     smoothing=2,
+                                                     wandb=wandb)
             except:
                 logging.warn('Plotting unsuccessfull...')
         if wandb:
@@ -609,7 +616,6 @@ class PPOPolicyGradient:
         video_path = os.path.join(path, filename)
         anim.save(video_path, writer='imagemagick', fps=60)
 
-
     def log_stats(self, p_losses, v_losses, batch_return, episode_lens, training_steps, time, done_so_far, exp_name='experiment', smoothing=None):
         """Calculate stats and log to W&B, CSV, logger """
         if torch.is_tensor(batch_return):
@@ -631,7 +637,8 @@ class PPOPolicyGradient:
         mean_ep_ret = round(np.mean(cum_ret), 6)
         max_ep_ret = round(np.max(cum_ret), 6)
         min_ep_ret = round(np.min(cum_ret), 6)
-        std_ep_rew = round(np.std(cum_ret), 6) # standard deviation (spred of distribution)
+        # standard deviation (spred of distribution)
+        std_ep_rew = round(np.std(cum_ret), 6)
 
         # Log stats to CSV file
         self.stats_data['episodes'].append(done_so_far)
