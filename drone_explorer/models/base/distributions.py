@@ -49,10 +49,10 @@ if __name__ == "__main__":
     mean = torch.zeros(action_dim)
     dist = dist_fn(mean)
     
-    print("\n Without learned std parameters.")
-    print("Params: ", params)
-    print("Action dim: ", action_dim)
-    print("Mean shape: ", dist.mean.shape)
+    print("Without learned std parameters.")
+    print(f"Params: {params}")
+    print(f"Action dim: {action_dim}")
+    print(f"Mean shape: {dist.mean.shape}")
     
     action_dim = 4
     dist_fn = DiagGaussianPolicy(action_dim=3, learned=True)
@@ -60,8 +60,8 @@ if __name__ == "__main__":
     mean = torch.zeros(action_dim)
     dist = dist_fn(mean)
 
-    print("\n With learned std parameters.")
-    print("Params: ", params)
-    print("Action dim: ", action_dim)
-    print("Mean shape: ", dist.mean.shape)
+    print("\nWith learned std parameters.")
+    print(f"Params: {params}")
+    print(f"Action dim: {action_dim}")
+    print(f"Mean shape: {dist.mean.shape}")
     

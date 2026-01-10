@@ -7,7 +7,7 @@ import numpy as np
 from drone_explorer.models.base.network import Net
 from drone_explorer.utils.utility import layer_init
 
-
+        
 class PolicyNet(Net):
     """Setup Policy Network (Actor)"""
 
@@ -34,11 +34,11 @@ class PolicyNet(Net):
             - The minimum is taken, so that the gradient will pull π_new towards π_OLD if the ratio is not between 1-ϵ and 1+ϵ.
         """
         ratio = torch.exp(
-            curr_log_probs - batch_log_probs)     # ratio between pi_theta(a_t | s_t) / pi_theta_k(a_t | s_t)
+            curr_log_probs - batch_log_probs)                   # ratio between pi_theta(a_t | s_t) / pi_theta_k(a_t | s_t)
         clip_1 = ratio * advantages
         clip_2 = torch.clamp(ratio, 1.0 - clip_eps,
                              1.0 + clip_eps) * advantages
-        # negative as Adam mins loss, but we want to max it
+                                                                # negative as Adam mins loss, but we want to max it
         policy_loss = (-torch.min(clip_1, clip_2))
         self.clip_fraction = (abs((ratio - 1.0)) >              # calc clip frac
                               clip_eps).to(torch.float).mean()
