@@ -6,19 +6,23 @@ import numpy as np
 
 
 # Custom modules
-from drone_explorer.models.base.network
+from drone_explorer.algorithms.ppo.advantages import compute_gae
+from drone_explorer.models.base.distributions import DiagGaussianPolicy
+from drone_explorer.models.mlp.value_net import ValueNet
+from drone_explorer.models.mlp.policy_net import PolicyNet
+
 
 
 class PPOPolicyGradient:
     """ 
     Proximal Policy Optimization algorithm (PPO) (clip version)
+    PPO is an online policy gradient method. As an online policy method it updates the policy 
+    and then discards the experience (no replay buffer). 
+    Thus the agent does well in environments with dense reward signals.
 
     Paper:              https://arxiv.org/abs/1707.06347
     Stable Baseline:    https://github.com/hill-a/stable-baselines
-
-        Proximal Policy Optimization (PPO) is an online policy gradient method.
-        As an online policy method it updates the policy and then discards the experience (no replay buffer).
-        Thus the agent does well in environments with dense reward signals.
+    
     """
     # Further reading
     # PPO experiments: https://nn.labml.ai/rl/ppo/experiment.html
@@ -128,24 +132,36 @@ class PPOPolicyGradient:
             self.value_net_optim = torch.optim.SGD(
                 self.value_net.parameters(), lr=self.learning_rate_v, momentum=self.momentum)
 
+
+        # Define Gaussian distribution
+        self.action_dist = DiagGaussianPolicy(
+            action_dim=self.out_dim,
+            init_std=0.5,
+            learned=False # TODO: For debugging 
+        )
+
+        
     def get_continuous_policy(self, obs):
-        """Make function to compute action distribution in continuous action space."""
+        """ Make function to compute action distribution in continuous action space. 
+        """
         # Multivariate Normal Distribution Lecture 15.7 (Andrew Ng) https://www.youtube.com/watch?v=JjB58InuTqM
         # fixes the detection of outliers, allows to capture correlation between features
         # https://discuss.pytorch.org/t/understanding-log-prob-for-normal-distribution-in-pytorch/73809
         # 1) Use Normal distribution for continuous space
         # query Policy Network (Actor) for mean action
-        action_prob = self.policy_net(obs)
-        cov_matrix = torch.diag(torch.full(
-            size=(self.out_dim,), fill_value=0.5))
-        return MultivariateNormal(action_prob, covariance_matrix=cov_matrix)
+        action_prob = self.policy_net(obs)                                      # Predicted mean value
+        return self.action_dist(action_prob)
+
 
     def get_action(self, dist):
-        """Make action selection function (outputs actions, sampled from policy)."""
+        """ Sampling step, where agent makes action selection function 
+            (outputs actions, sampled from policy).
+        """
         action = dist.sample()
         log_prob = dist.log_prob(action)
         entropy = dist.entropy()
         return action, log_prob, entropy
+    
 
     def get_random_action(self, dist):
         """Make random action selection."""
@@ -155,6 +171,7 @@ class PPOPolicyGradient:
         log_prob = dist.log_prob(action)
         entropy = dist.entropy()
         return action, log_prob, entropy
+
 
     def get_values(self, obs, actions):
         """Make value selection function (outputs values for obs in a batch)."""
@@ -201,38 +218,6 @@ class PPOPolicyGradient:
             advantages = self.normalize_adv(advantages)
         return advantages, cum_returns
 
-    def advantage_reinforce(self, episode_rewards, normalized_adv=False, normalized_ret=False):
-        """ Advantage Reinforce 
-            A(s_t, a_t) = G(t)
-            - G(t) = total disounted reward
-            - Discounted return: G(t) = R(t) + gamma * R(t-1)
-        """
-        # Returns: https://gongybable.medium.com/reinforcement-learning-introduction-609040c8be36
-        # Example Reinforce: https://github.com/pytorch/examples/blob/main/reinforcement_learning/reinforce.py
-
-        # Step 4: Calculate returns
-        # G(t) is the total disounted reward
-        # return value: G(t) = R(t) + gamma * R(t-1)
-        cum_returns = []
-        for rewards in reversed(episode_rewards):  # reversed order
-            discounted_reward = 0
-            for reward in reversed(rewards):
-                # R + discount * estimated return from the next step taking action a'
-                discounted_reward = reward + (self.gamma * discounted_reward)
-                cum_returns.insert(0, discounted_reward)  # reverse it again
-        cum_returns = torch.tensor(
-            np.array(cum_returns), device=self.device, dtype=torch.float)
-        # normalize for more stability
-        if normalized_ret:
-            cum_returns = self.normalize_ret(cum_returns)
-        # Step 5: Calculate advantage
-        # A(s,a) = G(t)
-        advantages = torch.tensor(
-            np.array(cum_returns), device=self.device, dtype=torch.float)
-        # normalize for more stability
-        if normalized_adv:
-            advantages = self.normalize_adv(advantages)
-        return advantages, cum_returns
 
     def advantage_actor_critic(self, episode_rewards, values, normalized_adv=False, normalized_ret=False):
         """ Advantage Actor-Critic
@@ -335,46 +320,7 @@ class PPOPolicyGradient:
             advantages = self.normalize_adv(advantages)
         return advantages, cum_returns
 
-    def generalized_advantage_estimate_2(self, obs, next_obs, episode_rewards, dones, normalized_adv=False, normalized_ret=False):
-        """ Generalized Advantage Estimate calculation
-            - GAE defines advantage as a weighted average of A_t
-            - advantage measures if an action is better or worse than the policy's default behavior
-            - want to find the maximum Advantage representing the benefit of choosing a specific action
-        """
-        # general advantage estimage paper: https://arxiv.org/pdf/1506.02438.pdf
-        # general advantage estimage other: https://nn.labml.ai/rl/ppo/gae.html
 
-        s_values = self.get_value(obs).detach().numpy()
-        ns_values = self.get_value(next_obs).detach().numpy()
-        advantages = []
-        returns = []
-
-        # STEP 4: Calculate cummulated reward
-        for rewards in reversed(episode_rewards):
-            prev_advantage = 0
-            returns_current = ns_values[-1]  # V(s_t+1)
-            for i in reversed(range(len(rewards))):
-                # STEP 5: compute advantage estimates A_t at step t
-                mask = (1.0 - dones[i])
-                gamma = self.gamma * mask
-                td_target = rewards[i] + (gamma * ns_values[i])
-                td_error = td_target - s_values[i]
-                # A_t = δ_t + γ * λ * A(t+1)
-                prev_advantage = td_error + gamma * self.gae_lambda * prev_advantage
-                returns_current = rewards[i] + gamma * returns_current
-                # reverse it again
-                returns.insert(0, returns_current)
-                advantages.insert(0, prev_advantage)
-        advantages = np.array(advantages)
-        if normalized_adv:
-            advantages = self.normalize_adv(advantages)
-        if normalized_ret:
-            cum_returns = self.normalize_ret(cum_returns)
-        advantages = torch.tensor(
-            np.array(advantages), device=self.device, dtype=torch.float)
-        returns = torch.tensor(
-            np.array(returns), device=self.device, dtype=torch.float)
-        return advantages, returns
 
     def normalize_adv(self, advantages):
         return (advantages - advantages.mean()) / (advantages.std() + 1e-8)
@@ -435,7 +381,9 @@ class PPOPolicyGradient:
 
                 # STEP 3: collecting set of trajectories D_k by running action
                 # that was sampled from policy in environment
+                # Aviary returns: obs, reward, terminated, truncated, info
                 __obs, reward, done, truncated = self.env.step(action)
+
 
                 # collection of trajectories in batches
                 episode_obs.append(obs)
@@ -475,6 +423,8 @@ class PPOPolicyGradient:
 
         return obs, next_obs, actions, action_log_probs, dones, episode_rewards, episode_lens, np.array(episode_time), frames
 
+
+
     def train(self, values, returns, advantages, batch_log_probs, curr_log_probs, epsilon):
         """Calculate loss and update weights of both networks."""
         # loss of the policy network
@@ -511,11 +461,13 @@ class PPOPolicyGradient:
             # STEP 4-5: Calculate cummulated reward and advantage at timestep t_step
             values, _, _ = self.get_values(obs, actions)
             # Calculate advantage function
-            # advantages, cum_returns = self.advantage_reinforce(rewards, normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            # advantages, cum_returns = self.advantage_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            # advantages, cum_returns = self.advantage_TD_actor_critic(rewards, values.detach(), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
-            advantages, cum_returns = self.generalized_advantage_estimate(rewards, values.detach(
-            ), normalized_adv=self.normalize_advantage, normalized_ret=self.normalize_return)
+            advantages, cum_returns = compute_gae(
+                rewards=rewards,
+                values=values.detach(),
+                dones=dones,
+                gamma=self.gamma,
+                lam=self.gae_lambda,
+            )
 
             # update network params
             logging.info(
