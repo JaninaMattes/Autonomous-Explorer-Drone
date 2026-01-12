@@ -1,5 +1,6 @@
 # This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
+# $ conda env create -f <file.yml>
+# $ conda activate drone-env
 # platform: osx-arm64
 
 name: drone-env
@@ -8,13 +9,27 @@ channels:
   - pytorch
 dependencies:
   - python=3.10
-  - pytorch=2.5.1
+  - pip
+
+  # PyTorch (Apple Silicon / MPS)
+  - pytorch=2.5.*
   - torchvision
   - torchaudio
-  - lightning=2.6.0
-  - pip
+  - lightning=2.6.*
+  - pybullet
+  - ffmpeg
+
+  # Python packages via pip
   - pip:
+      - gym==0.26.*
       - stable-baselines3
-      - gym
-      - pybullet
-      - ray[rllib]
+      - ray[rllib]==2.9.*
+      - hydra-core
+      - pillow
+      - numpy
+      - matplotlib
+      - Pillow
+      - cycler
+      - tensorboard
+      - wandb
+      - optuna
