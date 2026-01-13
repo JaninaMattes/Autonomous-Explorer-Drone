@@ -96,7 +96,7 @@ torch==1.11.0
 tqdm==4.64.1
 typing-extensions==4.4.0
 urllib3==1.26.13
-virtualenv==20.17.1
+virtualenv==20.36.1
 wandb==0.13.6
 wcwidth==0.2.5
 werkzeug==3.0.3
