@@ -16,7 +16,7 @@ grpcio==1.51.1
 gym==0.21.0
 idna==3.4
 lz4==4.0.2
-markdown==3.4.1
+markdown==3.8.1
 markupsafe==2.1.1
 numpy==1.23.5
 oauthlib==3.2.2
