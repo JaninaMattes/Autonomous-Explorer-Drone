@@ -14,7 +14,7 @@ google-auth-oauthlib==0.4.6
 google-auth==2.15.0
 grpcio==1.51.1
 gym==0.21.0
-idna==3.4
+idna==3.15
 lz4==4.0.2
 markdown==3.4.1
 markupsafe==2.1.1
